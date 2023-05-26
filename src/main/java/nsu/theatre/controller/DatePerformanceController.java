@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/date-performances")
 public class DatePerformanceController {
     private final DatePerformanceService datePerformanceService;

@@ -2,6 +2,7 @@ package nsu.theatre.mapper;
 
 import nsu.theatre.dto.TicketNumberDTO;
 import nsu.theatre.entity.TicketNumber;
+import nsu.theatre.entity.TicketNumberId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +17,17 @@ public class TicketNumberMapper {
 
     public TicketNumberDTO toDTO(TicketNumber ticketNumber) {
         TicketNumberDTO ticketNumberDTO = new TicketNumberDTO();
+        ticketNumberDTO.setId(ticketNumber.getId());
         ticketNumberDTO.setTicket(ticketMapper.toDTO(ticketNumber.getTicket()));
-        //ticketNumberDTO.setNumber_ticket(ticketNumber.getNumber_ticket());
+
         return ticketNumberDTO;
     }
 
     public TicketNumber toEntity(TicketNumberDTO ticketNumberDTO) {
         TicketNumber ticketNumber = new TicketNumber();
+        ticketNumber.setId(ticketNumberDTO.getId());
         ticketNumber.setTicket(ticketMapper.toEntity(ticketNumberDTO.getTicket()));
-        //ticketNumber.setNumber_ticket(ticketNumberDTO.getNumber_ticket());
+
         return ticketNumber;
     }
 }

@@ -1,6 +1,7 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.PerformanceDTO;
+import nsu.theatre.dto.filter.PerformanceFilterDTO;
 import nsu.theatre.service.PerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/performances")
 public class PerformanceController {
     private final PerformanceService performanceService;
@@ -24,6 +26,13 @@ public class PerformanceController {
         List<PerformanceDTO> performances = performanceService.getAllPerformances();
         return new ResponseEntity<>(performances, HttpStatus.OK);
     }
+
+    @PostMapping("/get")
+    public ResponseEntity<List<PerformanceDTO>> createPerformance(@RequestBody PerformanceFilterDTO performanceFilterDTO) {
+        List<PerformanceDTO> performances = performanceService.getFilterPerformances(performanceFilterDTO);
+        return new ResponseEntity<>(performances, HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<PerformanceDTO> getPerformanceById(@PathVariable("id") Long id) {

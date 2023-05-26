@@ -30,7 +30,14 @@ public class EmployeeService {
         this.employeeMapper = employeeMapper;
     }
 
-    public List<EmployeeDTO> getAllEmployees(EmployeeFilterDTO employeeFilterDTO) {
+    public List<EmployeeDTO> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream()
+                .map(employeeMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<EmployeeDTO> getFilterEmployees(EmployeeFilterDTO employeeFilterDTO) {
         List<Employee> employees = employeeRepository.findByFilter(
                 employeeFilterDTO.getTypes(),
                 Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(1)).toInstant()),

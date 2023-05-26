@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/roles")
 public class RoleController {
     private final RoleService roleService;

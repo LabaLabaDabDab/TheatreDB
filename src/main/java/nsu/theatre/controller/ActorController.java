@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/actors")
 public class ActorController {
     private final ActorService actorService;

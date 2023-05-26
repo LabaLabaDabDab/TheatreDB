@@ -11,6 +11,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/genres")
 public class GenreController {
     private final GenreService genreService;

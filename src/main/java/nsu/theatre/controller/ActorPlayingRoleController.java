@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/actor-playing-roles")
 public class ActorPlayingRoleController {
     private final ActorPlayingRoleService actorPlayingRoleService;

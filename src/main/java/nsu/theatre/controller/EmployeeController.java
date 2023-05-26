@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/employees")
 public class EmployeeController {
     private final EmployeeService employeeService;
@@ -20,9 +21,15 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
+        List<EmployeeDTO> employees = employeeService.getAllEmployees();
+        return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
+
     @PostMapping("/get")
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees(@RequestBody EmployeeFilterDTO employeeFilterDTO) {
-        List<EmployeeDTO> employees = employeeService.getAllEmployees(employeeFilterDTO);
+    public ResponseEntity<List<EmployeeDTO>> getFilterEmployees(@RequestBody EmployeeFilterDTO employeeFilterDTO) {
+        List<EmployeeDTO> employees = employeeService.getFilterEmployees(employeeFilterDTO);
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 

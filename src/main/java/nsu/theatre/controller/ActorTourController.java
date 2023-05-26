@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/actor-tours")
 public class ActorTourController {
     private final ActorTourService actorTourService;

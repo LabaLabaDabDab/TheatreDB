@@ -2,7 +2,6 @@ package nsu.theatre.mapper;
 
 import nsu.theatre.dto.EmployeeDTO;
 import nsu.theatre.entity.Employee;
-import nsu.theatre.mapper.EmployeeTypeMapper;
 import org.springframework.stereotype.Component;
 
 @Component

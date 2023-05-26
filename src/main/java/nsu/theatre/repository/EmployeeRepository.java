@@ -11,13 +11,13 @@ import java.util.List;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(nativeQuery = true, value = """
-                                        SELECT * 
+                                        SELECT * ,
+                                        COUNT(*) OVER () AS total_count
                                         FROM employees
                                         WHERE type_id in ?1 and hire_date between ?2 and ?3 
                                                 and gender_id in ?4 and birth_date between ?5 and ?6
                                                 and children_amount between ?7 and ?8
                                                 and salary between ?9 and ?10
-                        
                                         """
     )
     public List<Employee> findByFilter(List<Long> types,

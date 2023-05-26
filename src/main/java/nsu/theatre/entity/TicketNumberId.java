@@ -18,7 +18,9 @@ import java.io.Serializable;
 public class TicketNumberId implements Serializable {
     @Column(name = "ticket_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Long ticket;
-    @Column(name = "number_ticket")
-    private Long number_ticket;
+    private Long ticketId;
+
+    @Column(name = "number_ticket_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Long number_ticketId;
 }

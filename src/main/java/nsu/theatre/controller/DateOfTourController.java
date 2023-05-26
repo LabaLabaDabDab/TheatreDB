@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/date-of-tours")
 public class DateOfTourController {
     private final DateOfTourService dateOfTourService;
