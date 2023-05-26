@@ -1,6 +1,5 @@
 package nsu.theatre.controller;
 
-import nsu.theatre.dto.ActorDTO;
 import nsu.theatre.dto.DirectorDTO;
 import nsu.theatre.service.DirectorService;
 import org.springframework.beans.factory.annotation.Autowired;

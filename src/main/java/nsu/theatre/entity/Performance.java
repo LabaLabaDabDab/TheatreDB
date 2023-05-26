@@ -36,8 +36,18 @@ public class Performance {
     @Column(name = "time_duration", precision = 3, scale = 0)
     private Long time;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "director_performance_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne
+    @JoinColumn(name = "director_performance_id", referencedColumnName = "id", nullable = false,
+            foreignKey = @ForeignKey(name = "director_performance___fk"), insertable = false, updatable = false)
     private Director director;
+
+    @ManyToOne
+    @JoinColumn(name = "musician_id", referencedColumnName = "id", nullable = false,
+            foreignKey = @ForeignKey(name = "musician_perf___fk"), insertable = false, updatable = false)
+    private Musician musician;
+
+    @ManyToOne
+    @JoinColumn(name = "musician_id", referencedColumnName = "id", nullable = false,
+            foreignKey = @ForeignKey(name = "producer_perf___fk"), insertable = false, updatable = false)
+    private Producer producer;
 }

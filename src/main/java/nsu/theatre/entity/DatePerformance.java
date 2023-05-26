@@ -22,3 +22,4 @@ public class DatePerformance {
             foreignKey = @ForeignKey(name = "performance_id_fkey"), insertable = false, updatable = false)
     private Performance performance;
 }
+

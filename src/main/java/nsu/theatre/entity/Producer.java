@@ -1,12 +1,17 @@
 package nsu.theatre.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
+@Getter
+@Setter
+@Entity
 @Table(name = "musician")
 public class Producer {
     @Id
