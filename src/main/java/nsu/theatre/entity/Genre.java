@@ -2,6 +2,7 @@ package nsu.theatre.entity;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Getter
 @Setter
 @Entity
+@Data
 @Table(name = "genres")
 public class Genre {
     @Id

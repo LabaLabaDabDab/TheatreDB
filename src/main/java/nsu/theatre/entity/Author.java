@@ -2,6 +2,7 @@ package nsu.theatre.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Date;

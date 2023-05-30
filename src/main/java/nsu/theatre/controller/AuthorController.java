@@ -1,6 +1,8 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.AuthorDTO;
+import nsu.theatre.dto.filter.AuthorFilterDTO;
+import nsu.theatre.dto.response.ResponseAuthorPerformanceDTO;
 import nsu.theatre.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,4 +57,11 @@ public class AuthorController {
         authorService.deleteAuthor(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/filtered")
+    public ResponseEntity<List<ResponseAuthorPerformanceDTO>> getFilteredAuthors(@RequestBody AuthorFilterDTO filterDTO) {
+        List<ResponseAuthorPerformanceDTO> authors = authorService.findByFilter(filterDTO);
+        return ResponseEntity.ok(authors);
+    }
+
 }

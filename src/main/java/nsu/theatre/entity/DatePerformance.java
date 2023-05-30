@@ -17,9 +17,9 @@ public class DatePerformance {
             foreignKey = @ForeignKey(name = "date_performance_date_id_fkey"), insertable = false, updatable = false)
     private DateOfPlaying date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "performance_id", referencedColumnName = "id", nullable = false,
-            foreignKey = @ForeignKey(name = "performance_id_fkey"), insertable = false, updatable = false)
+    @ManyToOne
+    @MapsId("performanceId")
+    @JoinColumn(name = "performance_id")
     private Performance performance;
 }
 

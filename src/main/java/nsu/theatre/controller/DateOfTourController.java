@@ -1,6 +1,8 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.DateOfTourDTO;
+import nsu.theatre.dto.filter.EmployeeDateOfTourFilterDTO;
+import nsu.theatre.dto.response.ResponseEmployeeDateOfTourDTO;
 import nsu.theatre.service.DateOfTourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,5 +56,10 @@ public class DateOfTourController {
     public ResponseEntity<Void> deleteDateOfTour(@PathVariable Long id) {
         dateOfTourService.deleteDateOfTour(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/employee-date-of-tour")
+    public List<ResponseEmployeeDateOfTourDTO> getEmployeeDateOfTour(@RequestBody EmployeeDateOfTourFilterDTO filterDTO) {
+        return dateOfTourService.getEmployeeDateOfTour(filterDTO);
     }
 }

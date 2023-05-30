@@ -2,6 +2,9 @@ package nsu.theatre.controller;
 
 
 import nsu.theatre.dto.ActorDTO;
+import nsu.theatre.dto.filter.ActorAchievementFilterDTO;
+import nsu.theatre.dto.response.ResponseActorAchievementDTO;
+import nsu.theatre.dto.response.ResponseActorRoleDTO;
 import nsu.theatre.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,5 +58,15 @@ public class ActorController {
     public ResponseEntity<Void> deleteActor(@PathVariable("id") Long id) {
         actorService.deleteActor(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/matching-roles")
+    public List<ResponseActorRoleDTO> getAllActorRoles() {
+        return actorService.getAllActorRoles();
+    }
+
+    @PostMapping("/filteredByAchievement")
+    public List<ResponseActorAchievementDTO> getFilteredActors(@RequestBody ActorAchievementFilterDTO filterDTO) {
+        return actorService.getFilteredActors(filterDTO);
     }
 }

@@ -1,9 +1,13 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.PerformanceDTO;
-import nsu.theatre.dto.filter.PerformanceFilterDTO;
+import nsu.theatre.dto.filter.PerformanceByAuthorFilterDTO;
+import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
+import nsu.theatre.dto.response.ResponsePerformanceByAuthorDTO;
 import nsu.theatre.service.PerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +30,6 @@ public class PerformanceController {
         List<PerformanceDTO> performances = performanceService.getAllPerformances();
         return new ResponseEntity<>(performances, HttpStatus.OK);
     }
-
-    @PostMapping("/get")
-    public ResponseEntity<List<PerformanceDTO>> createPerformance(@RequestBody PerformanceFilterDTO performanceFilterDTO) {
-        List<PerformanceDTO> performances = performanceService.getFilterPerformances(performanceFilterDTO);
-        return new ResponseEntity<>(performances, HttpStatus.OK);
-    }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<PerformanceDTO> getPerformanceById(@PathVariable("id") Long id) {
@@ -62,5 +59,12 @@ public class PerformanceController {
     public ResponseEntity<Void> deletePerformance(@PathVariable("id") Long id) {
         performanceService.deletePerformance(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<List<ResponsePerformanceByAuthorDTO>> filterPerformanceByAuthor(
+            @RequestBody PerformanceByAuthorFilterDTO filterDTO) {
+        List<ResponsePerformanceByAuthorDTO> results = performanceService.findByFilter(filterDTO);
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 }

@@ -20,11 +20,13 @@ public class Achievement {
     @Column(name = "date_of_competition")
     private Date dateCompetition;
 
-    @Column(name = "title")
-    private String title;
+    @Column(name = "competition")
+    private String competition;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "actor_id")
     private Actor actor;
 
+    @Column(name = "rank")
+    private String rank;
 }

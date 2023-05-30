@@ -1,18 +1,15 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.DatePerformanceDTO;
-import nsu.theatre.entity.DatePerformance;
-import nsu.theatre.entity.DatePerformanceId;
-import nsu.theatre.mapper.DatePerformanceMapper;
+import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
+import nsu.theatre.dto.response.ResponseDatePerformanceDTO;
 import nsu.theatre.service.DatePerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin("*")
@@ -62,5 +59,16 @@ public class DatePerformanceController {
                                                       @PathVariable("performanceId") Long performanceId) {
         datePerformanceService.deleteDatePerformance(dateId, performanceId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/filter/perf")
+    public ResponseEntity<List<ResponseDatePerformanceDTO>> getFilteredPerformances(@RequestBody PerformanceFilterBySeasonDTO performanceFilterBySeasonDTO) {
+        List<ResponseDatePerformanceDTO> performances = datePerformanceService.getFilterPerformances(performanceFilterBySeasonDTO);
+        return new ResponseEntity<>(performances, HttpStatus.OK);
+    }
+    @PostMapping("/filter/count")
+    public ResponseEntity<Long> getCountBySeasonFilter(@RequestBody PerformanceFilterBySeasonDTO performanceFilterBySeasonDTO) {
+        Long count = datePerformanceService.getCount(performanceFilterBySeasonDTO);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }

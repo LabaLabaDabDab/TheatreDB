@@ -3,6 +3,8 @@ package nsu.theatre.service;
 import lombok.AllArgsConstructor;
 import nsu.theatre.dto.EmployeeDTO;
 import nsu.theatre.dto.filter.EmployeeFilterDTO;
+import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
+import nsu.theatre.dto.response.ResponseEmployeeDTO;
 import nsu.theatre.entity.Employee;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.EmployeeMapper;
@@ -37,24 +39,6 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    public List<EmployeeDTO> getFilterEmployees(EmployeeFilterDTO employeeFilterDTO) {
-        List<Employee> employees = employeeRepository.findByFilter(
-                employeeFilterDTO.getTypes(),
-                Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(1)).toInstant()),
-                Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(0)).toInstant()),
-                employeeFilterDTO.getGenders(),
-                employeeFilterDTO.getBirth_dates().get(0),
-                employeeFilterDTO.getBirth_dates().get(1),
-                employeeFilterDTO.getAmount_children().get(0),
-                employeeFilterDTO.getAmount_children().get(1),
-                employeeFilterDTO.getSalary().get(0),
-                employeeFilterDTO.getSalary().get(1)
-                );
-        return employees.stream()
-                .map(employeeMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
     public EmployeeDTO getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Employee not found with id: " + id));
@@ -80,5 +64,38 @@ public class EmployeeService {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Employee not found with id: " + id));
         employeeRepository.delete(employee);
+    }
+
+    public List<ResponseEmployeeDTO> getFilterEmployees(EmployeeFilterDTO employeeFilterDTO) {
+        List<Employee> employees = employeeRepository.findByFilter(
+                employeeFilterDTO.getTypes(),
+                Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(1)).toInstant()),
+                Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(0)).toInstant()),
+                employeeFilterDTO.getGenders(),
+                employeeFilterDTO.getBirth_dates().get(0),
+                employeeFilterDTO.getBirth_dates().get(1),
+                employeeFilterDTO.getAmount_children().get(0),
+                employeeFilterDTO.getAmount_children().get(1),
+                employeeFilterDTO.getSalary().get(0),
+                employeeFilterDTO.getSalary().get(1)
+        );
+        return employees.stream()
+                .map(employeeMapper::toDTOResponse)
+                .collect(Collectors.toList());
+    }
+
+    public Long getCount(EmployeeFilterDTO employeeFilterDTO){
+        return employeeRepository.countByFilter(
+                employeeFilterDTO.getTypes(),
+                Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(1)).toInstant()),
+                Date.from(ZonedDateTime.now().minusYears(employeeFilterDTO.getYears().get(0)).toInstant()),
+                employeeFilterDTO.getGenders(),
+                employeeFilterDTO.getBirth_dates().get(0),
+                employeeFilterDTO.getBirth_dates().get(1),
+                employeeFilterDTO.getAmount_children().get(0),
+                employeeFilterDTO.getAmount_children().get(1),
+                employeeFilterDTO.getSalary().get(0),
+                employeeFilterDTO.getSalary().get(1)
+        );
     }
 }

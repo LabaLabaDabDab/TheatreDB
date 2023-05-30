@@ -1,6 +1,9 @@
 package nsu.theatre.service;
 
 import nsu.theatre.dto.ActorDTO;
+import nsu.theatre.dto.filter.ActorAchievementFilterDTO;
+import nsu.theatre.dto.response.ResponseActorAchievementDTO;
+import nsu.theatre.dto.response.ResponseActorRoleDTO;
 import nsu.theatre.entity.Actor;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.ActorMapper;
@@ -8,6 +11,8 @@ import nsu.theatre.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,5 +59,44 @@ public class ActorService {
         Actor actor = actorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Actor not found with id: " + id));
         actorRepository.deleteById(id);
+    }
+
+    public List<ResponseActorRoleDTO> getAllActorRoles() {
+        List<Object[]> results = actorRepository.getAllActorRoles();
+
+        return results.stream()
+                .map(result -> {
+                    ResponseActorRoleDTO dto = new ResponseActorRoleDTO();
+                    dto.setActorName((String) result[0]);
+                    dto.setRoleName((String) result[1]);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<ResponseActorAchievementDTO> getFilteredActors(ActorAchievementFilterDTO filterDTO) {
+        List<Object[]> results = actorRepository.findByFilter(
+                filterDTO.getDateCompetition().get(0),
+                filterDTO.getDateCompetition().get(1),
+                filterDTO.getCompetition(),
+                filterDTO.getRank(),
+                filterDTO.getGender(),
+                filterDTO.getBirthDate().get(0),
+                filterDTO.getBirthDate().get(1)
+        );
+        List<ResponseActorAchievementDTO> response = new ArrayList<>();
+
+        for (Object[] result : results) {
+            ResponseActorAchievementDTO dto = new ResponseActorAchievementDTO();
+            dto.setFio((String) result[0]);
+            dto.setGender((String) result[1]);
+            dto.setCompetition((String) result[2]);
+            dto.setDateCompetition((Date) result[3]);
+            dto.setRank((String) result[4]);
+            dto.setBirthDate((Date) result[5]);
+            response.add(dto);
+        }
+
+        return response;
     }
 }

@@ -1,6 +1,7 @@
 package nsu.theatre.mapper;
 
 import nsu.theatre.dto.EmployeeDTO;
+import nsu.theatre.dto.response.ResponseEmployeeDTO;
 import nsu.theatre.entity.Employee;
 import org.springframework.stereotype.Component;
 
@@ -37,5 +38,18 @@ public class EmployeeMapper {
         employee.setSalary(employeeDTO.getSalary());
         employee.setHire_date(employeeDTO.getHireDate());
         return employee;
+    }
+
+    public ResponseEmployeeDTO toDTOResponse(Employee employee){
+        ResponseEmployeeDTO responseEmployeeDTO = new ResponseEmployeeDTO();
+        responseEmployeeDTO.setId(employee.getId());
+        responseEmployeeDTO.setType(employeeTypeMapper.toDTO(employee.getType()).getType());
+        responseEmployeeDTO.setFio(employee.getFio());
+        responseEmployeeDTO.setGender(genderMapper.toDTO(employee.getGender()).getType());
+        responseEmployeeDTO.setBirthDate(employee.getBirth_date());
+        responseEmployeeDTO.setAmountChildren(employee.getChildren_amount());
+        responseEmployeeDTO.setSalary(employee.getSalary());
+        responseEmployeeDTO.setHireDate(employee.getHire_date());
+        return responseEmployeeDTO;
     }
 }

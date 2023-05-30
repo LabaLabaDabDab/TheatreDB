@@ -2,6 +2,8 @@ package nsu.theatre.controller;
 
 import nsu.theatre.dto.EmployeeDTO;
 import nsu.theatre.dto.filter.EmployeeFilterDTO;
+import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
+import nsu.theatre.dto.response.ResponseEmployeeDTO;
 import nsu.theatre.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,12 +26,6 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
         List<EmployeeDTO> employees = employeeService.getAllEmployees();
-        return new ResponseEntity<>(employees, HttpStatus.OK);
-    }
-
-    @PostMapping("/get")
-    public ResponseEntity<List<EmployeeDTO>> getFilterEmployees(@RequestBody EmployeeFilterDTO employeeFilterDTO) {
-        List<EmployeeDTO> employees = employeeService.getFilterEmployees(employeeFilterDTO);
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
@@ -61,5 +57,16 @@ public class EmployeeController {
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Long id) {
         employeeService.deleteEmployee(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<List<ResponseEmployeeDTO>> getFilterEmployees(@RequestBody EmployeeFilterDTO employeeFilterDTO) {
+        List<ResponseEmployeeDTO> employees = employeeService.getFilterEmployees(employeeFilterDTO);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
+    @PostMapping("/filter/count")
+    public ResponseEntity<Long> getCountByFilter(@RequestBody EmployeeFilterDTO employeeFilterDTO) {
+        Long count = employeeService.getCount(employeeFilterDTO);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }

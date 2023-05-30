@@ -1,6 +1,8 @@
 package nsu.theatre.service;
 
 import nsu.theatre.dto.DateOfTourDTO;
+import nsu.theatre.dto.filter.EmployeeDateOfTourFilterDTO;
+import nsu.theatre.dto.response.ResponseEmployeeDateOfTourDTO;
 import nsu.theatre.entity.DateOfTour;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.DateOfTourMapper;
@@ -8,6 +10,8 @@ import nsu.theatre.repository.DateOfTourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,5 +60,24 @@ public class DateOfTourService {
         DateOfTour dateOfTour = dateOfTourRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("DateOfTour not found with id: " + id));
         dateOfTourRepository.deleteById(id);
+    }
+
+    public List<ResponseEmployeeDateOfTourDTO> getEmployeeDateOfTour(EmployeeDateOfTourFilterDTO filterDTO) {
+        List<Object[]> results = dateOfTourRepository.findByDateOfTourBetween(
+                filterDTO.getDateOfTour().get(0),
+                filterDTO.getDateOfTour().get(1)
+        );
+
+        List<ResponseEmployeeDateOfTourDTO> response = new ArrayList<>();
+        for (Object[] result : results) {
+            ResponseEmployeeDateOfTourDTO dto = new ResponseEmployeeDateOfTourDTO();
+            dto.setPersonName((String) result[0]);
+            dto.setRole((String) result[1]);
+            dto.setTourStart((Date) result[2]);
+            dto.setTourEnd((Date) result[3]);
+            response.add(dto);
+        }
+
+        return response;
     }
 }

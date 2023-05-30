@@ -1,6 +1,8 @@
 package nsu.theatre.service;
 
 import nsu.theatre.dto.DatePerformanceDTO;
+import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
+import nsu.theatre.dto.response.ResponseDatePerformanceDTO;
 import nsu.theatre.entity.DatePerformance;
 import nsu.theatre.entity.DatePerformanceId;
 import nsu.theatre.exception.NotFoundException;
@@ -68,4 +70,26 @@ public class DatePerformanceService {
                 .orElseThrow(() -> new NotFoundException("datePerformance not found with id: " + id));
         datePerformanceRepository.delete(existingDatePerformance);
     }
+
+    public List<ResponseDatePerformanceDTO> getFilterPerformances(PerformanceFilterBySeasonDTO performanceFilterBySeasonDTO) {
+        List<DatePerformance> filteredPerformances = datePerformanceRepository.findBySeasonFilter(
+                performanceFilterBySeasonDTO.getSeasons(),
+                performanceFilterBySeasonDTO.getDate_performance_start(),
+                performanceFilterBySeasonDTO.getDate_performance_end(),
+                performanceFilterBySeasonDTO.getGenres()
+        );
+        return filteredPerformances.stream()
+                .map(datePerformanceMapper::toDTOResponse)
+                .collect(Collectors.toList());
+    }
+
+    public Long getCount(PerformanceFilterBySeasonDTO performanceFilterBySeasonDTO){
+        return datePerformanceRepository.countBySeasonFilter(
+                performanceFilterBySeasonDTO.getSeasons(),
+                performanceFilterBySeasonDTO.getDate_performance_start(),
+                performanceFilterBySeasonDTO.getDate_performance_end(),
+                performanceFilterBySeasonDTO.getGenres()
+        );
+    }
+
 }

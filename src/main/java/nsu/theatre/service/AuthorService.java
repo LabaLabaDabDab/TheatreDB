@@ -1,6 +1,8 @@
 package nsu.theatre.service;
 
 import nsu.theatre.dto.AuthorDTO;
+import nsu.theatre.dto.filter.AuthorFilterDTO;
+import nsu.theatre.dto.response.ResponseAuthorPerformanceDTO;
 import nsu.theatre.entity.Author;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.AuthorMapper;
@@ -8,6 +10,8 @@ import nsu.theatre.repository.AuthorRepository;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,5 +58,31 @@ public class AuthorService {
         Author author = authorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Author not found with id: " + id));
         authorRepository.delete(author);
+    }
+
+    public List<ResponseAuthorPerformanceDTO> findByFilter(AuthorFilterDTO authorFilterDTO) {
+        List<Object[]> results = authorRepository.findByFilter(
+                authorFilterDTO.getCentury().get(0),
+                authorFilterDTO.getCentury().get(1),
+                authorFilterDTO.getCountry(),
+                authorFilterDTO.getGenre(),
+                authorFilterDTO.getDate_performance().get(0),
+                authorFilterDTO.getDate_performance().get(1)
+                );
+        List<ResponseAuthorPerformanceDTO> response = new ArrayList<>();
+
+        for (Object[] result : results) {
+            ResponseAuthorPerformanceDTO dto = new ResponseAuthorPerformanceDTO();
+            dto.setName((String) result[0]);
+            dto.setTitle((String) result[1]);
+            dto.setCountry((String) result[2]);
+            dto.setGenre((String) result[3]);
+            dto.setBirthDate((Date) result[4]);
+            dto.setDeathDate((Date) result[5]);
+            dto.setDate_perf((Date) result[6]);
+            response.add(dto);
+        }
+
+        return response;
     }
 }

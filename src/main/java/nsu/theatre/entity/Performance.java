@@ -33,7 +33,7 @@ public class Performance {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Author author;
 
-    @Column(name = "time_duration", precision = 3, scale = 0)
+    @Column(name = "time_duration", precision = 3)
     private Long time;
 
     @ManyToOne
@@ -47,7 +47,7 @@ public class Performance {
     private Musician musician;
 
     @ManyToOne
-    @JoinColumn(name = "musician_id", referencedColumnName = "id", nullable = false,
+    @JoinColumn(name = "producer_id", referencedColumnName = "id", nullable = false,
             foreignKey = @ForeignKey(name = "producer_perf___fk"), insertable = false, updatable = false)
     private Producer producer;
 }

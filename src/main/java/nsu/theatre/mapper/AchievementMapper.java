@@ -16,8 +16,9 @@ public class AchievementMapper {
         AchievementDTO achievementDTO = new AchievementDTO();
         achievementDTO.setId(achievement.getId());
         achievementDTO.setDateCompetition(achievement.getDateCompetition());
-        achievementDTO.setTitle(achievement.getTitle());
+        achievementDTO.setCompetition(achievement.getCompetition());
         achievementDTO.setActor(actorMapper.toDTO(achievement.getActor()));
+        achievementDTO.setRank(achievement.getRank());
 
         return achievementDTO;
     }
@@ -26,8 +27,9 @@ public class AchievementMapper {
         Achievement achievement = new Achievement();
         achievement.setId(achievementDTO.getId());
         achievement.setDateCompetition(achievementDTO.getDateCompetition());
-        achievement.setTitle(achievementDTO.getTitle());
+        achievement.setCompetition(achievementDTO.getCompetition());
         achievement.setActor(actorMapper.toEntity(achievementDTO.getActor()));
+        achievementDTO.setRank(achievementDTO.getRank());
 
         return achievement;
     }
