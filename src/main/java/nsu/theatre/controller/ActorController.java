@@ -3,7 +3,9 @@ package nsu.theatre.controller;
 
 import nsu.theatre.dto.ActorDTO;
 import nsu.theatre.dto.filter.ActorAchievementFilterDTO;
+import nsu.theatre.dto.filter.ActorPlayedRoleFilterDTO;
 import nsu.theatre.dto.response.ResponseActorAchievementDTO;
+import nsu.theatre.dto.response.ResponseActorPlayedRoleDTO;
 import nsu.theatre.dto.response.ResponseActorRoleDTO;
 import nsu.theatre.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,5 +70,17 @@ public class ActorController {
     @PostMapping("/filteredByAchievement")
     public List<ResponseActorAchievementDTO> getFilteredActors(@RequestBody ActorAchievementFilterDTO filterDTO) {
         return actorService.getFilteredActors(filterDTO);
+    }
+
+    @PostMapping("/search-roles")
+    public ResponseEntity<List<ResponseActorPlayedRoleDTO>> searchActorPlayedRoles(@RequestBody ActorPlayedRoleFilterDTO filterDTO) {
+        List<ResponseActorPlayedRoleDTO> roles = actorService.getActorPlayedRoles(filterDTO);
+        return ResponseEntity.ok(roles);
+    }
+
+    @PostMapping("/search-roles/count")
+    public ResponseEntity<Long> getActorPlayedRoleCount(@RequestBody ActorPlayedRoleFilterDTO filterDTO) {
+        Long count = actorService.getActorPlayedRoleCount(filterDTO);
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }

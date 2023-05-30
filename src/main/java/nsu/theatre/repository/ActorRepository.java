@@ -34,7 +34,8 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         achievement.competition AS competition,
         achievement.date_of_competition AS date_of_competition,
         achievement.rank AS rank,
-        employees.birth_date AS birth_date
+        employees.birth_date AS birth_date,
+        COUNT(*) OVER() AS total_count
     FROM actors
         JOIN employees ON actors.employee_id = employees.id
         JOIN achievement ON actors.id = achievement.actor_id
@@ -45,7 +46,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         AND achievement.rank IN :rankList
         AND gender.id IN :genderList
         AND employees.birth_date BETWEEN :birthDateStart AND :birthDateEnd
-""")
+    """)
     List<Object[]> findByFilter(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
@@ -62,6 +63,117 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         "rank": ["Просто бомба"],
         "gender": [1, 2],
         "birthDate": ["1940-05-05", "2050-05-05"]
+    }
+     */
+
+    //10. Получить перечень и общее число pолей, сыгpанных указанным актеpом всего, за некоторый пеpиод вpемени,
+    //в спектаклях определенного жанpа, в спектаклях указанного pежисеpа-постановщика, в детских спектаклях.
+
+    @Query(nativeQuery = true, value = """
+    SELECT
+        actor_roles.actor_name,
+        actor_roles.role_name
+    FROM
+        (
+            SELECT
+                employees.fio AS actor_name,
+                roles.id AS role_id,
+                roles.name AS role_name,
+                roles.performance_id AS performance_id,
+                actor_playing_role.date_of_playing AS date_of_playing
+            FROM
+                actor_playing_role
+            JOIN
+                roles ON actor_playing_role.role_id = roles.id
+            JOIN
+                actors ON actor_playing_role.actor_id = actors.id
+            JOIN
+                employees ON actors.employee_id = employees.id
+            WHERE
+                actors.id IN :actorIds
+        ) actor_roles
+    JOIN
+        performances ON actor_roles.performance_id = performances.id
+    JOIN
+        authors ON performances.author_id = authors.id
+    JOIN
+        producer ON performances.producer_id = producer.id
+    JOIN
+        genres ON authors.genre_id = genres.id
+    WHERE
+        actor_roles.date_of_playing BETWEEN :startDate AND :endDate AND
+        genres.id IN :genreIds AND
+        producer.id IN :producerIds AND
+        performances.age_limit < 18
+    ORDER BY
+        actor_roles.actor_name
+    """)
+    List<Object[]> findActorPlayedRoleFilter(
+            @Param("actorIds") List<Long> actor,
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("genreIds") List<Long> genre,
+            @Param("producerIds") List<Long> producer
+    );
+    /*
+    {
+        "actor": [1, 2, 3, 4, 5, 6 ,7 ,8 ,9, 10, 11],
+        "dateOfPlaying": ["2000-01-01", "2023-12-31"],
+        "genre": [1, 2, 3, 4],
+        "producer": [1, 2, 3, 4]
+    }
+     */
+
+    @Query(nativeQuery = true, value = """
+    SELECT
+        COUNT(DISTINCT actor_roles.role_id) AS role_count
+    FROM
+        (
+            SELECT
+                employees.fio AS actor_name,
+                roles.id AS role_id,
+                roles.performance_id AS performance_id,
+                actor_playing_role.date_of_playing AS date_of_playing
+            FROM
+                actor_playing_role
+            JOIN
+                roles ON actor_playing_role.role_id = roles.id
+            JOIN
+                actors ON actor_playing_role.actor_id = actors.id
+            JOIN
+                employees ON actors.employee_id = employees.id
+            WHERE
+                actors.id IN :actor
+        ) actor_roles
+    JOIN
+        performances ON actor_roles.performance_id = performances.id
+    JOIN
+        authors ON performances.author_id = authors.id
+    JOIN
+        producer ON performances.producer_id = producer.id
+    JOIN
+        genres ON authors.genre_id = genres.id
+    WHERE
+        actor_roles.date_of_playing BETWEEN :startDate AND :endDate AND
+        genres.id IN :genre AND
+        producer.id IN :producer AND
+        performances.age_limit < 18
+    GROUP BY
+        actor_roles.actor_name
+    """)
+    Long getActorPlayedRoleCount(
+            @Param("actor") List<Long> actor,
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("genre") List<Long> genre,
+            @Param("producer") List<Long> producer
+    );
+    /*
+    {
+        "actor": [10],
+        "dateOfPlaying": ["2000-01-01", "2023-12-31"],
+        "genre": [1, 2, 3, 4],
+        "producer": [1, 2, 3, 4]
     }
      */
 }

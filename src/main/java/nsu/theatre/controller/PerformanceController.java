@@ -2,8 +2,10 @@ package nsu.theatre.controller;
 
 import nsu.theatre.dto.PerformanceDTO;
 import nsu.theatre.dto.filter.PerformanceByAuthorFilterDTO;
+import nsu.theatre.dto.filter.PerformanceDetailsDTO;
 import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
 import nsu.theatre.dto.response.ResponsePerformanceByAuthorDTO;
+import nsu.theatre.dto.response.ResponsePerformanceDetailsDTO;
 import nsu.theatre.service.PerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -66,5 +68,10 @@ public class PerformanceController {
             @RequestBody PerformanceByAuthorFilterDTO filterDTO) {
         List<ResponsePerformanceByAuthorDTO> results = performanceService.findByFilter(filterDTO);
         return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
+    @PostMapping("/details")
+    public List<ResponsePerformanceDetailsDTO> getPerformanceDetails(@RequestBody PerformanceDetailsDTO detailsDTO) {
+        return performanceService.getPerformanceDetails(detailsDTO);
     }
 }

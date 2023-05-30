@@ -11,6 +11,8 @@ import java.util.List;
 
 @Repository
 public interface DateOfTourRepository extends JpaRepository<DateOfTour, Long> {
+    //8. Получить список актеpов и постановщиков, пpиезжавших когда-либо на гастpоли в театp за указанный пеpиод,
+    //пеpечень уезжавших на гастpоли в определенное вpемя с данным спектаклем
     @Query(nativeQuery = true, value = """
         SELECT
             employees.fio AS person_name,

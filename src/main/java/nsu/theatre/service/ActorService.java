@@ -2,7 +2,9 @@ package nsu.theatre.service;
 
 import nsu.theatre.dto.ActorDTO;
 import nsu.theatre.dto.filter.ActorAchievementFilterDTO;
+import nsu.theatre.dto.filter.ActorPlayedRoleFilterDTO;
 import nsu.theatre.dto.response.ResponseActorAchievementDTO;
+import nsu.theatre.dto.response.ResponseActorPlayedRoleDTO;
 import nsu.theatre.dto.response.ResponseActorRoleDTO;
 import nsu.theatre.entity.Actor;
 import nsu.theatre.exception.NotFoundException;
@@ -94,9 +96,42 @@ public class ActorService {
             dto.setDateCompetition((Date) result[3]);
             dto.setRank((String) result[4]);
             dto.setBirthDate((Date) result[5]);
+            dto.setTotalCount((Long) result[6]);
             response.add(dto);
         }
 
         return response;
+    }
+
+    public List<ResponseActorPlayedRoleDTO> getActorPlayedRoles(ActorPlayedRoleFilterDTO filterDTO) {
+        List<Object[]> results = actorRepository.findActorPlayedRoleFilter(
+                filterDTO.getActor(),
+                filterDTO.getDateOfPlaying().get(0),
+                filterDTO.getDateOfPlaying().get(1),
+                filterDTO.getGenre(),
+                filterDTO.getProducer()
+        );
+
+        List<ResponseActorPlayedRoleDTO> response = new ArrayList<>();
+        for (Object[] result : results) {
+            ResponseActorPlayedRoleDTO dto = new ResponseActorPlayedRoleDTO();
+            dto.setActorName((String) result[0]);
+            dto.setPlayedRole((String) result[1]);
+            response.add(dto);
+        }
+
+        return response;
+    }
+
+    public Long getActorPlayedRoleCount(ActorPlayedRoleFilterDTO filterDTO) {
+        Long results = actorRepository.getActorPlayedRoleCount(
+                filterDTO.getActor(),
+                filterDTO.getDateOfPlaying().get(0),
+                filterDTO.getDateOfPlaying().get(1),
+                filterDTO.getGenre(),
+                filterDTO.getProducer()
+        );
+
+        return results;
     }
 }

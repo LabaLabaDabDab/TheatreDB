@@ -58,4 +58,55 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
         "datePerformance": ["2000-01-01", "2050-05-05"]
     }
     */
+
+    //9. Получить список для указанного спектакля: актеpов, их дублеpов, имена pежисеpа-постановщика,
+    //художника-постановщика, диpижеpа-постановщика, автоpов, дату пpемъеpы.
+    @Query(nativeQuery = true, value = """
+    SELECT
+        employees.fio AS actor_name,
+        producer_data.fio AS producer_name,
+        musician_data.fio AS musician_name,
+        director_data.fio AS director_name,
+        authors.name AS author_name,
+        performances.premiere_date AS premiere_date
+    FROM actor_playing_role
+    JOIN roles ON actor_playing_role.role_id = roles.id
+    JOIN actors ON actor_playing_role.actor_id = actors.id
+    JOIN employees ON actors.employee_id = employees.id
+    JOIN performances ON roles.performance_id = performances.id
+    JOIN (
+        SELECT
+            employees.fio,
+            performances.id
+        FROM producer
+        JOIN employees ON producer.employee_id = employees.id
+        JOIN performances ON performances.producer_id = producer.id
+    ) producer_data ON performances.id = producer_data.id
+    JOIN (
+        SELECT
+            employees.fio,
+            performances.id
+        FROM musician
+        JOIN employees ON musician.employee_id = employees.id
+        JOIN performances ON performances.musician_id = musician.id
+    ) musician_data ON performances.id = musician_data.id
+    JOIN (
+        SELECT
+            employees.fio,
+            performances.id
+        FROM director
+        JOIN employees ON director.employee_id = employees.id
+        JOIN performances ON performances.director_performance_id = director.id
+    ) director_data ON performances.id = director_data.id
+    JOIN authors ON performances.author_id = authors.id
+    WHERE performances.id IN :performanceIds
+""")
+    List<Object[]> findPerformanceDetails(
+            @Param("performanceIds") List<Long> performance
+    );
+    /*
+    {
+        "performance": [1]
+    }
+     */
 }

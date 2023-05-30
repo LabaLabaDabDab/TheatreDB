@@ -2,8 +2,10 @@ package nsu.theatre.service;
 
 import nsu.theatre.dto.PerformanceDTO;
 import nsu.theatre.dto.filter.PerformanceByAuthorFilterDTO;
+import nsu.theatre.dto.filter.PerformanceDetailsDTO;
 import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
 import nsu.theatre.dto.response.ResponsePerformanceByAuthorDTO;
+import nsu.theatre.dto.response.ResponsePerformanceDetailsDTO;
 import nsu.theatre.entity.Performance;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.PerformanceMapper;
@@ -81,6 +83,24 @@ public class PerformanceService {
             dto.setAuthorBirth((Date) result[4]);
             dto.setAuthorDeath((Date) result[5]);
             dto.setFirstPerformanceDate((Date) result[6]);
+            response.add(dto);
+        }
+
+        return response;
+    }
+
+    public List<ResponsePerformanceDetailsDTO> getPerformanceDetails(PerformanceDetailsDTO detailsDTO) {
+        List<Object[]> results = performanceRepository.findPerformanceDetails(detailsDTO.getPerformance());
+
+        List<ResponsePerformanceDetailsDTO> response = new ArrayList<>();
+        for (Object[] result : results) {
+            ResponsePerformanceDetailsDTO dto = new ResponsePerformanceDetailsDTO();
+            dto.setActorName((String) result[0]);
+            dto.setProducerName((String) result[1]);
+            dto.setMusicianName((String) result[2]);
+            dto.setDirectorName((String) result[3]);
+            dto.setAuthorName((String) result[4]);
+            dto.setPremiereDate((Date) result[5]);
             response.add(dto);
         }
 
