@@ -17,7 +17,6 @@ public class TicketMapper {
     public TicketDTO toDTO(Ticket ticket) {
         TicketDTO ticketDTO = new TicketDTO();
         ticketDTO.setId(ticket.getId());
-        ticketDTO.setIsSold(ticket.getIsSold());
         ticketDTO.setPrice(ticket.getPrice());
         ticketDTO.setPerformance(performanceMapper.toDTO(ticket.getPerformance()));
         ticketDTO.setDate(dateOfPlayingMapper.toDTO(ticket.getDate()));
@@ -28,7 +27,6 @@ public class TicketMapper {
     public Ticket toEntity(TicketDTO ticketDTO) {
         Ticket ticket = new Ticket();
         ticket.setId(ticketDTO.getId());
-        ticket.setIsSold(ticketDTO.getIsSold());
         ticket.setPrice(ticketDTO.getPrice());
         ticket.setPerformance(performanceMapper.toEntity(ticketDTO.getPerformance()));
         ticket.setDate(dateOfPlayingMapper.toEntity(ticketDTO.getDate()));

@@ -1,6 +1,10 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.TicketDTO;
+import nsu.theatre.dto.filter.FreeSeatsFilterDTO;
+import nsu.theatre.dto.filter.TotalRevenueFilterDTO;
+import nsu.theatre.dto.response.*;
+import nsu.theatre.dto.filter.SoldTicketsCountFilterDTO;
 import nsu.theatre.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,5 +58,50 @@ public class TicketController {
     public ResponseEntity<Void> deleteTicket(@PathVariable("id") Long id) {
         ticketService.deleteTicket(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/sold-tickets-count")
+    public ResponseEntity<List<ResponseSoldTicketsCountDTO>> getSoldTicketsCountByPerformanceTitleAndDate(
+            @RequestBody SoldTicketsCountFilterDTO soldTicketsCountFilterDTO) {
+        List<ResponseSoldTicketsCountDTO> response = ticketService.getSoldTicketsCountByPerformanceTitleAndDate(soldTicketsCountFilterDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/sold-tickets-on-premiere")
+    public List<ResponseSoldTicketsOnPremiereCountDTO> getSoldTicketsCountByPremiere() {
+        return ticketService.getSoldTicketsCountByPremiere();
+    }
+
+    @PostMapping("/total-revenue")
+    public ResponseEntity<List<ResponseTotalRevenueDTO>> getTotalRevenueByPerformanceAndDate(
+            @RequestBody TotalRevenueFilterDTO totalRevenueFilterDTO) {
+        List<ResponseTotalRevenueDTO> response = ticketService.getTotalRevenueByPerformanceAndDate(totalRevenueFilterDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/free-seats")
+    public ResponseEntity<List<ResponseFreeSeatsDTO>> getFreeSeatsByPerformance(
+            @RequestBody FreeSeatsFilterDTO freeSeatsFilterDTO) {
+        List<ResponseFreeSeatsDTO> response = ticketService.getFreeSeatsByPerformance(freeSeatsFilterDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/total-free-seats")
+    public ResponseEntity<List<ResponseTotalFreeSeatsDTO>> getTotalFreeSeatsByPerformance(
+            @RequestBody FreeSeatsFilterDTO filterDTO) {
+        List<ResponseTotalFreeSeatsDTO> response = ticketService.getTotalFreeSeatsByPerformance(filterDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/total-free-seats-on-premiere")
+    public ResponseEntity<List<ResponseTotalFreeSeatsOnPremiereDTO>> getTotalFreeSeatsOnPremiere() {
+        List<ResponseTotalFreeSeatsOnPremiereDTO> response = ticketService.getTotalFreeSeatsOnPremiere();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/free-seats-on-premiere")
+    public ResponseEntity<List<ResponseFreeSeatsOnPremiereDTO>> getFreeSeatsOnPremiere() {
+        List<ResponseFreeSeatsOnPremiereDTO> response = ticketService.getFreeSeatsOnPremiere();
+        return ResponseEntity.ok(response);
     }
 }

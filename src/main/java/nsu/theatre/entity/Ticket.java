@@ -20,9 +20,6 @@ public class Ticket {
     @GenericGenerator(name = "pet_seq", strategy = "increment")
     private Long id;
 
-    @Column(name = "is_preliminarily_sold")
-    private Boolean isSold;
-
     @Column(name = "price")
     private Short price;
 

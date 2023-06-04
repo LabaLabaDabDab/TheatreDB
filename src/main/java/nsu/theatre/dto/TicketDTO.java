@@ -8,7 +8,6 @@ import nsu.theatre.entity.Performance;
 @Data
 public class TicketDTO {
     private Long id;
-    private Boolean isSold;
     private Short price;
     private PerformanceDTO performance;
     private DateOfPlayingDTO date;
