@@ -143,6 +143,7 @@ export default function EmployeePage() {
                         <th>Количество детей</th>
                         <th>Зарплата</th>
                         <th>Дата найма</th>
+                        <th>Действия</th>
                     </tr>
                     </thead>
                     <tbody>

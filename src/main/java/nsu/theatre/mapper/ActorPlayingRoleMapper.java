@@ -20,7 +20,7 @@ public class ActorPlayingRoleMapper {
         actorPlayingRoleDTO.setId(actorPlayingRole.getId());
         actorPlayingRoleDTO.setRole(roleMapper.toDTO(actorPlayingRole.getRole()));
         actorPlayingRoleDTO.setActor(actorMapper.toDTO(actorPlayingRole.getActor()));
-        actorPlayingRoleDTO.setMain(actorPlayingRole.getMain());
+        actorPlayingRoleDTO.setMainRole(actorPlayingRole.getMain());
         actorPlayingRoleDTO.setDate(actorPlayingRole.getDate());
 
         return actorPlayingRoleDTO;
@@ -31,7 +31,7 @@ public class ActorPlayingRoleMapper {
         actorPlayingRole.setId(dto.getId());
         actorPlayingRole.setRole(roleMapper.toEntity(dto.getRole()));
         actorPlayingRole.setActor(actorMapper.toEntity(dto.getActor()));
-        actorPlayingRole.setMain(dto.getMain());
+        actorPlayingRole.setMain(dto.getMainRole());
         actorPlayingRole.setDate(dto.getDate());
 
         return actorPlayingRole;

@@ -10,6 +10,6 @@ public class ActorPlayingRoleDTO {
     private ActorRoleId id;
     private RoleDTO role;
     private ActorDTO actor;
-    private Boolean main;
+    private Boolean mainRole;
     private Date date;
 }

@@ -8,12 +8,15 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.AuthorMapper;
 import nsu.theatre.repository.AuthorRepository;
 
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 
 
 @Service

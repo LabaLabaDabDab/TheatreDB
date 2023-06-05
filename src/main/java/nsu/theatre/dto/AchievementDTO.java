@@ -13,6 +13,6 @@ public class AchievementDTO {
     private Long id;
     private Date dateCompetition;
     private String competition;
-    private ActorDTO actor;
+    private ActorDTO actorId;
     private String rank;
 }

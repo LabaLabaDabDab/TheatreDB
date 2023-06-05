@@ -1,7 +1,7 @@
 import {httpClient} from '../http-common.js';
 
-const getAll = (curPage, recordPerPage) => {
-    return httpClient.get(`/employees?pageNo=${curPage}&pageSize=${recordPerPage}`);
+const getAll = () => {
+    return httpClient.get(`/employees`);
 };
 
 

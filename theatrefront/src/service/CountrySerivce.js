@@ -1,9 +1,8 @@
 import {httpClient} from '../http-common.js';
 
-const getAll = (curPage, recordPerPage) => {
-    return httpClient.get(`/countries?pageNo=${curPage}&pageSize=${recordPerPage}`);
+const getAll = () => {
+    return httpClient.get(`/countries`);
 };
-
 
 const create = (data) => {
     return httpClient.post("/countries", data);

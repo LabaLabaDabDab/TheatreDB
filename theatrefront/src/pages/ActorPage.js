@@ -7,14 +7,15 @@ import Table from 'react-bootstrap/Table';
 import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
-import countryService from '../service/CountrySerivce';
+import actorService from "../service/ActorService";
 
-export default function CountryPage({
+export default function ActorPage({
 
-}) {
-    const [countries, setCountry] = React.useState([]);
+                                   }) {
+    const [actors, setActor] = React.useState([]);
 
     React.useEffect(() => {
         init();
@@ -22,20 +23,20 @@ export default function CountryPage({
 
 
     const init = ()  => {
-        countryService.getAll()
-        .then(response => {
-            console.log('Country data', response.data);
-            setCountry(response.data)
-        })
-        .catch(error => {
-            console.error(error)
-        });
+        actorService.getAll()
+            .then(response => {
+                console.log('Author data', response.data);
+                setActor(response.data);
+            })
+            .catch(error => {
+                console.error(error)
+            });
     }
 
     const handleDelete = id => {
-        countryService.remove(id)
+        actorService.remove(id)
             .then(response => {
-                console.log('Country deleted', response.data);
+                console.log('Actor deleted', response.data);
                 init();
             })
             .catch(error => {
@@ -43,36 +44,42 @@ export default function CountryPage({
             })
     }
 
+
+
     return (
         <div>
-            <h2>Страны</h2>
+            <h2>Актёры</h2>
             <div className={"table-container"}>
-                <Link to="/actors/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить страну</Link>
+                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
                         <th>ID</th>
-                        <th>Название</th>
+                        <th>Работник ID</th>
+                        <th>Студент</th>
+                        <th>Рост</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        countries.map(obj => (
+                        actors.map(obj => (
                             <tr key={obj.id}>
-                                <td style={{ fontSize: "20px" }}>{obj.id}</td>
-                                <td style={{ fontSize: "20px" }}>{obj.name}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.id}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.employee.id}</td>
+                                <td style={{ fontSize: "14px" }}>{String(obj.student)}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.height}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/actors/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
                                 </td>
                             </tr>
                         ))
                     }
+
                     </tbody>
                 </Table>
             </div>
         </div>
     )
 }
-

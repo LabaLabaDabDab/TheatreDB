@@ -9,12 +9,13 @@ import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 import { Link } from 'react-router-dom';
-import countryService from '../service/CountrySerivce';
+import achievementService from '../service/AchievementSerivce';
 
-export default function CountryPage({
 
-}) {
-    const [countries, setCountry] = React.useState([]);
+export default function AchievementPage({
+
+                                    }) {
+    const [achievements, setAchievement] = React.useState([]);
 
     React.useEffect(() => {
         init();
@@ -22,20 +23,20 @@ export default function CountryPage({
 
 
     const init = ()  => {
-        countryService.getAll()
-        .then(response => {
-            console.log('Country data', response.data);
-            setCountry(response.data)
-        })
-        .catch(error => {
-            console.error(error)
-        });
+        achievementService.getAll()
+            .then(response => {
+                console.log('Achievement data', response.data);
+                setAchievement(response.data)
+            })
+            .catch(error => {
+                console.error(error)
+            });
     }
 
     const handleDelete = id => {
-        countryService.remove(id)
+        achievementService.remove(id)
             .then(response => {
-                console.log('Country deleted', response.data);
+                console.log('Achievement deleted', response.data);
                 init();
             })
             .catch(error => {
@@ -45,23 +46,29 @@ export default function CountryPage({
 
     return (
         <div>
-            <h2>Страны</h2>
+            <h2>Звания актёров</h2>
             <div className={"table-container"}>
-                <Link to="/actors/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить страну</Link>
+                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить звания актёров</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
                         <th>ID</th>
-                        <th>Название</th>
+                        <th>Дата соревнования</th>
+                        <th>Название соревнования</th>
+                        <th>Актёр ID</th>
+                        <th>Ранг</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        countries.map(obj => (
+                        achievements.map(obj => (
                             <tr key={obj.id}>
-                                <td style={{ fontSize: "20px" }}>{obj.id}</td>
-                                <td style={{ fontSize: "20px" }}>{obj.name}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.id}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.dateCompetition}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.competition}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.actorId.id}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.rank}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
@@ -75,4 +82,3 @@ export default function CountryPage({
         </div>
     )
 }
-
