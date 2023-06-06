@@ -25,7 +25,7 @@ export default function ActorPage({
     const init = ()  => {
         actorService.getAll()
             .then(response => {
-                console.log('Author data', response.data);
+                console.log('Actor data', response.data);
                 setActor(response.data);
             })
             .catch(error => {

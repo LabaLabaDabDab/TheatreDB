@@ -48,7 +48,7 @@ export default function AchievementPage({
         <div>
             <h2>Звания актёров</h2>
             <div className={"table-container"}>
-                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить звания актёров</Link>
+                <Link to="/achievements/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
@@ -70,7 +70,7 @@ export default function AchievementPage({
                                 <td style={{ fontSize: "14px" }}>{obj.actorId.id}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.rank}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/achievements/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
                                 </td>
                             </tr>

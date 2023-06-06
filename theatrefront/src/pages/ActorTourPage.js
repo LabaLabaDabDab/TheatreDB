@@ -25,7 +25,7 @@ export default function ActorTourPage({
     const init = ()  => {
         actorTourService.getAll()
             .then(response => {
-                console.log('Author data', response.data);
+                console.log('ActorTour data', response.data);
                 setActorTour(response.data);
             })
             .catch(error => {

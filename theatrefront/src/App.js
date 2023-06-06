@@ -16,6 +16,16 @@ import ActorTourPage from "./pages/ActorTourPage";
 import DateOfPlayingPage from "./pages/DateOfPlayingPage";
 import DateOfTourPage from "./pages/DateOfTourPage";
 import DateOfPerformancePage from "./pages/DateOfPerformancePage"
+import DirectorPage from "./pages/DirectorPage";
+import EmployeeTypePage from "./pages/EmployeeTypePage";
+import GenderPage from "./pages/GenderPage";
+import GenrePage from "./pages/GenrePage";
+import MusicianPage from "./pages/MusicianPage";
+import PerformancePage from "./pages/PerformancePage"
+import ProducerPage from  "./pages/ProducerPage"
+import RolePage from "./pages/RolePage";
+import TicketsPage from "./pages/TicketsPage";
+import TicketNumberPage from "./pages/TicketNumberPage";
 
 function App() {
   return (
@@ -58,6 +68,49 @@ function App() {
               <DateOfPerformancePage/>
           </Route>
 
+          <Route path={"/directors"} exact>
+              <DirectorPage/>
+          </Route>
+
+          <Route path={"/employees"} exact>
+              <EmployeePage/>
+          </Route>
+
+          <Route path={"/employees_type"} exact>
+              <EmployeeTypePage/>
+          </Route>
+
+          <Route path={"/genders"} exact>
+              <GenderPage/>
+          </Route>
+
+          <Route path={"/genres"} exact>
+              <GenrePage/>
+          </Route>
+
+          <Route path={"/musicians"} exact>
+              <MusicianPage/>
+          </Route>
+
+          <Route path={"/performances"} exact>
+              <PerformancePage/>
+          </Route>
+
+          <Route path={"/producers"} exact>
+              <ProducerPage/>
+          </Route>
+
+          <Route path={"/roles"} exact>
+              <RolePage/>
+          </Route>
+
+          <Route path={"/tickets"} exact>
+              <TicketsPage/>
+          </Route>
+
+          <Route path={"/ticket_number"} exact>
+              <TicketNumberPage/>
+          </Route>
 
       </div>
   );

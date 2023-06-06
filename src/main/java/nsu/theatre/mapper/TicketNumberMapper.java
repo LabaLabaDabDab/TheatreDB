@@ -19,6 +19,7 @@ public class TicketNumberMapper {
         TicketNumberDTO ticketNumberDTO = new TicketNumberDTO();
         ticketNumberDTO.setId(ticketNumber.getId());
         ticketNumberDTO.setTicket(ticketMapper.toDTO(ticketNumber.getTicket()));
+        ticketNumberDTO.setIsSold(ticketNumber.getIsSold());
 
         return ticketNumberDTO;
     }
@@ -27,6 +28,7 @@ public class TicketNumberMapper {
         TicketNumber ticketNumber = new TicketNumber();
         ticketNumber.setId(ticketNumberDTO.getId());
         ticketNumber.setTicket(ticketMapper.toEntity(ticketNumberDTO.getTicket()));
+        ticketNumber.setIsSold(ticketNumberDTO.getIsSold());
 
         return ticketNumber;
     }

@@ -18,4 +18,7 @@ public class TicketNumber {
     @JoinColumn(name = "ticket_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_TicketPlace_Ticket"), insertable = false, updatable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Ticket ticket;
+
+    @Column(name = "is_sold")
+    private Boolean isSold;
 }

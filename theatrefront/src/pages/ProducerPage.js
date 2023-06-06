@@ -10,12 +10,12 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
-import dateOfPlayingService from "../service/DateOfPlayingService";
+import producerService from "../service/ProducerService";
 
-export default function DateOfPlayingPage({
+export default function MusicianPage({
 
-                                      }) {
-    const [dateOfPlaying, setDateOfPlaying] = React.useState([]);
+                                     }) {
+    const [producer, setProducer] = React.useState([]);
 
     React.useEffect(() => {
         init();
@@ -23,10 +23,10 @@ export default function DateOfPlayingPage({
 
 
     const init = ()  => {
-        dateOfPlayingService.getAll()
+        producerService.getAll()
             .then(response => {
-                console.log('DateOfPlaying data', response.data);
-                setDateOfPlaying(response.data);
+                console.log('producer data', response.data);
+                setProducer(response.data);
             })
             .catch(error => {
                 console.error(error)
@@ -34,9 +34,9 @@ export default function DateOfPlayingPage({
     }
 
     const handleDelete = id => {
-        dateOfPlayingService.remove(id)
+        producerService.remove(id)
             .then(response => {
-                console.log('Actor deleted', response.data);
+                console.log('producer deleted', response.data);
                 init();
             })
             .catch(error => {
@@ -44,37 +44,27 @@ export default function DateOfPlayingPage({
             })
     }
 
-
-
     return (
         <div>
-            <h2>Даты проведения</h2>
+            <h2>Продюсеры</h2>
             <div className={"table-container"}>
-                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/producer/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
                         <th>ID</th>
-                        <th>Дата представления</th>
-                        <th>Сезон</th>
-                        <th>Количество билетов</th>
-                        <th>Тур</th>
+                        <th>ID работника</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        dateOfPlaying.map(obj => (
+                        producer.map(obj => (
                             <tr key={obj.id}>
                                 <td style={{ fontSize: "14px" }}>{obj.id}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.dateOfPerformance}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.season}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.ticketsCount}</td>
-                                <td style={{ fontSize: "14px" }}>{String(obj.isTour)}</td>
-
-
+                                <td style={{ fontSize: "14px" }}>{obj.employee.id}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/actors/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/producer/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
                                 </td>
                             </tr>

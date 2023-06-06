@@ -25,7 +25,7 @@ export default function DateOfTourPage({
     const init = ()  => {
         dateOfTourService.getAll()
             .then(response => {
-                console.log('Author data', response.data);
+                console.log('DateOfTour data', response.data);
                 setDateOfTour(response.data);
             })
             .catch(error => {

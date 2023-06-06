@@ -25,7 +25,7 @@ function Header() {
                         <Nav.Link style={{ marginBottom: 0 }} href="/date_of_playing">Даты проведения</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/date_of_tour">Дата туров</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/date_of_performance">Даты представлений</Nav.Link>
-                        <Nav.Link style={{ marginBottom: 0 }} href="/directors">Директора</Nav.Link>
+                        <Nav.Link style={{ marginBottom: 0 }} href="/directors">Директоры</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/employees">Работники театра</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/employees_type">Типы работников театра</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/genders">Гендеры</Nav.Link>

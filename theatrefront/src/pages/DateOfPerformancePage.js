@@ -12,7 +12,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { Link } from 'react-router-dom';
 import dateOfPerformanceService from "../service/DateOfPerformanceService";
 
-export default function DateOfPlayingPage({
+export default function DateOfPerformanceOfPage({
 
                                           }) {
     const [dateOfPerformance, setDateOfPerformance] = React.useState([]);

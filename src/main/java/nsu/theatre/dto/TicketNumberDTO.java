@@ -7,4 +7,5 @@ import nsu.theatre.entity.TicketNumberId;
 public class TicketNumberDTO {
     private TicketNumberId id;
     private TicketDTO ticket;
+    private Boolean isSold;
 }
