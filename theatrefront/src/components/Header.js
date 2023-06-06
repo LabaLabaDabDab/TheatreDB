@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Header() {
     return (
-        <header>
+        <div>
             <Link to="/">
                 <div className="theatre" style={{ display: 'flex', alignItems: 'center' }}>
                     <div className="headerInfo">
@@ -12,10 +12,11 @@ function Header() {
                     </div>
                 </div>
             </Link>
-            <Navbar style={{ padding: 30, marginTop: 0, fontSize: 20 }} bg="black" variant="dark">
+            <Navbar style={{ padding: 20, marginTop: 0, fontSize: 20 }} bg="black" variant="dark">
                 <Container>
                     <Navbar.Brand></Navbar.Brand>
                     <Nav className="me-auto" style={{ display: 'flex', flexDirection: 'column' }}>
+                        <Nav.Link style={{ marginBottom: 0 }} href="/request">Запросы</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/achievements">Звания актёров</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/actors">Актёры</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/actor_playing_role">Актёры и их роли</Nav.Link>
@@ -39,8 +40,9 @@ function Header() {
                     </Nav>
                 </Container>
             </Navbar>
+
             <br />
-        </header>
+        </div>
     );
 }
 

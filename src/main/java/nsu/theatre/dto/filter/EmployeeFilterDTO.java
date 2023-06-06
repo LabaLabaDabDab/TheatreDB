@@ -11,7 +11,6 @@ public class EmployeeFilterDTO {
     private List<Long> years;
     private List<Long> genders;
     private List<Date> birth_dates;
-    private List<Long> ages;
     private List<Long> amount_children;
     private List<Long> salary;
 }

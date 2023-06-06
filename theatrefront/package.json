@@ -14,11 +14,14 @@
     "macro-css": "^1.0.5",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
+    "react-bootstrap-range-slider": "^3.0.8",
     "react-datepicker": "^4.12.0",
     "react-dom": "^18.2.0",
     "react-js-pagination": "^3.0.3",
     "react-router-dom": "^5.3.4",
     "react-scripts": "5.0.1",
+    "react-select": "^5.7.3",
+    "react-slider": "^2.0.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

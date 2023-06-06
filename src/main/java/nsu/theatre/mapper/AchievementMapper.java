@@ -29,7 +29,7 @@ public class AchievementMapper {
         achievement.setDateCompetition(achievementDTO.getDateCompetition());
         achievement.setCompetition(achievementDTO.getCompetition());
         achievement.setActor(actorMapper.toEntity(achievementDTO.getActorId()));
-        achievementDTO.setRank(achievementDTO.getRank());
+        achievement.setRank(achievementDTO.getRank());
 
         return achievement;
     }

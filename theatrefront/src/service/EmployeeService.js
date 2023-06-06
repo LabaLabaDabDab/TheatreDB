@@ -21,4 +21,13 @@ const remove = (id) => {
     return httpClient.delete(`/employees/${id}`);
 }
 
-export default {getAll, create, get, update, remove};
+const filter = (data) =>{
+    return httpClient.post('/employees/filter', data);
+}
+
+const filterCount = (data) =>{
+    return httpClient.post('/employees/filter/count', data);
+}
+
+export default {getAll, create, get, update, remove, filter, filterCount};
+

@@ -1,7 +1,7 @@
 import {httpClient} from '../http-common.js';
 
-const getAll = () => {
-    return httpClient.get(`/achievements`);
+const getAll = (curPage, recordPerPage) => {
+    return httpClient.get(`/achievements?pageNo=${curPage}&pageSize=${recordPerPage}`);
 };
 
 const create = (data) => {
@@ -12,8 +12,8 @@ const get = (id) => {
     return httpClient.get(`/achievements/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/achievements', data);
+const update = (id, data) => {
+    return httpClient.put(`/achievements/${id}`, data);
 }
 
 const remove = (id) => {

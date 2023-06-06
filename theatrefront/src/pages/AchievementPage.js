@@ -9,24 +9,32 @@ import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 import { Link } from 'react-router-dom';
-import achievementService from '../service/AchievementSerivce';
+import achievementService from '../service/AchievementService';
 
 
 export default function AchievementPage({
-
-                                    }) {
+}) {
     const [achievements, setAchievement] = React.useState([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [totalPages, setTotalPages] = React.useState(0);
+    const [totalElements, setTotalElements] = React.useState(0);
+
+    const recordPerPage = 5;
 
     React.useEffect(() => {
-        init();
+        init(1);
     }, []);
 
 
-    const init = ()  => {
-        achievementService.getAll()
+    const init = (currentPage)  => {
+        achievementService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
                 console.log('Achievement data', response.data);
-                setAchievement(response.data)
+                setAchievement(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setTotalElements(response.data.totalElements);
+                setCurrentPage(response.data.number + 1);
+                console.log(totalPages);
             })
             .catch(error => {
                 console.error(error)
@@ -37,12 +45,44 @@ export default function AchievementPage({
         achievementService.remove(id)
             .then(response => {
                 console.log('Achievement deleted', response.data);
-                init();
+                init(currentPage);
             })
             .catch(error => {
                 console.log('Something went wrong', error);
             })
     }
+
+    const showNextPage = () => {
+        console.log(currentPage);
+        console.log(totalElements);
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(currentPage + 1);
+        }
+        console.log(totalElements);
+    };
+
+    //Show Last Page
+    const showLastPage = () => {
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(Math.ceil(totalElements / recordPerPage));
+        }
+    };
+
+    //Show First page
+    const showFirstPage = () => {
+        let firstPage = 1;
+        if (currentPage > firstPage) {
+            init(firstPage);
+        }
+    };
+
+    //Show previous page
+    const showPrevPage = () => {
+        let prevPage = 1
+        if (currentPage > prevPage) {
+            init(currentPage - prevPage);
+        }
+    };
 
     return (
         <div>
@@ -55,7 +95,7 @@ export default function AchievementPage({
                         <th>ID</th>
                         <th>Дата соревнования</th>
                         <th>Название соревнования</th>
-                        <th>Актёр ID</th>
+                        <th>Актёр</th>
                         <th>Ранг</th>
                         <th>Действия</th>
                     </tr>
@@ -67,16 +107,31 @@ export default function AchievementPage({
                                 <td style={{ fontSize: "14px" }}>{obj.id}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.dateCompetition}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.competition}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.actorId.id}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.actorId.employee.fio}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.rank}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/achievements/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
+                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>
                         ))
                     }
                     </tbody>
+                </Table>
+                <Table className="table" bordered="false">
+                    <div style={{ float: 'left', marginLeft: 40, color: '#D10000' }}>
+                        Страница {currentPage} из {totalPages}
+                    </div>
+                    <div style={{ float: 'right', marginRight: 35 }}>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
+                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
+                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
+                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
                 </Table>
             </div>
         </div>
