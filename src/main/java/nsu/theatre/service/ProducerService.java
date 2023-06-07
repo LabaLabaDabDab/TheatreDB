@@ -8,6 +8,9 @@ import nsu.theatre.mapper.ProducerMapper;
 import nsu.theatre.repository.EmployeeRepository;
 import nsu.theatre.repository.ProducerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +29,15 @@ public class ProducerService {
         this.producerMapper = producerMapper;
     }
 
-    public List<ProducerDTO> getAllProducers() {
-        List<Producer> producers = producerRepository.findAll();
-        return producers.stream()
+    public Page<ProducerDTO> getAllProducers(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Producer> pagedResult = producerRepository.findAll(pageable);
+        return pagedResult.map(producerMapper::toDTO);
+    }
+
+    public List<ProducerDTO> getAllProducersList() {
+        List<Producer> producerList = producerRepository.findAll();
+        return producerList.stream()
                 .map(producerMapper::toDTO)
                 .collect(Collectors.toList());
     }

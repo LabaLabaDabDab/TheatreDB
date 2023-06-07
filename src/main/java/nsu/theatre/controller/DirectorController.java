@@ -3,6 +3,7 @@ package nsu.theatre.controller;
 import nsu.theatre.dto.DirectorDTO;
 import nsu.theatre.service.DirectorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,16 @@ public class DirectorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DirectorDTO>> getAllDirectors() {
-        List<DirectorDTO> directors = directorService.getAllDirectors();
+    public ResponseEntity<Page<DirectorDTO>> getAllDirectors(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<DirectorDTO> page = directorService.getAllDirectors(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<DirectorDTO>> getAllDirectorsList() {
+        List<DirectorDTO> directors = directorService.getAllDirectorsList();
         return new ResponseEntity<>(directors, HttpStatus.OK);
     }
 

@@ -9,6 +9,9 @@ import nsu.theatre.mapper.ActorTourMapper;
 import nsu.theatre.mapper.DateOfTourMapper;
 import nsu.theatre.repository.ActorTourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +33,13 @@ public class ActorTourService {
         this.actorMapper = actorMapper;
     }
 
-    public List<ActorTourDTO> getAllActorTours() {
+    public Page<ActorTourDTO> getAllActorTours(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<ActorTour> pagedResult = actorTourRepository.findAll(pageable);
+        return pagedResult.map(actorTourMapper::toDTO);
+    }
+
+    public List<ActorTourDTO> getAllActorToursList() {
         List<ActorTour> actorTourList = actorTourRepository.findAll();
         return actorTourList.stream()
                 .map(actorTourMapper::toDTO)

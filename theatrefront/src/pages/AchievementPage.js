@@ -1,16 +1,10 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
 
-import { Link } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import achievementService from '../service/AchievementService';
-
 
 export default function AchievementPage({
 }) {
@@ -20,6 +14,13 @@ export default function AchievementPage({
     const [totalElements, setTotalElements] = React.useState(0);
 
     const recordPerPage = 5;
+
+    const history = useHistory();
+
+    const goBack = () => {
+        history.goBack();
+    };
+
 
     React.useEffect(() => {
         init(1);
@@ -61,14 +62,12 @@ export default function AchievementPage({
         console.log(totalElements);
     };
 
-    //Show Last Page
     const showLastPage = () => {
         if (currentPage < Math.ceil(totalElements / recordPerPage)) {
             init(Math.ceil(totalElements / recordPerPage));
         }
     };
 
-    //Show First page
     const showFirstPage = () => {
         let firstPage = 1;
         if (currentPage > firstPage) {
@@ -76,7 +75,6 @@ export default function AchievementPage({
         }
     };
 
-    //Show previous page
     const showPrevPage = () => {
         let prevPage = 1
         if (currentPage > prevPage) {
@@ -124,15 +122,16 @@ export default function AchievementPage({
                     </div>
                     <div style={{ float: 'right', marginRight: 35 }}>
                         <nav>
-                            <ul class="pagination">
-                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
-                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
-                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
-                                <li class="page-item"><a type="button" class="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
+                            <ul className="pagination">
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
                             </ul>
                         </nav>
                     </div>
                 </Table>
+                <Link to="/" style={{ marginLeft: 10, marginTop: 0, color: 'white' }} className="btn btn-dark mb-2">Назад</Link>
             </div>
         </div>
     )

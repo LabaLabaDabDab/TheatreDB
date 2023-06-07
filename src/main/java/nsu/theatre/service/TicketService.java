@@ -9,6 +9,9 @@ import nsu.theatre.entity.Ticket;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.TicketMapper;
 import nsu.theatre.repository.TicketRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,7 +29,13 @@ public class TicketService {
         this.ticketMapper = ticketMapper;
     }
 
-    public List<TicketDTO> getAllTickets() {
+    public Page<TicketDTO> getAllTickets(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Ticket> pagedResult = ticketRepository.findAll(pageable);
+        return pagedResult.map(ticketMapper::toDTO);
+    }
+
+    public List<TicketDTO> getAllTicketsList() {
         List<Ticket> ticketList = ticketRepository.findAll();
         return ticketList.stream()
                 .map(ticketMapper::toDTO)

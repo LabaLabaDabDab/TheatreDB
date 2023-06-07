@@ -3,6 +3,7 @@ package nsu.theatre.controller;
 import nsu.theatre.dto.TicketNumberDTO;
 import nsu.theatre.service.TicketNumberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +22,20 @@ public class TicketNumberController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TicketNumberDTO>> getAllTicketNumbers() {
-        List<TicketNumberDTO> ticketNumberList = ticketNumberService.getAllTicketNumbers();
+    public ResponseEntity<Page<TicketNumberDTO>> getAllTicketNumbers(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<TicketNumberDTO> page = ticketNumberService.getAllTicketNumbers(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<TicketNumberDTO>> getAllTicketNumbersList() {
+        List<TicketNumberDTO> ticketNumberList = ticketNumberService.getAllTicketNumbersList();
         return new ResponseEntity<>(ticketNumberList, HttpStatus.OK);
     }
 
-    @GetMapping("/{ticketId}/{number_ticketId}")
+        @GetMapping("/{ticketId}/{number_ticketId}")
     public ResponseEntity<TicketNumberDTO> getTicketNumberById(@PathVariable("ticketId") Long ticketId, @PathVariable("number_ticketId") Long number_ticketId) {
         TicketNumberDTO ticketNumberDTO = ticketNumberService.getTicketNumberById(ticketId, number_ticketId);
         return new ResponseEntity<>(ticketNumberDTO, HttpStatus.OK);

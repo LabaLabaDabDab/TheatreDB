@@ -6,6 +6,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.RoleMapper;
 import nsu.theatre.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +25,15 @@ public class RoleService {
         this.roleMapper = roleMapper;
     }
 
-    public List<RoleDTO> getAllRoles() {
-        List<Role> roles = roleRepository.findAll();
-        return roles.stream()
+    public Page<RoleDTO> getAllRoles(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Role> pagedResult = roleRepository.findAll(pageable);
+        return pagedResult.map(roleMapper::toDTO);
+    }
+
+    public List<RoleDTO> getAllRolesList() {
+        List<Role> roleList = roleRepository.findAll();
+        return roleList.stream()
                 .map(roleMapper::toDTO)
                 .collect(Collectors.toList());
     }

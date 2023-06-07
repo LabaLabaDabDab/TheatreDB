@@ -1,32 +1,33 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
 import actorService from "../service/ActorService";
 
 export default function ActorPage({
-
-                                   }) {
+}) {
     const [actors, setActor] = React.useState([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [totalPages, setTotalPages] = React.useState(0);
+    const [totalElements, setTotalElements] = React.useState(0);
+
+    const recordPerPage = 5;
 
     React.useEffect(() => {
-        init();
+        init(1);
     }, []);
 
 
-    const init = ()  => {
-        actorService.getAll()
+    const init = (currentPage)  => {
+        actorService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
                 console.log('Actor data', response.data);
-                setActor(response.data);
+                setActor(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setTotalElements(response.data.totalElements);
+                setCurrentPage(response.data.number + 1);
+                console.log(totalPages);
             })
             .catch(error => {
                 console.error(error)
@@ -37,13 +38,44 @@ export default function ActorPage({
         actorService.remove(id)
             .then(response => {
                 console.log('Actor deleted', response.data);
-                init();
+                init(currentPage);
             })
             .catch(error => {
                 console.log('Something went wrong', error);
             })
     }
 
+    const showNextPage = () => {
+        console.log(currentPage);
+        console.log(totalElements);
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(currentPage + 1);
+        }
+        console.log(totalElements);
+    };
+
+    //Show Last Page
+    const showLastPage = () => {
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(Math.ceil(totalElements / recordPerPage));
+        }
+    };
+
+    //Show First page
+    const showFirstPage = () => {
+        let firstPage = 1;
+        if (currentPage > firstPage) {
+            init(firstPage);
+        }
+    };
+
+    //Show previous page
+    const showPrevPage = () => {
+        let prevPage = 1
+        if (currentPage > prevPage) {
+            init(currentPage - prevPage);
+        }
+    };
 
 
     return (
@@ -55,7 +87,7 @@ export default function ActorPage({
                     <thead >
                     <tr>
                         <th>ID</th>
-                        <th>Работник ID</th>
+                        <th>Работник</th>
                         <th>Студент</th>
                         <th>Рост</th>
                         <th>Действия</th>
@@ -66,7 +98,7 @@ export default function ActorPage({
                         actors.map(obj => (
                             <tr key={obj.id}>
                                 <td style={{ fontSize: "14px" }}>{obj.id}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.employee.id}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.employee.fio}</td>
                                 <td style={{ fontSize: "14px" }}>{String(obj.student)}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.height}</td>
                                 <td>
@@ -79,6 +111,22 @@ export default function ActorPage({
 
                     </tbody>
                 </Table>
+                <Table className="table" bordered="false">
+                    <div style={{ float: 'left', marginLeft: 40, color: '#D10000' }}>
+                        Страница {currentPage} из {totalPages}
+                    </div>
+                    <div style={{ float: 'right', marginRight: 35 }}>
+                        <nav>
+                            <ul className="pagination">
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </Table>
+                <Link to="/" style={{ marginLeft: 10, marginTop: 0, color: 'white' }} className="btn btn-dark mb-2">Назад</Link>
             </div>
         </div>
     )

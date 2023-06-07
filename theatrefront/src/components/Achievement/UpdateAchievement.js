@@ -13,6 +13,9 @@ const UpdateAchievement = () => {
     const [actors, setActors] = useState([]);
     const [rank, setRank] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [recordPerPage, setRecordPerPage] = useState(1000);
+
     const history = useHistory();
 
     let { id } = useParams();
@@ -40,21 +43,32 @@ const UpdateAchievement = () => {
                 .then(achievement => {
                     setDateOfCompetition(achievement.data.dateCompetition);
                     setCompetition(achievement.data.competition);
-                    setActorId(achievement.data.actorId);
                     setRank(achievement.data.rank);
+                    const tempActorId = achievement.data.actorId.id; // здесь важно!
+                    actorService.getAll(currentPage - 1, recordPerPage)
+                        .then(response => {
+                            setActors(response.data.content);
+                            setActorId(tempActorId);
+                        })
+                        .catch(error => {
+                            console.log('Something went wrong', error);
+                        });
                 })
                 .catch(error => {
                     console.log('Something went wrong', error);
                 })
+        } else {
+            actorService.getAll(currentPage - 1, recordPerPage)
+                .then(response => {
+                    console.log(response.data);
+                    setActors(response.data.content);
+                })
+                .catch(error => {
+                    console.log('Something went wrong', error);
+                });
         }
-        actorService.getAll()
-            .then(response => {
-                setActors(response.data);
-            })
-            .catch(error => {
-                console.log('Something went wrong', error);
-            });
-    }, [])
+
+    }, [id, currentPage, recordPerPage])
 
 
     return (
@@ -68,7 +82,7 @@ const UpdateAchievement = () => {
                            id="dateCompetition"
                            value={dateCompetition}
                            onChange={(e) => setDateOfCompetition(e.target.value)}
-                           placeholder="Введите дату"
+                           placeholder="Введите дату соревнования"
                     />
                 </div>
                 <div className="form-group">
@@ -78,7 +92,7 @@ const UpdateAchievement = () => {
                            id="competition"
                            value={competition}
                            onChange={(e) => setCompetition(e.target.value)}
-                           placeholder="Введите название представления"
+                           placeholder="Введите название соревнования"
                     />
                 </div>
                 <div className="form-group">
@@ -86,13 +100,15 @@ const UpdateAchievement = () => {
                         style={{ marginBottom: 10, width: 600 }}
                         className="form-control col-4"
                         id="actor"
+                        value={actorId}
                         onChange={(e) => setActorId(Number(e.target.value))}
                     >
-                        {actors.map((actor) => (
+                        {actors && actors.map((actor) => (
                             <option key={actor.id} value={actor.id.toString()}>
                                 {actor.employee.fio}
                             </option>
                         ))}
+
                     </select>
                 </div>
                 <div className="form-group">

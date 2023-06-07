@@ -4,6 +4,7 @@ package nsu.theatre.controller;
 import nsu.theatre.dto.ProducerDTO;
 import nsu.theatre.service.ProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,16 @@ public class ProducerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProducerDTO>> getAllProducers() {
-        List<ProducerDTO> producers = producerService.getAllProducers();
+    public ResponseEntity<Page<ProducerDTO>> getAllProducers(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<ProducerDTO> page = producerService.getAllProducers(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<ProducerDTO>> getAllProducersList() {
+        List<ProducerDTO> producers = producerService.getAllProducersList();
         return new ResponseEntity<>(producers, HttpStatus.OK);
     }
 

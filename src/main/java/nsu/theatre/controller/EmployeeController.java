@@ -6,6 +6,7 @@ import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
 import nsu.theatre.dto.response.ResponseEmployeeDTO;
 import nsu.theatre.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,16 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
-        List<EmployeeDTO> employees = employeeService.getAllEmployees();
+    public ResponseEntity<Page<EmployeeDTO>> getAllEmployees(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<EmployeeDTO> page = employeeService.getAllEmployees(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployeesList() {
+        List<EmployeeDTO> employees = employeeService.getAllEmployeesList();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 

@@ -4,6 +4,7 @@ import nsu.theatre.dto.EmployeeTypeDTO;
 import nsu.theatre.mapper.EmployeeTypeMapper;
 import nsu.theatre.service.EmployeeTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,16 @@ public class EmployeeTypeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeTypeDTO>> getAllEmployeeTypes() {
-        List<EmployeeTypeDTO> employeeTypes = employeeTypeService.getAllEmployeeTypes();
+    public ResponseEntity<Page<EmployeeTypeDTO>> getAllEmployeeTypes(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<EmployeeTypeDTO> page = employeeTypeService.getAllEmployeeTypes(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<EmployeeTypeDTO>> getAllEmployeeTypesList() {
+        List<EmployeeTypeDTO> employeeTypes = employeeTypeService.getAllEmployeeTypesList();
         return new ResponseEntity<>(employeeTypes, HttpStatus.OK);
     }
 

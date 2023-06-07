@@ -2,6 +2,7 @@ package nsu.theatre.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.sql.Date;
 
@@ -14,7 +15,8 @@ import java.sql.Date;
 public class Achievement {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pet_seq")
+    @GenericGenerator(name = "pet_seq", strategy = "increment")
     private Long id;
 
     @Column(name = "date_of_competition")

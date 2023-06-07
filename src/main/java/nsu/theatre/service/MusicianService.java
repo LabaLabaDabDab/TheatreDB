@@ -9,6 +9,9 @@ import nsu.theatre.mapper.MusicianMapper;
 import nsu.theatre.repository.EmployeeRepository;
 import nsu.theatre.repository.MusicianRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,12 +30,19 @@ public class MusicianService {
         this.musicianMapper = musicianMapper;
     }
 
-    public List<MusicianDTO> getAllMusicians() {
-        List<Musician> musicians = musicianRepository.findAll();
-        return musicians.stream()
+    public Page<MusicianDTO> getAllMusicians(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Musician> pagedResult = musicianRepository.findAll(pageable);
+        return pagedResult.map(musicianMapper::toDTO);
+    }
+
+    public List<MusicianDTO> getAllMusiciansList() {
+        List<Musician> musicianList = musicianRepository.findAll();
+        return musicianList.stream()
                 .map(musicianMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
     public MusicianDTO getMusician(Long id) {
         Musician musician = musicianRepository.findById(id)

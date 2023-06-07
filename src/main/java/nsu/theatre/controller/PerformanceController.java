@@ -28,10 +28,19 @@ public class PerformanceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PerformanceDTO>> getAllPerformances() {
-        List<PerformanceDTO> performances = performanceService.getAllPerformances();
+    public ResponseEntity<Page<PerformanceDTO>> getAllPerformances(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<PerformanceDTO> page = performanceService.getAllPerformances(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<PerformanceDTO>> getAllPerformancesList() {
+        List<PerformanceDTO> performances = performanceService.getAllPerformancesList();
         return new ResponseEntity<>(performances, HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<PerformanceDTO> getPerformanceById(@PathVariable("id") Long id) {

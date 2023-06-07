@@ -11,6 +11,9 @@ import nsu.theatre.mapper.ActorPlayingRoleMapper;
 import nsu.theatre.mapper.RoleMapper;
 import nsu.theatre.repository.ActorPlayingRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,9 +34,15 @@ public class ActorPlayingRoleService {
         this.actorMapper = actorMapper;
     }
 
-    public List<ActorPlayingRoleDTO> getAllActorPlayingRoles() {
-        List<ActorPlayingRole> actorPlayingRolesList = actorPlayingRoleRepository.findAll();
-        return actorPlayingRolesList.stream()
+    public Page<ActorPlayingRoleDTO> getAllActorPlayingRoles(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<ActorPlayingRole> pagedResult = actorPlayingRoleRepository.findAll(pageable);
+        return pagedResult.map(actorPlayingRoleMapper::toDTO);
+    }
+
+    public List<ActorPlayingRoleDTO> getAllActorPlayingRolesList() {
+        List<ActorPlayingRole> actorPlayingRoleList = actorPlayingRoleRepository.findAll();
+        return actorPlayingRoleList.stream()
                 .map(actorPlayingRoleMapper::toDTO)
                 .collect(Collectors.toList());
     }

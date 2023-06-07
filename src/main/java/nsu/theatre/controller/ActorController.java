@@ -9,6 +9,7 @@ import nsu.theatre.dto.response.ResponseActorPlayedRoleDTO;
 import nsu.theatre.dto.response.ResponseActorRoleDTO;
 import nsu.theatre.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +28,19 @@ public class ActorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActorDTO>> getAllActors() {
-        List<ActorDTO> actors = actorService.getAllActors();
+    public ResponseEntity<Page<ActorDTO>> getAllActors(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<ActorDTO> page = actorService.getAllActors(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<ActorDTO>> getAllActorsList() {
+        List<ActorDTO> actors = actorService.getAllActorsList();
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ActorDTO> getActorById(@PathVariable("id") Long id) {

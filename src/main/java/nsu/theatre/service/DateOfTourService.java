@@ -8,6 +8,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.DateOfTourMapper;
 import nsu.theatre.repository.DateOfTourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,9 +29,15 @@ public class DateOfTourService {
         this.dateOfTourMapper = dateOfTourMapper;
     }
 
-    public List<DateOfTourDTO> getAllDateOfTours() {
-        List<DateOfTour> dateOfToursList = dateOfTourRepository.findAll();
-        return dateOfToursList.stream()
+    public Page<DateOfTourDTO> getAllDateOfTours(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<DateOfTour> pagedResult = dateOfTourRepository.findAll(pageable);
+        return pagedResult.map(dateOfTourMapper::toDTO);
+    }
+
+    public List<DateOfTourDTO> getAllDateOfToursList() {
+        List<DateOfTour> dateOfTourList = dateOfTourRepository.findAll();
+        return dateOfTourList.stream()
                 .map(dateOfTourMapper::toDTO)
                 .collect(Collectors.toList());
     }

@@ -5,7 +5,9 @@ import nsu.theatre.entity.Country;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.CountryMapper;
 import nsu.theatre.repository.CountryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +23,19 @@ public class CountryService {
         this.countryMapper = countryMapper;
     }
 
-    public List<CountryDTO> getAllCountries() {
-        List<Country> countries = countryRepository.findAll();
-        return countries.stream()
+    public Page<CountryDTO> getAllCountries(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Country> pagedResult = countryRepository.findAll(pageable);
+        return pagedResult.map(countryMapper::toDTO);
+    }
+
+    public List<CountryDTO> getAllCountriesList() {
+        List<Country> countryList = countryRepository.findAll();
+        return countryList.stream()
                 .map(countryMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
     public CountryDTO getCountryById(Long id) {
         Country country = countryRepository.findById(id)

@@ -1,9 +1,12 @@
 import {httpClient} from '../http-common.js';
 
-const getAll = () => {
-    return httpClient.get(`/date-of-playing`);
+const getAll = (curPage, recordPerPage) => {
+    return httpClient.get(`/date-of-playing?pageNo=${curPage}&pageSize=${recordPerPage}`);
 };
 
+const getAllList = () => {
+    return httpClient.get(`/date-of-playing/list`);
+};
 
 const create = (data) => {
     return httpClient.post("/date-of-playing", data);
@@ -21,4 +24,4 @@ const remove = (id) => {
     return httpClient.delete(`/date-of-playing/${id}`);
 }
 
-export default {getAll, create, get, update, remove};
+export default {getAll, getAllList, create, get, update, remove};

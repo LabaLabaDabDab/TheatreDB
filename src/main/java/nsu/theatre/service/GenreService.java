@@ -6,6 +6,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.GenreMapper;
 import nsu.theatre.repository.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,9 +24,15 @@ public class GenreService {
         this.genreMapper = genreMapper;
     }
 
-    public List<GenreDTO> getAllGenres() {
-        List<Genre> genres = genreRepository.findAll();
-        return genres.stream()
+    public Page<GenreDTO> getAllGenres(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Genre> pagedResult = genreRepository.findAll(pageable);
+        return pagedResult.map(genreMapper::toDTO);
+    }
+
+    public List<GenreDTO> getAllGenresList() {
+        List<Genre> genreList = genreRepository.findAll();
+        return genreList.stream()
                 .map(genreMapper::toDTO)
                 .collect(Collectors.toList());
     }

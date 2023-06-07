@@ -1,32 +1,34 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
 
 import { Link } from 'react-router-dom';
 import actorPlayingRoleService from '../service/ActorPlayingRoleService';
 
 
 export default function ActorPlayingRolePage({
-
-                                        }) {
+}) {
     const [actorPlayingRole, setActorPlayingRole] = React.useState([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [totalPages, setTotalPages] = React.useState(0);
+    const [totalElements, setTotalElements] = React.useState(0);
+
+    const recordPerPage = 5;
 
     React.useEffect(() => {
-        init();
+        init(1);
     }, []);
 
 
-    const init = ()  => {
-        actorPlayingRoleService.getAll()
+    const init = (currentPage)  => {
+        actorPlayingRoleService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
                 console.log('ActorPlayingRole data', response.data);
-                setActorPlayingRole(response.data)
+                setActorPlayingRole(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setTotalElements(response.data.totalElements);
+                setCurrentPage(response.data.number + 1);
+                console.log(totalPages);
             })
             .catch(error => {
                 console.error(error)
@@ -37,12 +39,41 @@ export default function ActorPlayingRolePage({
         actorPlayingRoleService.remove(id)
             .then(response => {
                 console.log('ActorPlayingRole deleted', response.data);
-                init();
+                init(currentPage);
             })
             .catch(error => {
                 console.log('Something went wrong', error);
             })
     }
+
+    const showNextPage = () => {
+        console.log(currentPage);
+        console.log(totalElements);
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(currentPage + 1);
+        }
+        console.log(totalElements);
+    };
+
+    const showLastPage = () => {
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(Math.ceil(totalElements / recordPerPage));
+        }
+    };
+
+    const showFirstPage = () => {
+        let firstPage = 1;
+        if (currentPage > firstPage) {
+            init(firstPage);
+        }
+    };
+
+    const showPrevPage = () => {
+        let prevPage = 1
+        if (currentPage > prevPage) {
+            init(currentPage - prevPage);
+        }
+    };
 
     return (
         <div>
@@ -64,10 +95,10 @@ export default function ActorPlayingRolePage({
                     {
                         actorPlayingRole.map(obj => (
                             <tr key={`${obj.id?.actorId}.${obj.id?.roleId}`}>
-                                <td style={{ fontSize: "14px" }}>{obj.id?.actorId}-{obj.id?.roleId}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.role.id}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.actor.id}</td>
-                                <td style={{ fontSize: "14px" }}>{String(obj.main)}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.id?.roleId}-{obj.id?.actorId}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.role.name}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.actor.employee.fio}</td>
+                                <td style={{ fontSize: "14px" }}>{String(obj.mainRole)}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.date}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
@@ -78,6 +109,22 @@ export default function ActorPlayingRolePage({
                     }
                     </tbody>
                 </Table>
+                <Table className="table" bordered="false">
+                    <div style={{ float: 'left', marginLeft: 40, color: '#D10000' }}>
+                        Страница {currentPage} из {totalPages}
+                    </div>
+                    <div style={{ float: 'right', marginRight: 35 }}>
+                        <nav>
+                            <ul className="pagination">
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </Table>
+                <Link to="/" style={{ marginLeft: 10, marginTop: 0, color: 'white' }} className="btn btn-dark mb-2">Назад</Link>
             </div>
         </div>
     )

@@ -31,6 +31,12 @@ public class AchievementController {
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<AchievementDTO>> getAllAchievementsList() {
+        List<AchievementDTO> achievements = achievementService.getAllAchievementsList();
+        return new ResponseEntity<>(achievements, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<AchievementDTO> getAchievementById(@PathVariable("id") Long id) {
         AchievementDTO achievement = achievementService.getAchievementById(id);

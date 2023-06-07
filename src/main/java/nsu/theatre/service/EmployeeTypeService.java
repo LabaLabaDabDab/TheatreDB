@@ -6,6 +6,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.EmployeeTypeMapper;
 import nsu.theatre.repository.EmployeeTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +24,19 @@ public class EmployeeTypeService {
         this.employeeTypeMapper = employeeTypeMapper;
     }
 
-    public List<EmployeeTypeDTO> getAllEmployeeTypes() {
-        List<EmployeeType> employeeTypes = employeeTypeRepository.findAll();
-        return employeeTypes.stream()
+    public Page<EmployeeTypeDTO> getAllEmployeeTypes(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<EmployeeType> pagedResult = employeeTypeRepository.findAll(pageable);
+        return pagedResult.map(employeeTypeMapper::toDTO);
+    }
+
+    public List<EmployeeTypeDTO> getAllEmployeeTypesList() {
+        List<EmployeeType> employeeTypeList = employeeTypeRepository.findAll();
+        return employeeTypeList.stream()
                 .map(employeeTypeMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
     public EmployeeTypeDTO getEmployeeTypeById(Long id) {
         EmployeeType employeeType = employeeTypeRepository.findById(id)

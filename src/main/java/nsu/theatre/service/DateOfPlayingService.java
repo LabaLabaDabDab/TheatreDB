@@ -6,6 +6,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.DateOfPlayingMapper;
 import nsu.theatre.repository.DateOfPlayingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,12 +24,19 @@ public class DateOfPlayingService {
         this.dateOfPlayingMapper = dateOfPlayingMapper;
     }
 
-    public List<DateOfPlayingDTO> getAllDateOfPlaying() {
+    public Page<DateOfPlayingDTO> getAllDateOfPlaying(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<DateOfPlaying> pagedResult = dateOfPlayingRepository.findAll(pageable);
+        return pagedResult.map(dateOfPlayingMapper::toDTO);
+    }
+
+    public List<DateOfPlayingDTO> getAllDateOfPlayingList() {
         List<DateOfPlaying> dateOfPlayingList = dateOfPlayingRepository.findAll();
         return dateOfPlayingList.stream()
                 .map(dateOfPlayingMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
     public DateOfPlayingDTO getDateOfPlayingById(Long id) {
         DateOfPlaying dateOfPlaying = dateOfPlayingRepository.findById(id)

@@ -3,6 +3,7 @@ package nsu.theatre.controller;
 import nsu.theatre.dto.ActorTourDTO;
 import nsu.theatre.service.ActorTourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,18 @@ public class ActorTourController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ActorTourDTO>> getAllActorTours() {
-        List<ActorTourDTO> actorTourList = actorTourService.getAllActorTours();
+    public ResponseEntity<Page<ActorTourDTO>> getAllActorTours(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<ActorTourDTO> page = actorTourService.getAllActorTours(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+    @GetMapping("/list")
+    public ResponseEntity<List<ActorTourDTO>> getAllActorToursList() {
+        List<ActorTourDTO> actorTourList = actorTourService.getAllActorToursList();
         return new ResponseEntity<>(actorTourList, HttpStatus.OK);
     }
+
 
     @GetMapping("/{actorId}/{dateOfTourId}")
     public ResponseEntity<ActorTourDTO> getActorTourById(@PathVariable("actorId") Long actorId,

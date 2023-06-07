@@ -30,6 +30,7 @@ import UpdateAchievement from "./components/Achievement/UpdateAchievement";
 import HeaderRequest from "./components/HeaderRequest";
 
 import Request1Page from "./pages/Requests/Request1Page"
+import AddAchievement from "./components/Achievement/AddAchievement";
 
 function App() {
     return (
@@ -48,6 +49,7 @@ function App() {
                         <AchievementPage/>
                     </Route>
                     <Route path="/achievements/edit/:id" component={UpdateAchievement} />
+                    <Route path="/achievements/add" component={AddAchievement} />
 
                     <Route path={"/actor_playing_role"}>
                         <ActorPlayingRolePage/>

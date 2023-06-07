@@ -5,6 +5,9 @@ import nsu.theatre.entity.Gender;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.GenderMapper;
 import nsu.theatre.repository.GenderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -20,9 +23,15 @@ public class GenderService {
         this.genderMapper = genderMapper;
     }
 
-    public List<GenderDTO> getAllGenders() {
-        List<Gender> genders = genderRepository.findAll();
-        return genders.stream()
+    public Page<GenderDTO> getAllGenders(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Gender> pagedResult = genderRepository.findAll(pageable);
+        return pagedResult.map(genderMapper::toDTO);
+    }
+
+    public List<GenderDTO> getAllGendersList() {
+        List<Gender> genderList = genderRepository.findAll();
+        return genderList.stream()
                 .map(genderMapper::toDTO)
                 .collect(Collectors.toList());
     }

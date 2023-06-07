@@ -12,79 +12,70 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 export default function AuthorPage() {
     const [authors, setAuthors] = useState([]);
-    const [filteredAuthors, setFilteredAuthors] = useState([]);
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [filter, setFilter] = useState({
-        century: [],
-        date_performance: [],
-        country: [],
-        genre: []
-    });
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [totalPages, setTotalPages] = React.useState(0);
+    const [totalElements, setTotalElements] = React.useState(0);
 
-    const init = useCallback(() => {
-        authorService.getAll()
+    const recordPerPage = 5;
+
+    React.useEffect(() => {
+        init(1);
+    }, []);
+
+    const init = (currentPage)  => {
+        authorService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
-                console.log('Country data', response.data);
-                setAuthors(response.data)
+                console.log('Achievement data', response.data);
+                setAuthors(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setTotalElements(response.data.totalElements);
+                setCurrentPage(response.data.number + 1);
+                console.log(totalPages);
             })
             .catch(error => {
                 console.error(error)
             });
-    }, [setAuthors]);
-
-
-    useEffect(() => {
-        init();
-    }, []);
-
+    }
 
     const handleDelete = id => {
         authorService.remove(id)
             .then(response => {
                 console.log('Author deleted', response.data);
-                init();
+                init(currentPage);
             })
             .catch(error => {
                 console.log('Something went wrong', error);
             })
     };
 
-    const handleFilterChange = e => {
-        const { name, value } = e.target;
-        setFilter(prevFilter => ({
-            ...prevFilter,
-            [name]: value
-        }));
+    const showNextPage = () => {
+        console.log(currentPage);
+        console.log(totalElements);
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(currentPage + 1);
+        }
+        console.log(totalElements);
     };
 
-    const handleStartDateChange = date => {
-        setStartDate(date);
+    const showLastPage = () => {
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(Math.ceil(totalElements / recordPerPage));
+        }
     };
 
-    const handleEndDateChange = date => {
-        setEndDate(date);
+    const showFirstPage = () => {
+        let firstPage = 1;
+        if (currentPage > firstPage) {
+            init(firstPage);
+        }
     };
 
-    const handleSubmitFilter = e => {
-        e.preventDefault();
-        init();
+    const showPrevPage = () => {
+        let prevPage = 1
+        if (currentPage > prevPage) {
+            init(currentPage - prevPage);
+        }
     };
-
-    const filterAuthors = useCallback(() => {
-        const filtered = authors.filter(obj => {
-            const matchCentury = filter.century.length === 0 || filter.century.includes(obj.century);
-            const matchCountry = filter.country.length === 0 || filter.country.includes(obj.country);
-            const matchGenre = filter.genre.length === 0 || filter.genre.includes(obj.genre);
-
-            // Проверяем, что дата рождения и дата смерти лежат в диапазоне между startDate и endDate
-            const matchBirthDate = !startDate || !endDate || (Date.parse(obj.birthDate) >= Date.parse(startDate) && Date.parse(obj.birthDate) <= Date.parse(endDate));
-            const matchDeathDate = !startDate || !endDate || (Date.parse(obj.deathDate) >= Date.parse(startDate) && Date.parse(obj.deathDate) <= Date.parse(endDate));
-
-            return matchCentury && matchCountry && matchGenre && matchBirthDate && matchDeathDate;
-        });
-        setFilteredAuthors(filtered);
-    }, [authors, filter, startDate, endDate]);
 
 
 
@@ -109,13 +100,13 @@ export default function AuthorPage() {
                     <tbody>
                     {authors.map(obj => (
                         <tr key={obj.id}>
-                            <td style={{ fontSize: "20px" }}>{obj.id}</td>
-                            <td style={{ fontSize: "20px" }}>{obj.name}</td>
-                            <td style={{ fontSize: "20px" }}>{obj.country.id}</td>
-                            <td style={{ fontSize: "20px" }}>{obj.genre.id}</td>
-                            <td style={{ fontSize: "20px" }}>{obj.birthDate}</td>
-                            <td style={{ fontSize: "20px" }}>{obj.deathDate}</td>
-                            <td style={{ fontSize: "20px" }}>{obj.title}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.id}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.name}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.country.name}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.genre.name}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.birthDate}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.deathDate}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.title}</td>
                             <td>
                                 <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                 <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={() => handleDelete(obj.id)} className='btn btn-danger'>Удалить</Link>
@@ -124,78 +115,22 @@ export default function AuthorPage() {
                     ))}
                     </tbody>
                 </Table>
-                <Form style={{ marginTop: 10, marginRight: 10, marginLeft: 10 }} onSubmit={handleSubmitFilter}>
-                    <Form.Group as={Row} controlId="formCentury">
-                        <Form.Label column sm={2}>Век</Form.Label>
-                        <Col sm={10}>
-                            <Form.Control type="text" name="century" value={filter.century} onChange={handleFilterChange} />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formStartDate">
-                        <Form.Label column sm={2}>Дата начала</Form.Label>
-                        <Col sm={10}>
-                            <DatePicker
-                                selected={startDate}
-                                onChange={handleStartDateChange}
-                                dateFormat="yyyy.MM.dd"
-                                className="form-control"
-                            />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formEndDate">
-                        <Form.Label column sm={2}>Дата окончания</Form.Label>
-                        <Col sm={10}>
-                            <DatePicker
-                                selected={endDate}
-                                onChange={handleEndDateChange}
-                                dateFormat="yyyy.MM.dd"
-                                className="form-control"
-                            />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formCountry">
-                        <Form.Label column sm={2}>Страна</Form.Label>
-                        <Col sm={10}>
-                            <Form.Control type="text" name="country" value={filter.country} onChange={handleFilterChange} />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} controlId="formGenre">
-                        <Form.Label column sm={2}>Жанр</Form.Label>
-                        <Col sm={10}>
-                            <Form.Control type="text" name="genre" value={filter.genre} onChange={handleFilterChange} />
-                        </Col>
-                    </Form.Group>
-                    <Button type="submit">Фильтровать</Button>
-                </Form>
-                <h2>Отфильтрованные значения</h2>
-                <div className="table-container">
-                    <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
-                        <thead>
-                        <tr>
-                            <th>Имя</th>
-                            <th>Название произведения</th>
-                            <th>Страна</th>
-                            <th>Жанр</th>
-                            <th>Дата рождения</th>
-                            <th>Дата смерти</th>
-                            <th>Дата выступления</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {filteredAuthors.map(obj => (
-                            <tr key={obj.id}>
-                                <td>{obj.name}</td>
-                                <td>{obj.title}</td>
-                                <td>{obj.country}</td>
-                                <td>{obj.genre}</td>
-                                <td>{obj.birthDate}</td>
-                                <td>{obj.deathDate}</td>
-                                <td>{obj.date_perf}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </Table>
-                </div>
+                <Table className="table" bordered="false">
+                    <div style={{ float: 'left', marginLeft: 40, color: '#D10000' }}>
+                        Страница {currentPage} из {totalPages}
+                    </div>
+                    <div style={{ float: 'right', marginRight: 35 }}>
+                        <nav>
+                            <ul className="pagination">
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </Table>
+                <Link to="/" style={{ marginLeft: 10, marginTop: 0, color: 'white' }} className="btn btn-dark mb-2">Назад</Link>
             </div>
         </div>
     );

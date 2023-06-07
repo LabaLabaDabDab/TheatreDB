@@ -10,6 +10,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.EmployeeMapper;
 import nsu.theatre.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -32,9 +35,15 @@ public class EmployeeService {
         this.employeeMapper = employeeMapper;
     }
 
-    public List<EmployeeDTO> getAllEmployees() {
-        List<Employee> employees = employeeRepository.findAll();
-        return employees.stream()
+    public Page<EmployeeDTO> getAllEmployees(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Employee> pagedResult = employeeRepository.findAll(pageable);
+        return pagedResult.map(employeeMapper::toDTO);
+    }
+
+    public List<EmployeeDTO> getAllEmployeesList() {
+        List<Employee> employeeList = employeeRepository.findAll();
+        return employeeList.stream()
                 .map(employeeMapper::toDTO)
                 .collect(Collectors.toList());
     }

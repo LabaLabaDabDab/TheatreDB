@@ -11,6 +11,9 @@ import nsu.theatre.repository.DirectorRepository;
 import nsu.theatre.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,9 +32,15 @@ public class DirectorService {
         this.directorMapper = directorMapper;
     }
 
-    public List<DirectorDTO> getAllDirectors() {
-        List<Director> directors = directorRepository.findAll();
-        return directors.stream()
+    public Page<DirectorDTO> getAllDirectors(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Director> pagedResult = directorRepository.findAll(pageable);
+        return pagedResult.map(directorMapper::toDTO);
+    }
+
+    public List<DirectorDTO> getAllDirectorsList() {
+        List<Director> directorList = directorRepository.findAll();
+        return directorList.stream()
                 .map(directorMapper::toDTO)
                 .collect(Collectors.toList());
     }

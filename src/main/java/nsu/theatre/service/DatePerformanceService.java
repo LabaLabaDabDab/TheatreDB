@@ -11,6 +11,9 @@ import nsu.theatre.mapper.DatePerformanceMapper;
 import nsu.theatre.mapper.PerformanceMapper;
 import nsu.theatre.repository.DatePerformanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,9 +35,15 @@ public class DatePerformanceService {
         this.performanceMapper = performanceMapper;
     }
 
-    public List<DatePerformanceDTO> getAllDatePerformances() {
-        List<DatePerformance> datePerformances = datePerformanceRepository.findAll();
-        return datePerformances.stream()
+    public Page<DatePerformanceDTO> getAllDatePerformances(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<DatePerformance> pagedResult = datePerformanceRepository.findAll(pageable);
+        return pagedResult.map(datePerformanceMapper::toDTO);
+    }
+
+    public List<DatePerformanceDTO> getAllDatePerformancesList() {
+        List<DatePerformance> datePerformanceList = datePerformanceRepository.findAll();
+        return datePerformanceList.stream()
                 .map(datePerformanceMapper::toDTO)
                 .collect(Collectors.toList());
     }

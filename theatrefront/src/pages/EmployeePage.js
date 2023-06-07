@@ -14,29 +14,25 @@ import employeeService from '../service/EmployeeService';
 
 export default function EmployeePage() {
     const [employees, setEmployees] = React.useState([]);
-    const [filteredEmployees, setFilteredEmployees] = React.useState([]);
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [totalPages, setTotalPages] = React.useState(0);
+    const [totalElements, setTotalElements] = React.useState(0);
 
-    const [filters, setFilters] = React.useState({
-        experience: '',
-        gender: '',
-        birthYear: '',
-        age: '',
-        hasChildren: '',
-        salary: '',
-        hireDate: '', // Added hireDate filter
-    });
-
+    const recordPerPage = 5;
 
     React.useEffect(() => {
-        init();
+        init(1);
     }, []);
 
-    const init = () => {
-        employeeService
-            .getAll()
+    const init = (currentPage) => {
+        employeeService.getAll(currentPage - 1, recordPerPage)
             .then((response) => {
                 console.log('Employee data', response.data);
-                setEmployees(response.data);
+                setEmployees(response.data.content);
+                setTotalPages(response.data.totalPages);
+                setTotalElements(response.data.totalElements);
+                setCurrentPage(response.data.number + 1);
+                console.log(totalPages);
             })
             .catch((error) => {
                 console.error(error);
@@ -48,37 +44,41 @@ export default function EmployeePage() {
             .remove(id)
             .then((response) => {
                 console.log('Employee deleted', response.data);
-                init();
+                init(currentPage);
             })
             .catch((error) => {
                 console.log('Something went wrong', error);
             });
     };
 
-    const handleHireDateChange = (e) => {
-        const value = e.target.value;
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            hireDate: value,
-        }));
+    const showNextPage = () => {
+        console.log(currentPage);
+        console.log(totalElements);
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(currentPage + 1);
+        }
+        console.log(totalElements);
     };
 
-    const applyFilters = () => {
-        const filteredData = employees.filter((employee) => {
-            // Check each filter and return true if the data matches the filter
-            if (filters.hireDate !== '' && employee.hireDate !== filters.hireDate) {
-                return false;
-            }
-            // Add other conditions for filters if needed
-            return true;
-        });
-        setFilteredEmployees(filteredData);
+    const showLastPage = () => {
+        if (currentPage < Math.ceil(totalElements / recordPerPage)) {
+            init(Math.ceil(totalElements / recordPerPage));
+        }
     };
 
-    React.useEffect(() => {
-        applyFilters();
-    }, [employees, filters]);
+    const showFirstPage = () => {
+        let firstPage = 1;
+        if (currentPage > firstPage) {
+            init(firstPage);
+        }
+    };
 
+    const showPrevPage = () => {
+        let prevPage = 1
+        if (currentPage > prevPage) {
+            init(currentPage - prevPage);
+        }
+    };
 
     return (
         <div>
@@ -100,12 +100,12 @@ export default function EmployeePage() {
                     </tr>
                     </thead>
                     <tbody>
-                    {filteredEmployees.map((obj) => (
+                    {employees.map((obj) => (
                         <tr key={obj.id}>
                             <td style={{ fontSize: "14px" }}>{obj.id}</td>
-                            <td style={{ fontSize: "14px" }}>{obj.type.id}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.type.type}</td>
                             <td style={{ fontSize: "14px" }}>{obj.fio}</td>
-                            <td style={{ fontSize: "14px" }}>{obj.gender.id}</td>
+                            <td style={{ fontSize: "14px" }}>{obj.gender.type}</td>
                             <td style={{ fontSize: "14px" }}>{obj.birthDate}</td>
                             <td style={{ fontSize: "14px" }}>{obj.childrenAmount}</td>
                             <td style={{ fontSize: "14px" }}>{obj.salary}</td>
@@ -118,6 +118,22 @@ export default function EmployeePage() {
                     ))}
                     </tbody>
                 </Table>
+                <Table className="table" bordered="false">
+                    <div style={{ float: 'left', marginLeft: 40, color: '#D10000' }}>
+                        Страница {currentPage} из {totalPages}
+                    </div>
+                    <div style={{ float: 'right', marginRight: 35 }}>
+                        <nav>
+                            <ul className="pagination">
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showNextPage}>Next</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showPrevPage}>Previous</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === 1 ? true : false} onClick={showFirstPage}>First</a></li>
+                                <li className="page-item"><a type="button" className="page-link" disabled={currentPage === totalPages ? true : false} onClick={showLastPage}>Last</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </Table>
+                <Link to="/" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Назад</Link>
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ import nsu.theatre.dto.filter.EmployeeDateOfTourFilterDTO;
 import nsu.theatre.dto.response.ResponseEmployeeDateOfTourDTO;
 import nsu.theatre.service.DateOfTourService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,16 @@ public class DateOfTourController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DateOfTourDTO>> getAllDateOfTours() {
-        List<DateOfTourDTO> dateOfToursList = dateOfTourService.getAllDateOfTours();
+    public ResponseEntity<Page<DateOfTourDTO>> getAllDateOfTours(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<DateOfTourDTO> page = dateOfTourService.getAllDateOfTours(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<DateOfTourDTO>> getAllDateOfToursList() {
+        List<DateOfTourDTO> dateOfToursList = dateOfTourService.getAllDateOfToursList();
         return new ResponseEntity<>(dateOfToursList, HttpStatus.OK);
     }
 

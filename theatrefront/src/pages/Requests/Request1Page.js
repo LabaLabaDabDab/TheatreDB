@@ -15,6 +15,8 @@ export default function Request1Page({
 
 }) {
     const [employees, setEmployee] = React.useState([]);
+    const [count, setCount] = React.useState(0);
+
     const [typeOptions, setTypeOptions] = React.useState([]);
     const [genderOptions, setGenderOptions] = React.useState([]);
 
@@ -28,14 +30,15 @@ export default function Request1Page({
     const [yearsFilter, setYearsFilter] = React.useState([]);
 
     const init = ()  => {
-        employeeService.filter({
+        const filterData = {
             types: typeFilter,
             years: yearsFilter,
             genders: genderFilter,
             birth_dates: [startDate, endDate],
             amount_children: childrenAmountFilter,
             salary: salaryFilter
-        })
+        };
+        employeeService.filter(filterData)
             .then(response => {
                 console.log('Actor data', response.data);
                 setEmployee(response.data);
@@ -43,10 +46,18 @@ export default function Request1Page({
             .catch(error => {
                 console.error(error)
             })
+        employeeService.filterCount(filterData)
+            .then(response => {
+                console.log('Count', response.data);
+                setCount(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     React.useEffect(() => {
-        employeeTypeService.getAll()
+        employeeTypeService.getAllList()
             .then(response => {
                 const options = response.data.map(item => ({ value: item.id.toString(), label: item.type }));
                 setTypeOptions(options);
@@ -58,7 +69,7 @@ export default function Request1Page({
     }, []);
 
     React.useEffect(() => {
-        genderService.getAll()
+        genderService.getAllList()
             .then(response => {
                 const options = response.data.map(item => ({ value: item.id.toString(), label: item.type }));
                 setGenderOptions(options);
@@ -157,6 +168,7 @@ export default function Request1Page({
             </Form>
 
             <div className={"table-container"}>
+                <h3>Количество результатов: {count}</h3> {}
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>

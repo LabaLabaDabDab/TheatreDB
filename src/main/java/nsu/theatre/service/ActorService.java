@@ -11,6 +11,9 @@ import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.ActorMapper;
 import nsu.theatre.repository.ActorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,12 +32,19 @@ public class ActorService {
         this.actorMapper = actorMapper;
     }
 
-    public List<ActorDTO> getAllActors() {
+    public Page<ActorDTO> getAllActors(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Actor> pagedResult = actorRepository.findAll(pageable);
+        return pagedResult.map(actorMapper::toDTO);
+    }
+
+    public List<ActorDTO> getAllActorsList() {
         List<Actor> actorsList = actorRepository.findAll();
         return actorsList.stream()
                 .map(actorMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
 
     public ActorDTO getActorById(Long id) {
         Actor actor = actorRepository.findById(id)

@@ -7,16 +7,15 @@ import nsu.theatre.entity.Author;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.AuthorMapper;
 import nsu.theatre.repository.AuthorRepository;
-
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 
 
 @Service
@@ -29,9 +28,15 @@ public class AuthorService {
         this.authorMapper = authorMapper;
     }
 
-    public List<AuthorDTO> getAllAuthors() {
-        List<Author> authors = authorRepository.findAll();
-        return authors.stream()
+    public Page<AuthorDTO> getAllAuthors(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Author> pagedResult = authorRepository.findAll(pageable);
+        return pagedResult.map(authorMapper::toDTO);
+    }
+
+    public List<AuthorDTO> getAllAuthorsList() {
+        List<Author> authorList = authorRepository.findAll();
+        return authorList.stream()
                 .map(authorMapper::toDTO)
                 .collect(Collectors.toList());
     }

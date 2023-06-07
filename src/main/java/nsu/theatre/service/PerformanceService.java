@@ -10,6 +10,9 @@ import nsu.theatre.entity.Performance;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.PerformanceMapper;
 import nsu.theatre.repository.PerformanceRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,9 +30,15 @@ public class PerformanceService {
         this.performanceMapper = performanceMapper;
     }
 
-    public List<PerformanceDTO> getAllPerformances() {
-        List<Performance> performances = performanceRepository.findAll();
-        return performances.stream()
+    public Page<PerformanceDTO> getAllPerformances(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<Performance> pagedResult = performanceRepository.findAll(pageable);
+        return pagedResult.map(performanceMapper::toDTO);
+    }
+
+    public List<PerformanceDTO> getAllPerformancesList() {
+        List<Performance> performanceList = performanceRepository.findAll();
+        return performanceList.stream()
                 .map(performanceMapper::toDTO)
                 .collect(Collectors.toList());
     }

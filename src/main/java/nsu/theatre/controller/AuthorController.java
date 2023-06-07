@@ -25,8 +25,16 @@ public class AuthorController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
-        List<AuthorDTO> authors = authorService.getAllAuthors();
+    public ResponseEntity<Page<AuthorDTO>> getAllAuthors(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<AuthorDTO> page = authorService.getAllAuthors(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<AuthorDTO>> getAllAuthorsList() {
+        List<AuthorDTO> authors = authorService.getAllAuthorsList();
         return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 

@@ -10,6 +10,9 @@ import nsu.theatre.mapper.TicketNumberMapper;
 
 import nsu.theatre.repository.TicketNumberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +32,13 @@ public class TicketNumberService {
         this.ticketMapper = ticketMapper;
     }
 
-    public List<TicketNumberDTO> getAllTicketNumbers() {
+    public Page<TicketNumberDTO> getAllTicketNumbers(Integer pageNo, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<TicketNumber> pagedResult = ticketNumberRepository.findAll(pageable);
+        return pagedResult.map(ticketNumberMapper::toDTO);
+    }
+
+    public List<TicketNumberDTO> getAllTicketNumbersList() {
         List<TicketNumber> ticketNumberList = ticketNumberRepository.findAll();
         return ticketNumberList.stream()
                 .map(ticketNumberMapper::toDTO)

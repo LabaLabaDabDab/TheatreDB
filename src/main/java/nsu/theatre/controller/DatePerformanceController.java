@@ -5,6 +5,7 @@ import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
 import nsu.theatre.dto.response.ResponseDatePerformanceDTO;
 import nsu.theatre.service.DatePerformanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,16 @@ public class DatePerformanceController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DatePerformanceDTO>> getAllDatePerformances() {
-        List<DatePerformanceDTO> datePerformancesList = datePerformanceService.getAllDatePerformances();
+    public ResponseEntity<Page<DatePerformanceDTO>> getAllDatePerformances(
+            @RequestParam(defaultValue = "1") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        Page<DatePerformanceDTO> page = datePerformanceService.getAllDatePerformances(pageNo, pageSize);
+        return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<DatePerformanceDTO>> getAllDatePerformancesList() {
+        List<DatePerformanceDTO> datePerformancesList = datePerformanceService.getAllDatePerformancesList();
         return new ResponseEntity<>(datePerformancesList, HttpStatus.OK);
     }
 
