@@ -49,6 +49,7 @@ import UpdateActorPlayingRole from "./components/ActorPlayingRole/UpdateActorPla
 
 import UpdateActorTour from "./components/ActorTour/UpdateActorTour";
 import AddActorTour from "./components/ActorTour/AddActorTour";
+import AddAuthor from "./components/Author/AddAuthor";
 
 function App() {
     return (
@@ -80,8 +81,8 @@ function App() {
                     <Route path={"/actor_tour"} exact>
                         <ActorTourPage/>
                     </Route>
-                    <Route path="/actor_playing_role/edit/:id" component={UpdateActorTour} />
-                    <Route path="/actor_playing_role/add" component={AddActorTour} />
+                    <Route path="/actor_tour/edit/:id" component={UpdateActorTour} />
+                    <Route path="/actor_tour/add" component={AddActorTour} />
 
                     <Route path={"/countries"} exact>
                         <CountryPage/>
@@ -92,6 +93,7 @@ function App() {
                     <Route path={"/authors"} exact>
                         <AuthorPage/>
                     </Route>
+                    <Route path="/authors/add" component={AddAuthor} />
                     <Route path={"/authors/edit/:id"} component={UpdateAuthor} />
 
                     <Route path={"/date_of_playing"} exact>

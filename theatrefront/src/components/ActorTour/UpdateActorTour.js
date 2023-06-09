@@ -3,37 +3,33 @@ import { useHistory, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import actorService from "../../service/ActorService";
-import roleService from "../../service/RoleService";
-import actorPlayingRoleService from "../../service/ActorPlayingRoleService";
+import dateOfTourService from "../../service/DateOfTourService";
+import actorTourService from "../../service/ActorTourService";
 
 const UpdateActorTour = () => {
-    const [role, setRole] = useState("");
+    const [date, setDate] = useState("");
     const [actor, setActor] = useState("");
-    const [mainRole, setMainRole] = useState(false);
-    const [date, setDate] = useState();
 
-    const [roles, setRoles] = useState([]);
+    const [dates, setDates] = useState([]);
     const [actors, setActors] = useState([]);
 
     let { id } = useParams();
-    const [actorId, roleId] = id.split('.');
+    const [dateID, actorID] = id.split('.');
 
     const history = useHistory();
 
-    const saveActorPlayingRole = (e) => {
+    const saveActorTour = (e) => {
         e.preventDefault();
 
-        const ActorPlayingRole  = {
-            role: {id: Number(role)},
-            actor: {id: Number(actor)},
-            mainRole,
-            date
+        const ActorTour  = {
+            date: {id: Number(date)},
+            actor: {id: Number(actor)}
         };
 
-        actorPlayingRoleService.update(actorId, roleId, ActorPlayingRole)
+        actorTourService.update(dateID, actorID, ActorTour)
             .then(response => {
-                console.log('ActorPlayingRole updated', response.data);
-                history.push('/actor_playing_role');
+                console.log('ActorTour updated', response.data);
+                history.push('/actor_tour');
             })
             .catch(error => {
                 console.log('Something went wrong', error);
@@ -42,20 +38,18 @@ const UpdateActorTour = () => {
 
     useEffect(() => {
         if (id) {
-            const [actorId, roleId] = id.split('.');
-            actorPlayingRoleService.get(actorId, roleId)
+            const [dateID, actorID] = id.split('.');
+            actorTourService.get(dateID, actorID)
                 .then(response => {
-                    const actorPlayingRole = response.data;
-                    const tempRole = actorPlayingRole.role.id;
-                    const tempActor = actorPlayingRole.actor.id;
-                    setMainRole(actorPlayingRole.mainRole);
-                    setDate(actorPlayingRole.date);
+                    const actorTour = response.data;
+                    const tempDate = actorTour.date.id;
+                    const tempActor = actorTour.actor.id;
 
-                    roleService.getAllList()
+                    dateOfTourService.getAllList()
                         .then(response => {
                             console.log(response.data);
-                            setRoles(response.data);
-                            setRole(tempRole);
+                            setDates(response.data);
+                            setDate(tempDate);
                         })
                         .catch(error => {
                             console.log('Something went wrong', error);
@@ -75,10 +69,10 @@ const UpdateActorTour = () => {
                     console.log('Something went wrong', error);
                 });
         } else {
-            roleService.getAllList()
+            dateOfTourService.getAllList()
                 .then(response => {
                     console.log(response.data);
-                    setRoles(response.data);
+                    setDates(response.data);
                 })
                 .catch(error => {
                     console.log('Something went wrong', error);
@@ -97,7 +91,7 @@ const UpdateActorTour = () => {
 
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить роли актёров</h3>
+            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить тур актёра</h3>
             <form>
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите актёра:</label>
@@ -117,48 +111,28 @@ const UpdateActorTour = () => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите роль:</label>
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите тур:</label>
                     <select
                         style={{ marginBottom: 10, width: 600 }}
                         className="form-control col-4"
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(Number(e.target.value))}>
+                        id="date"
+                        value={date}
+                        onChange={(e) => setDate(Number(e.target.value))}>
                         {
-                            roles && roles.map((role) => (
-                                <option key={role.id} value={role.id.toString()}>
-                                    {role.name}
+                            dates && dates.map((dateOfTour) => (
+                                <option key={dateOfTour.id.toString()} value={dateOfTour.id.toString()}>
+                                    {`${dateOfTour.dateStart} - ${dateOfTour.dateEnd}`}
                                 </option>
                             ))
                         }
                     </select>
                 </div>
-                <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда актёр играет свою роль:</label>
-                    <input onChange={e => setDate(e.target.value)}
-                           type="date"
-                           className="form-control col-4"
-                           id="date"
-                           value={date}
-                           placeholder="Введите дату"
-                    />
-                </div>
-                <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите является ли роль главной:</label>
-                    <select onChange={e => setMainRole(e)}
-                            className="form-control col-4"
-                            id="mainRole"
-                            value={mainRole}>
-                        <option value={true}>True</option>
-                        <option value={false}>False</option>
-                    </select>
-                </div>
                 <div>
                     <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
-                            onClick={(e) => saveActorPlayingRole(e)}>
+                            onClick={(e) => saveActorTour(e)}>
                         Сохранить
                     </button>
-                    <Link to="/actor_playing_role" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
+                    <Link to="/actor_tour" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
 

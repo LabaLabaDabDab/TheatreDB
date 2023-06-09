@@ -2,26 +2,38 @@ import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import authorsService from "../../service/AuthorService";
+import countryService from "../../service/CountryService";
+import genreService from "../../service/GenreService";
+import authorService from "../../service/AuthorService";
 
 const UpdateAuthor = () => {
-    const [name, setName] = useState('');
-    const [country, setCountry] = useState();
-    const [genre, setGenre] = useState();
+    const [name, setName] = useState("");
+    const [country, setCountry] = useState("");
+    const [genre, setGenre] = useState("");
     const [birthDate, setBirthDate] = useState();
     const [deathDate, setDeathDate] = useState();
-    const [title, setTitle] = useState();
+    const [title, setTitle] = useState("");
 
-    const history = useHistory();
+    const [countries, setCountries] = useState([]);
+    const [genres, setGenres] = useState([]);
 
     let { id } = useParams();
+
+    const history = useHistory();
 
     const saveAuthor = (e) => {
         e.preventDefault();
 
-        const author = { id, name, country, genre, birthDate, deathDate, title };
+        const Author  = {
+            name,
+            country: {id: Number(country)},
+            genre: {id: Number(genre)},
+            birthDate,
+            deathDate,
+            title
+        };
 
-        authorsService.update(author)
+        authorService.update(id, Author)
             .then(response => {
                 console.log('Author updated', response.data);
                 history.push('/authors');
@@ -29,98 +41,161 @@ const UpdateAuthor = () => {
             .catch(error => {
                 console.log('Something went wrong', error);
             });
-
     }
 
     useEffect(() => {
         if (id) {
-            authorsService.get(id)
+            authorService.get(id)
                 .then(author => {
                     setName(author.data.name);
-                    setGenre(author.data.genre)
-                    setCountry(author.data.country);
+                    const tempCountry = author.data.country.id;
+                    const tempGenre = author.data.genre.id;
                     setBirthDate(author.data.birthDate);
                     setDeathDate(author.data.deathDate);
                     setTitle(author.data.title);
+
+                    countryService.getAllList()
+                        .then(response => {
+                            console.log(response.data);
+                            setCountries(response.data);
+                            setCountry(tempCountry);
+                        })
+                        .catch(error => {
+                            console.log('Something went wrong', error);
+                        });
+
+                    genreService.getAllList()
+                        .then(response => {
+                            console.log(response.data);
+                            setGenres(response.data);
+                            setGenre(tempGenre);
+                        })
+                        .catch(error => {
+                            console.log('Something went wrong', error);
+                        });
                 })
                 .catch(error => {
                     console.log('Something went wrong', error);
+                });
+        } else {
+            countryService.getAllList()
+                .then(response => {
+                    console.log(response.data);
+                    setCountries(response.data);
                 })
+                .catch(error => {
+                    console.log('Something went wrong', error);
+                });
+
+            genreService.getAllList()
+                .then(response => {
+                    console.log(response.data);
+                    setGenres(response.data);
+                })
+                .catch(error => {
+                    console.log('Something went wrong', error);
+                });
         }
     }, [])
 
+    const handleDeathDateChange = (e) => {
+        const newDeathDate = e.target.value;
+
+        const birth = new Date(birthDate);
+        const death = new Date(newDeathDate);
+
+        if (birth > death) {
+            alert('Дата смерти не может быть раньше даты рождения');
+            return;  // не обновляем состояние, если дата некорректна
+        }
+
+        setDeathDate(newDeathDate);
+    }
 
     return (
         <div className="container">
             <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить автора</h3>
             <form>
                 <div className="form-group">
-                    <input style={{ marginBottom: 10, width: 600 }}
+                    <label style={{ marginBottom: 10, width: 600 }}>Введите имя автора:</label>
+                    <input onChange={e => setName(e.target.value)}
                            type="text"
                            className="form-control col-4"
                            id="name"
                            value={name}
-                           onChange={(e) => setName(e.target.value)}
                            placeholder="Введите имя"
                     />
                 </div>
                 <div className="form-group">
-                    <input style={{ marginBottom: 10, width: 600 }}
-                           type="text"
-                           className="form-control col-4"
-                           id="country"
-                           value={country}
-                           onChange={(e) => setCountry(e.target.value)}
-                           placeholder="Введите название страны"
-                    />
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите страну, в которой родился автор:</label>
+                    <select
+                        style={{ marginBottom: 10, width: 600 }}
+                        className="form-control col-4"
+                        id="country"
+                        value={country}
+                        onChange={(e) => setCountry(Number(e.target.value))}>
+                        {
+                            countries && countries.map((country) => (
+                                <option key={country.id} value={country.id.toString()}>
+                                    {country.name}
+                                </option>
+                            ))
+                        }
+                    </select>
                 </div>
                 <div className="form-group">
-                    <input style={{ marginBottom: 10, width: 600 }}
-                           type="text"
-                           className="form-control col-4"
-                           id="gender"
-                           value={genre}
-                           onChange={(e) => setGenre(e.target.value)}
-                           placeholder="Введите жанр"
-                    />
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите жанр произведения:</label>
+                    <select
+                        style={{ marginBottom: 10, width: 600 }}
+                        className="form-control col-4"
+                        id="genre"
+                        value={genre}
+                        onChange={(e) => setGenre(Number(e.target.value))}>
+                        {
+                            genres && genres.map((genre) => (
+                                <option key={genre.id} value={genre.id.toString()}>
+                                    {genre.name}
+                                </option>
+                            ))
+                        }
+                    </select>
                 </div>
                 <div className="form-group">
-                    <input style={{ marginBottom: 10, width: 600 }}
-                           type="text"
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда родился автор:</label>
+                    <input onChange={e => setBirthDate(e.target.value)}
+                           type="date"
                            className="form-control col-4"
                            id="birthDate"
                            value={birthDate}
-                           onChange={(e) => setBirthDate(e.target.value)}
-                           placeholder="Введите дату рождения автора"
+                           placeholder="Введите дату"
                     />
                 </div>
                 <div className="form-group">
-                    <input style={{ marginBottom: 10, width: 600 }}
-                           type="text"
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда умер автор:</label>
+                    <input onChange={handleDeathDateChange}
+                           type="date"
                            className="form-control col-4"
-                           id="birthDate"
+                           id="deathDate"
                            value={deathDate}
-                           onChange={(e) => setDeathDate(e.target.value)}
-                           placeholder="Введите дату смерти автора"
+                           placeholder="Введите дату"
                     />
                 </div>
                 <div className="form-group">
-                    <input style={{ marginBottom: 10, width: 600 }}
+                    <label style={{ marginBottom: 10, width: 600 }}>Введите название произведения:</label>
+                    <input onChange={e => setTitle(e.target.value)}
                            type="text"
                            className="form-control col-4"
                            id="title"
                            value={title}
-                           onChange={(e) => setTitle(e.target.value)}
-                           placeholder="Введите название произведения"
+                           placeholder="Введите название произведение"
                     />
                 </div>
-
                 <div>
                     <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
                             onClick={(e) => saveAuthor(e)}>
                         Сохранить
                     </button>
-                    <Link to="/authors" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">К списку авторов</Link>
+                    <Link to="/authors" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
 

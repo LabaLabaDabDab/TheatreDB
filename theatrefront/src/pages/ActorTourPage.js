@@ -1,13 +1,7 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
 import actorTourService from "../service/ActorTourService";
@@ -41,10 +35,10 @@ export default function ActorTourPage({
             });
     }
 
-    const handleDelete = id => {
-        actorTourService.remove(id)
+    const handleDelete = (dateID, actorID) => {
+        actorTourService.remove(dateID, actorID)
             .then(response => {
-                console.log('Actor deleted', response.data);
+                console.log('ActorTour deleted', response.data);
                 init(currentPage);
             })
             .catch(error => {
@@ -85,7 +79,7 @@ export default function ActorTourPage({
         <div>
             <h2>Актёры и их туры</h2>
             <div className={"table-container"}>
-                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/actor_tour/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
@@ -106,8 +100,8 @@ export default function ActorTourPage({
                                 <td style={{ fontSize: "14px" }}>{obj.actor.employee.fio}</td>
 
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/actors/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
-                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/actor_tour/edit/${obj.id?.dateID}.${obj.id?.actorID}`} className='btn btn-danger'>Изменить</Link>
+                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id?.dateID, obj.id?.actorID) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>
                         ))

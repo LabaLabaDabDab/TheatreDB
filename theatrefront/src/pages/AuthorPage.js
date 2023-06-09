@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
+import React, { useState} from "react";
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import authorService from '../service/AuthorService';
 
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 export default function AuthorPage() {
@@ -83,7 +79,7 @@ export default function AuthorPage() {
         <div>
             <h2>Авторы</h2>
             <div className="table-container">
-                <Link to="/actors/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить автора</Link>
+                <Link to="/authors/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить автора</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead>
                     <tr>
@@ -108,7 +104,7 @@ export default function AuthorPage() {
                             <td style={{ fontSize: "14px" }}>{obj.deathDate}</td>
                             <td style={{ fontSize: "14px" }}>{obj.title}</td>
                             <td>
-                                <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/authors/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                 <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                             </td>
                         </tr>

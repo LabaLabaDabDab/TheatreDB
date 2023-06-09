@@ -1,27 +1,21 @@
 import {Link, useHistory, useParams} from "react-router-dom";
 import { useState, useEffect } from "react";
 import actorService from "../../service/ActorService";
-import roleService from "../../service/RoleService";
-import actorPlayingRoleService from "../../service/ActorPlayingRoleService";
+import dateOfTourService from "../../service/DateOfTourService";
+import actorTourService from "../../service/ActorTourService";
 
 const AddActorTour = () => {
-    const [role, setRole] = useState("");
+    const [date, setDate] = useState("");
     const [actor, setActor] = useState("");
-    const [mainRole, setMainRole] = useState(false);
-    const [date, setDate] = useState();
 
-    const [roles, setRoles] = useState([]);
+    const [dates, setDates] = useState([]);
     const [actors, setActors] = useState([]);
 
-    const [roleDirty, setRoleDirty] = useState(false);
-    const [actorDirty, setActorDirty] = useState(false);
-    const [mainRoleDirty, setMainRoleDirty] = useState(false);
     const [dateDirty, setDateDirty] = useState(false);
+    const [actorDirty, setActorDirty] = useState(false);
 
-    const [roleError, setRoleError] = useState('Поле не может быть пустым');
-    const [actorError, setActorError] = useState('Поле не может быть пустым');
-    const [mainRoleError, setMainRoleError] = useState('Поле не может быть пустым');
     const [dateError, setDateError] = useState('Поле не может быть пустым');
+    const [actorError, setActorError] = useState('Поле не может быть пустым');
 
     const [formValid, setFormValid] = useState(false);
 
@@ -42,10 +36,10 @@ const AddActorTour = () => {
             .catch(error => {
                 console.log('Something went wrong', error);
             })
-        roleService.getAllList()
+        dateOfTourService.getAllList()
             .then(response => {
                 console.log(response.data);
-                setRoles(response.data);
+                setDates(response.data);
             })
             .catch(error => {
                 console.log('Something went wrong', error);
@@ -53,24 +47,18 @@ const AddActorTour = () => {
     }
 
     useEffect(() => {
-        if (roleError || actorError || mainRoleError || dateError) {
+        if (actorError || dateError) {
             setFormValid(false)
         } else {
             setFormValid(true)
         }
-    }, [roleError, actorError, mainRoleError, dateError])
+    }, [actorError, dateError])
 
 
     const blurHandler = (e) => {
         switch (e.target.name) {
-            case 'role':
-                setRoleDirty(true)
-                break
             case 'actor':
                 setActorDirty(true)
-                break
-            case 'mainRole':
-                setMainRoleDirty(true)
                 break
             case 'date':
                 setDateDirty(true)
@@ -78,9 +66,9 @@ const AddActorTour = () => {
         }
     }
 
-    const DateHandler = (e) => {
-        setDate(e.target.value)
-        if (!e.target.value || e.target.value === '')
+    const dateHandler = (value) => {
+        setDate(value)
+        if (!value)
             setDateError('Поле не может быть пустым')
         else setDateError('')
     }
@@ -92,33 +80,20 @@ const AddActorTour = () => {
         else setActorError('')
     }
 
-    const roleHandler = (value) => {
-        setRole(value)
-        if (!value)
-            setRoleError('Поле не может быть пустым')
-        else setRoleError('')
-    }
 
-    const mainRoleHandler = (e) => {
-        setMainRole(JSON.parse(e.target.value))
-        setMainRoleError('')
-    }
-
-    const saveActorPlayingRole = (e) => {
+    const saveActorTour = (e) => {
         e.preventDefault();
-        const ActorPlayingRole  = {
-            role: {id: Number(role)},
+        const ActorTour  = {
+            date: {id: Number(date)},
             actor: {id: Number(actor)},
-            mainRole,
-            date,
-            id: { actorId: Number(actor), roleId: Number(role) }
+            id: {dateID: Number(date), actorID: Number(actor)}
         };
 
-        console.log(ActorPlayingRole);
-        actorPlayingRoleService.create(ActorPlayingRole)
+        console.log(ActorTour);
+        actorTourService.create(ActorTour)
             .then(response => {
-                console.log('ActorPlayingRole created', response.data);
-                history.push('/actor_playing_role');
+                console.log('ActorTour created', response.data);
+                history.push('/actor_tour');
             })
             .catch(error => {
                 console.log('Something went wrong', error);
@@ -127,7 +102,7 @@ const AddActorTour = () => {
 
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Добавить роль актёру</h3>
+            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Добавить тур, в котором участвует Актёр</h3>
             <form>
                 <div>
                     <select
@@ -147,48 +122,26 @@ const AddActorTour = () => {
                 </div>
                 <div>
                     <select
-                        onChange={e => roleHandler(Number(e.target.value))}
+                        onChange={e => dateHandler(Number(e.target.value))}
                         style={{ marginBottom: 10, width:600 }}
                         className='form-select'
-                        id="role">
-                        <option>Выберите роль:</option>
+                        id="date">
+                        <option>Выберите тур:</option>
                         {
-                            roles && roles.map((role) => (
-                                <option key={role.id} value={role.id.toString()}>
-                                    {role.name}
+                            dates && dates.map((dateOfTour) => (
+                                <option key={dateOfTour.id.toString()} value={dateOfTour.id.toString()}>
+                                    {`${dateOfTour.dateStart} - ${dateOfTour.dateEnd}`}
                                 </option>
                             ))
                         }
                     </select>
                 </div>
-                <div className="form-group">
-                    {(dateError && dateDirty) && <div style={{ color: "#D10000", marginLeft: 2, marginBottom: 5 }}>{dateError}</div>}
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда актёр играет свою роль:</label>
-                    <input onChange={e => DateHandler(e)} onBlur={e => blurHandler(e)} name='Date' style={{ marginBottom: 10, width: 600 }}
-                           type="date"
-                           className="form-control col-4"
-                           id="date"
-                           value={date}
-                           placeholder="Введите дату"
-                    />
-                </div>
-                <div className="form-group">
-                    {(mainRoleError && mainRoleDirty) && <div style={{ color: "#D10000", marginLeft: 2, marginBottom: 5 }}>{mainRoleError}</div>}
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите является ли роль главной:</label>
-                    <select onChange={e => mainRoleHandler(e)} onBlur={e => blurHandler(e)} name='isStudent' style={{ marginBottom: 10, width: 600 }}
-                            className="form-control col-4"
-                            id="mainRole"
-                            value={mainRole}>
-                        <option value={true}>True</option>
-                        <option value={false}>False</option>
-                    </select>
-                </div>
                 <div>
                     <button disabled={!formValid} style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
-                            onClick={(e) => saveActorPlayingRole(e)}>
+                            onClick={(e) => saveActorTour(e)}>
                         Сохранить
                     </button>
-                    <Link to="/actor_playing_role" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
+                    <Link to="/actor_tour" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
         </div>
