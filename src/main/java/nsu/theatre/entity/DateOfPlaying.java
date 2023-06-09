@@ -31,7 +31,4 @@ public class DateOfPlaying {
 
     @Column(name = "is_tour")
     private Boolean isTour;
-
-    //@OneToMany(mappedBy = "date", cascade = CascadeType.REMOVE)
-    //private List<DatePerformance> date;
 }

@@ -16,9 +16,10 @@ const get = (id) => {
     return httpClient.get(`/countries/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/countries', data);
+const update = (id, data) => {
+    return httpClient.put(`/countries/${id}`, data);
 }
+
 
 const remove = (id) => {
     return httpClient.delete(`/countries/${id}`);

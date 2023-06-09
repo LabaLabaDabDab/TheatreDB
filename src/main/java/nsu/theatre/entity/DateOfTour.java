@@ -24,7 +24,7 @@ public class DateOfTour {
     @Column(name = "date_end")
     private Date date_end;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "performance_id")
     private Performance performance;
 }

@@ -17,8 +17,8 @@ const get = (id) => {
     return httpClient.get(`/ticket-numbers/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/ticket-numbers', data);
+const update = (id, data) => {
+    return httpClient.put(`/ticket-numbers/${id}`, data);
 }
 
 const remove = (id) => {

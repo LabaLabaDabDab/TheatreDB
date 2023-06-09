@@ -2,6 +2,7 @@ package nsu.theatre.service;
 
 import nsu.theatre.dto.GenderDTO;
 import nsu.theatre.entity.Gender;
+import nsu.theatre.entity.Genre;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.GenderMapper;
 import nsu.theatre.repository.GenderRepository;
@@ -40,5 +41,26 @@ public class GenderService {
         Gender gender = genderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Gender not found with id: " + id));
         return genderMapper.toDTO(gender);
+    }
+
+    public GenderDTO createGender(GenderDTO genderDTO) {
+        Gender gender = genderMapper.toEntity(genderDTO);
+        Gender savedGender = genderRepository.save(gender);
+        return genderMapper.toDTO(savedGender);
+    }
+
+    public GenderDTO updateGender(Long id, GenderDTO genderDTO) {
+        Gender existingGender = genderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Gender not found with id: " + id));
+        Gender updatedGender = genderMapper.toEntity(genderDTO);
+        updatedGender.setType(genderDTO.getType());
+        Gender savedGender = genderRepository.save(updatedGender);
+        return genderMapper.toDTO(savedGender);
+    }
+
+    public void deleteGender(Long id) {
+        Gender gender = genderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Gender not found with id: " + id));
+        genderRepository.delete(gender);
     }
 }

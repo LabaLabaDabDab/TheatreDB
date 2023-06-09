@@ -1,15 +1,14 @@
 package nsu.theatre.service;
 
 import nsu.theatre.dto.ActorPlayingRoleDTO;
-import nsu.theatre.entity.ActorPlayingRole;
-import nsu.theatre.entity.ActorRoleId;
-import nsu.theatre.entity.DatePerformance;
-import nsu.theatre.entity.DatePerformanceId;
+import nsu.theatre.entity.*;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.ActorMapper;
 import nsu.theatre.mapper.ActorPlayingRoleMapper;
 import nsu.theatre.mapper.RoleMapper;
 import nsu.theatre.repository.ActorPlayingRoleRepository;
+import nsu.theatre.repository.ActorRepository;
+import nsu.theatre.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,13 +24,17 @@ public class ActorPlayingRoleService {
     private final ActorPlayingRoleMapper actorPlayingRoleMapper;
     private final RoleMapper roleMapper;
     private final ActorMapper actorMapper;
+    private final RoleRepository roleRepository;
+    private final ActorRepository actorRepository;
 
     @Autowired
-    public ActorPlayingRoleService(ActorPlayingRoleRepository actorPlayingRoleRepository, ActorPlayingRoleMapper actorPlayingRoleMapper, RoleMapper roleMapper, ActorMapper actorMapper) {
+    public ActorPlayingRoleService(ActorPlayingRoleRepository actorPlayingRoleRepository, ActorPlayingRoleMapper actorPlayingRoleMapper, RoleMapper roleMapper, ActorMapper actorMapper, RoleRepository roleRepository, ActorRepository actorRepository) {
         this.actorPlayingRoleRepository = actorPlayingRoleRepository;
         this.actorPlayingRoleMapper = actorPlayingRoleMapper;
         this.roleMapper = roleMapper;
         this.actorMapper = actorMapper;
+        this.roleRepository = roleRepository;
+        this.actorRepository = actorRepository;
     }
 
     public Page<ActorPlayingRoleDTO> getAllActorPlayingRoles(Integer pageNo, Integer pageSize) {
@@ -55,8 +58,19 @@ public class ActorPlayingRoleService {
     }
 
     public ActorPlayingRoleDTO createActorPlayingRole(ActorPlayingRoleDTO actorPlayingRoleDTO) {
+        Role role = roleRepository.findById(actorPlayingRoleDTO.getRole().getId())
+                .orElseThrow(() -> new NotFoundException("role not found with id: " + actorPlayingRoleDTO.getRole().getId()));
+        Actor actor = actorRepository.findById(actorPlayingRoleDTO.getActor().getId())
+                .orElseThrow(() -> new NotFoundException("actor not found with id: " + actorPlayingRoleDTO.getActor().getId()));
+
+        actorPlayingRoleDTO.setRole(roleMapper.toDTO(role));
+        actorPlayingRoleDTO.setActor(actorMapper.toDTO(actor));
+
         ActorPlayingRole actorPlayingRole = actorPlayingRoleMapper.toEntity(actorPlayingRoleDTO);
+        actorPlayingRole.setRole(role);
+        actorPlayingRole.setActor(actor);
         ActorPlayingRole createdActorPlayingRole = actorPlayingRoleRepository.save(actorPlayingRole);
+
         return actorPlayingRoleMapper.toDTO(createdActorPlayingRole);
     }
 
@@ -65,12 +79,26 @@ public class ActorPlayingRoleService {
         ActorPlayingRole existingActorPlayingRole = actorPlayingRoleRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("ActorPlayingRole not found with id: " + id));
 
-        existingActorPlayingRole.setActor(actorMapper.toEntity(actorPlayingRoleDTO.getActor()));
-        existingActorPlayingRole.setRole(roleMapper.toEntity(actorPlayingRoleDTO.getRole()));
+        actorPlayingRoleRepository.deleteById(id);
 
-        ActorPlayingRole updatedActorPlayingRole = actorPlayingRoleRepository.save(existingActorPlayingRole);
+        ActorRoleId newId = new ActorRoleId(actorPlayingRoleDTO.getActor().getId(), actorPlayingRoleDTO.getRole().getId());
+
+        Role role = roleRepository.findById(actorPlayingRoleDTO.getRole().getId())
+                .orElseThrow(() -> new NotFoundException("role not found with id: " + actorPlayingRoleDTO.getRole().getId()));
+        Actor actor = actorRepository.findById(actorPlayingRoleDTO.getActor().getId())
+                .orElseThrow(() -> new NotFoundException("actor not found with id: " + actorPlayingRoleDTO.getActor().getId()));
+
+        ActorPlayingRole newActorPlayingRole = new ActorPlayingRole();
+        newActorPlayingRole.setId(newId);
+        newActorPlayingRole.setRole(role);
+        newActorPlayingRole.setActor(actor);
+        newActorPlayingRole.setMain(actorPlayingRoleDTO.getMainRole());
+        newActorPlayingRole.setDate(actorPlayingRoleDTO.getDate());
+
+        ActorPlayingRole updatedActorPlayingRole = actorPlayingRoleRepository.save(newActorPlayingRole);
         return actorPlayingRoleMapper.toDTO(updatedActorPlayingRole);
     }
+
 
     public void deleteActorPlayingRole(Long actorId, Long roleId) {
         ActorRoleId id = new ActorRoleId(actorId, roleId);

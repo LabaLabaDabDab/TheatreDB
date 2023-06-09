@@ -28,9 +28,8 @@ public class Performance {
     @Column(name = "premiere_date")
     private Date premiere;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "author_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Author author;
 
     @Column(name = "time_duration", precision = 3)

@@ -16,8 +16,8 @@ const get = (id) => {
     return httpClient.get(`/authors/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/authors', data);
+const update = (id, data) => {
+    return httpClient.put(`/authors/${id}`, data);
 }
 
 const remove = (id) => {

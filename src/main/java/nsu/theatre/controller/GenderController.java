@@ -44,4 +44,25 @@ public class GenderController {
         return new ResponseEntity<>(gender, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<GenderDTO> createGender(@RequestBody GenderDTO genderDTO) {
+        GenderDTO savedGender = genderService.createGender(genderDTO);
+        return new ResponseEntity<>(savedGender, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GenderDTO> updateGender(@PathVariable("id") Long id, @RequestBody GenderDTO genderDTO) {
+        GenderDTO updatedGender = genderService.updateGender(id, genderDTO);
+        if (updatedGender == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(updatedGender, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGender(@PathVariable("id") Long id) {
+        genderService.deleteGender(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

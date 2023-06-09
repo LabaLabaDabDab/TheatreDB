@@ -17,10 +17,8 @@ import java.io.Serializable;
 @Embeddable
 public class ActorRoleId implements Serializable {
     @Column(name = "actor_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Long actorId;
 
     @Column(name = "role_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Long roleId;
 }

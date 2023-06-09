@@ -18,14 +18,14 @@ public class ActorPlayingRole {
     @EmbeddedId
     private ActorRoleId id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false,
-            foreignKey = @ForeignKey(name = "actor_playing_role_actor_id_fkey"), insertable = false, updatable = false)
+            foreignKey = @ForeignKey(name = "actor_playing_role_role_id_fkey"), insertable = false, updatable = false)
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "actor_id", referencedColumnName = "id", nullable = false,
-            foreignKey = @ForeignKey(name = "actor_playing_role_role_id_fkey"), insertable = false, updatable = false)
+            foreignKey = @ForeignKey(name = "actor_playing_role_actor_id_fkey"), insertable = false, updatable = false)
     private Actor actor;
 
     @Column(name = "is_main")

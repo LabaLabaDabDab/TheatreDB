@@ -40,7 +40,6 @@ function Header() {
                     </Nav>
                 </Container>
             </Navbar>
-
             <br />
         </div>
     );

@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 
 import { Link } from 'react-router-dom';
 import actorPlayingRoleService from '../service/ActorPlayingRoleService';
+import Button from "react-bootstrap/Button";
 
 
 export default function ActorPlayingRolePage({
@@ -35,8 +36,8 @@ export default function ActorPlayingRolePage({
             });
     }
 
-    const handleDelete = id => {
-        actorPlayingRoleService.remove(id)
+    const handleDelete = (actorId, roleId) => {
+        actorPlayingRoleService.remove(actorId, roleId)
             .then(response => {
                 console.log('ActorPlayingRole deleted', response.data);
                 init(currentPage);
@@ -45,6 +46,7 @@ export default function ActorPlayingRolePage({
                 console.log('Something went wrong', error);
             })
     }
+
 
     const showNextPage = () => {
         console.log(currentPage);
@@ -79,7 +81,7 @@ export default function ActorPlayingRolePage({
         <div>
             <h2>Актёры и их роли</h2>
             <div className={"table-container"}>
-                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/actor_playing_role/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
@@ -101,8 +103,8 @@ export default function ActorPlayingRolePage({
                                 <td style={{ fontSize: "14px" }}>{String(obj.mainRole)}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.date}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/country/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id.actorId, obj.id.roleId) }} className='btn btn-danger'>Удалить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/actor_playing_role/edit/${obj.id?.actorId}.${obj.id?.roleId}`} className='btn btn-danger'>Изменить</Link>
+                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id?.actorId, obj.id?.roleId) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>
                         ))

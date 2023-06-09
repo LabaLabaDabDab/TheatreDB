@@ -12,16 +12,16 @@ const create = (data) => {
     return httpClient.post("/actor-playing-roles", data);
 }
 
-const get = (id) => {
-    return httpClient.get(`/actor-playing-roles/${id}`);
+const get = (actorId, roleId) => {
+    return httpClient.get(`/actor-playing-roles/${actorId}/${roleId}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/actor-playing-roles', data);
+const update = (actorId, roleId, data) => {
+    return httpClient.put(`/actor-playing-roles/${actorId}/${roleId}`, data);
 }
 
-const remove = (id) => {
-    return httpClient.delete(`/actor-playing-roles/${id}`);
+const remove = (actorId, roleId) => {
+    return httpClient.delete(`/actor-playing-roles/${actorId}/${roleId}`);
 }
 
 export default {getAll, getAllList, create, get, update, remove};

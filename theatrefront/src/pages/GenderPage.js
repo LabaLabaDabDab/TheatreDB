@@ -25,11 +25,10 @@ export default function GenderPage({
         init(1);
     }, []);
 
-
     const init = (currentPage)  => {
         genderService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
-                console.log('Author data', response.data);
+                console.log('Gender data', response.data);
                 setGender(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setTotalElements(response.data.totalElements);
@@ -85,7 +84,7 @@ export default function GenderPage({
         <div>
             <h2>Гендеры</h2>
             <div className={"table-container"}>
-                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/genders/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
@@ -102,7 +101,7 @@ export default function GenderPage({
                                 <td style={{ fontSize: "14px" }}>{obj.type}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/genders/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
+                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>
                         ))

@@ -21,7 +21,6 @@ public class ActorTour {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "date_of_tour_id", referencedColumnName = "id", nullable = false,
             foreignKey = @ForeignKey(name = "actor_tour_date_of_tour_id_fkey"), insertable = false, updatable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private DateOfTour date;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -16,8 +16,8 @@ const get = (id) => {
     return httpClient.get(`/actor-tours/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/actor-tours', data);
+const update = (id, data) => {
+    return httpClient.put(`/actor-tours/${id}`, data);
 }
 
 const remove = (id) => {

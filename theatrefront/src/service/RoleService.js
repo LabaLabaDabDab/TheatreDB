@@ -16,8 +16,8 @@ const get = (id) => {
     return httpClient.get(`/roles/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/roles', data);
+const update = (id, data) => {
+    return httpClient.put(`/roles/${id}`, data);
 }
 
 const remove = (id) => {

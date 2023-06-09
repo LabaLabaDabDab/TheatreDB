@@ -16,8 +16,8 @@ const get = (id) => {
     return httpClient.get(`/date-of-playing/${id}`);
 }
 
-const update = (data) => {
-    return httpClient.put('/date-of-playing', data);
+const update = (id, data) => {
+    return httpClient.put(`/date-of-playing/${id}`, data);
 }
 
 const remove = (id) => {

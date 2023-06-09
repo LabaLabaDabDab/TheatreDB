@@ -113,7 +113,7 @@ export default function RolePage({
                                 <td style={{ fontSize: "14px" }}>{obj.performance.author.title}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/roles/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Link>
+                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>
                         ))

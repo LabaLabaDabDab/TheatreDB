@@ -1,6 +1,7 @@
 package nsu.theatre.service;
 
 import nsu.theatre.dto.GenreDTO;
+import nsu.theatre.entity.Country;
 import nsu.theatre.entity.Genre;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.GenreMapper;
@@ -53,7 +54,7 @@ public class GenreService {
         Genre existingGenre = genreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Genre not found with id: " + id));
         Genre updatedGenre = genreMapper.toEntity(genreDTO);
-        updatedGenre.setId(existingGenre.getId());
+        updatedGenre.setName(genreDTO.getName());
         Genre savedGenre = genreRepository.save(updatedGenre);
         return genreMapper.toDTO(savedGenre);
     }

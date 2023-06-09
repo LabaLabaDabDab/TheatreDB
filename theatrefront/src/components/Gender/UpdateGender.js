@@ -2,25 +2,25 @@ import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import countryService from "../../service/CountryService";
+import genderService from "../../service/GenderService";
 
-const UpdateCountry = () => {
+const UpdateGender = () => {
 
-    const [name, setName] = useState('');
+    const [type, setType] = useState('');
     const history = useHistory();
 
     let { id } = useParams();
 
-    const saveCountry = (e) => {
+    const saveGender = (e) => {
         e.preventDefault();
 
-        const country =
-            {name};
+        const gender =
+            {type};
 
-        countryService.update(id, country)
+        genderService.update(id, gender)
             .then(response => {
-                console.log('Country updated', response.data);
-                history.push('/countries');
+                console.log('Gender updated', response.data);
+                history.push('/genders');
             })
             .catch(error => {
                 console.log('Something went wrong', error);
@@ -29,9 +29,9 @@ const UpdateCountry = () => {
 
     useEffect(() => {
         if (id) {
-            countryService.get(id)
-                .then(country => {
-                    setName(country.data.name);
+            genderService.get(id)
+                .then(gender => {
+                    setType(gender.data.type);
                 })
                 .catch(error => {
                     console.log('Something went wrong', error);
@@ -42,28 +42,28 @@ const UpdateCountry = () => {
 
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить страну</h3>
+            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить гендер</h3>
             <form>
                 <div className="form-group">
                     <input style={{ marginBottom: 10, width: 600 }}
                            type="text"
                            className="form-control col-4"
-                           id="name"
-                           value={name}
-                           onChange={(e) => setName(e.target.value)}
-                           placeholder="Введите страну"
+                           id="type"
+                           value={type}
+                           onChange={(e) => setType(e.target.value)}
+                           placeholder="Введите гендер"
                     />
                 </div>
                 <div>
                     <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
-                            onClick={(e) => saveCountry(e)}>
+                            onClick={(e) => saveGender(e)}>
                         Сохранить
                     </button>
-                    <Link to="/countries" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
+                    <Link to="/genders" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
         </div>
     );
 }
 
-export default UpdateCountry;
+export default UpdateGender;

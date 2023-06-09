@@ -44,7 +44,7 @@ const UpdateAchievement = () => {
                     setDateOfCompetition(achievement.data.dateCompetition);
                     setCompetition(achievement.data.competition);
                     setRank(achievement.data.rank);
-                    const tempActorId = achievement.data.actorId.id; // здесь важно!
+                    const tempActorId = achievement.data.actorId.id;
                     actorService.getAll(currentPage - 1, recordPerPage)
                         .then(response => {
                             setActors(response.data.content);

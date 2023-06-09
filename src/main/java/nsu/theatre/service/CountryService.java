@@ -52,9 +52,8 @@ public class CountryService {
     public CountryDTO updateCountry(Long id, CountryDTO countryDTO) {
         Country existingCountry = countryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Country not found with id: " + id));
-        Country updatedCountry = countryMapper.toEntity(countryDTO);
-        updatedCountry.setId(existingCountry.getId());
-        Country savedCountry = countryRepository.save(updatedCountry);
+        existingCountry.setName(countryDTO.getName());
+        Country savedCountry = countryRepository.save(existingCountry);
         return countryMapper.toDTO(savedCountry);
     }
 

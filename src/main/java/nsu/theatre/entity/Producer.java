@@ -22,7 +22,6 @@ public class Producer {
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "employee_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Employee employee;
 
     @OneToMany

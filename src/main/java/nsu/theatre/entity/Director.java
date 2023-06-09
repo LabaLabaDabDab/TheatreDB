@@ -20,9 +20,8 @@ public class Director {
     @GenericGenerator(name = "pet_seq", strategy = "increment")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne
     @JoinColumn(name = "employee_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Employee employee;
 
     @OneToMany

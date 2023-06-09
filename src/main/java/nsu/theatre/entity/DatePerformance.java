@@ -12,7 +12,7 @@ public class DatePerformance {
     @EmbeddedId
     private DatePerformanceId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "date_id", referencedColumnName = "id", nullable = false,
             foreignKey = @ForeignKey(name = "date_performance_date_id_fkey"), insertable = false, updatable = false)
     private DateOfPlaying date;

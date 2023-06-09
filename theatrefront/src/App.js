@@ -32,6 +32,24 @@ import HeaderRequest from "./components/HeaderRequest";
 import Request1Page from "./pages/Requests/Request1Page"
 import AddAchievement from "./components/Achievement/AddAchievement";
 
+import UpdateActor from "./components/Actor/UpdateActor";
+import AddActor from "./components/Actor/AddActor"
+
+import UpdateCountry from "./components/Countries/UpdateCountry";
+import AddCountry from "./components/Countries/AddCountry";
+
+import UpdateGenre from "./components/Genre/UpdateGenre";
+import AddGenre from "./components/Genre/AddGenre";
+
+import UpdateGender from "./components/Gender/UpdateGender";
+import AddGender from "./components/Gender/AddGender";
+
+import AddActorPlayingRole from "./components/ActorPlayingRole/AddActorPlayingRole";
+import UpdateActorPlayingRole from "./components/ActorPlayingRole/UpdateActorPlayingRole";
+
+import UpdateActorTour from "./components/ActorTour/UpdateActorTour";
+import AddActorTour from "./components/ActorTour/AddActorTour";
+
 function App() {
     return (
         <div className="App">
@@ -41,9 +59,11 @@ function App() {
                         <Header/>
                     </Route>
 
-                    <Route path={"/actors"}>
+                    <Route path={"/actors"} exact>
                         <ActorPage/>
                     </Route>
+                    <Route path="/actors/edit/:id" component={UpdateActor} />
+                    <Route path="/actors/add" component={AddActor} />
 
                     <Route path={"/achievements"} exact>
                         <AchievementPage/>
@@ -51,17 +71,23 @@ function App() {
                     <Route path="/achievements/edit/:id" component={UpdateAchievement} />
                     <Route path="/achievements/add" component={AddAchievement} />
 
-                    <Route path={"/actor_playing_role"}>
+                    <Route path={"/actor_playing_role"} exact>
                         <ActorPlayingRolePage/>
                     </Route>
+                    <Route path="/actor_playing_role/edit/:id" component={UpdateActorPlayingRole} />
+                    <Route path="/actor_playing_role/add" component={AddActorPlayingRole} />
 
-                    <Route path={"/actor_tour"}>
+                    <Route path={"/actor_tour"} exact>
                         <ActorTourPage/>
                     </Route>
+                    <Route path="/actor_playing_role/edit/:id" component={UpdateActorTour} />
+                    <Route path="/actor_playing_role/add" component={AddActorTour} />
 
                     <Route path={"/countries"} exact>
                         <CountryPage/>
                     </Route>
+                    <Route path="/countries/edit/:id" component={UpdateCountry} />
+                    <Route path="/countries/add" component={AddCountry} />
 
                     <Route path={"/authors"} exact>
                         <AuthorPage/>
@@ -95,10 +121,14 @@ function App() {
                     <Route path={"/genders"} exact>
                         <GenderPage/>
                     </Route>
+                    <Route path="/genders/edit/:id" component={UpdateGender} />
+                    <Route path="/genders/add" component={AddGender} />
 
                     <Route path={"/genres"} exact>
                         <GenrePage/>
                     </Route>
+                    <Route path="/genres/edit/:id" component={UpdateGenre} />
+                    <Route path="/genres/add" component={AddGenre} />
 
                     <Route path={"/musicians"} exact>
                         <MusicianPage/>

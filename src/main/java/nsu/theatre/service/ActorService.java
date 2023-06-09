@@ -7,9 +7,12 @@ import nsu.theatre.dto.response.ResponseActorAchievementDTO;
 import nsu.theatre.dto.response.ResponseActorPlayedRoleDTO;
 import nsu.theatre.dto.response.ResponseActorRoleDTO;
 import nsu.theatre.entity.Actor;
+import nsu.theatre.entity.Employee;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.ActorMapper;
+import nsu.theatre.mapper.EmployeeMapper;
 import nsu.theatre.repository.ActorRepository;
+import nsu.theatre.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,11 +28,15 @@ import java.util.stream.Collectors;
 public class ActorService {
     private final ActorRepository actorRepository;
     private final ActorMapper actorMapper;
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public ActorService(ActorRepository actorRepository, ActorMapper actorMapper) {
+    public ActorService(ActorRepository actorRepository, ActorMapper actorMapper, EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
         this.actorRepository = actorRepository;
         this.actorMapper = actorMapper;
+        this.employeeRepository = employeeRepository;
+        this.employeeMapper = employeeMapper;
     }
 
     public Page<ActorDTO> getAllActors(Integer pageNo, Integer pageSize) {
@@ -53,17 +60,27 @@ public class ActorService {
     }
 
     public ActorDTO createActor(ActorDTO actorDTO) {
+        Employee employee = employeeRepository.findById(actorDTO.getEmployee().getId())
+                .orElseThrow(() -> new NotFoundException("Employee not found with id: " + actorDTO.getEmployee().getId()));
+
+        actorDTO.setEmployee(employeeMapper.toDTO(employee));
+
         Actor actor = actorMapper.toEntity(actorDTO);
-        Actor savedActor = actorRepository.save(actor);
-        return actorMapper.toDTO(savedActor);
+        actor.setEmployee(employee);
+        Actor creatredActor = actorRepository.save(actor);
+        return actorMapper.toDTO(creatredActor);
     }
 
     public ActorDTO updateActor(Long id, ActorDTO actorDTO) {
         Actor existingActor = actorRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Actor not found with id: " + id));
-        Actor updatedActor = actorMapper.toEntity(actorDTO);
-        updatedActor.setId(existingActor.getId());
-        Actor savedActor = actorRepository.save(updatedActor);
+        Employee employee = employeeRepository.findById(actorDTO.getEmployee().getId())
+                .orElseThrow(() -> new NotFoundException("Employee not found with id: " + actorDTO.getEmployee().getId()));
+        existingActor.setEmployee(employee);
+        existingActor.setHeight(actorDTO.getHeight());
+        existingActor.setStudent(actorDTO.isStudent());
+
+        Actor savedActor = actorRepository.save(existingActor);
         return actorMapper.toDTO(savedActor);
     }
 
