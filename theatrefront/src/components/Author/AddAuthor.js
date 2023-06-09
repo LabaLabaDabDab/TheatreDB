@@ -242,7 +242,7 @@ const AddAuthor = () => {
                            className="form-control col-4"
                            id="title"
                            value={title}
-                           placeholder="Введите название произведение"
+                           placeholder="Введите название произведения"
                     />
                 </div>
                 <div>

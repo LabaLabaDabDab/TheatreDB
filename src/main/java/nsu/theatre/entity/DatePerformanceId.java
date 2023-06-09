@@ -16,12 +16,9 @@ import java.io.Serializable;
 @Setter
 @Embeddable
 public class DatePerformanceId implements Serializable {
-
     @Column(name = "date_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Long dateId;
 
     @Column(name = "performance_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Long performanceId;
 }

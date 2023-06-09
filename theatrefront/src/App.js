@@ -7,8 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import EmployeePage from './pages/EmployeePage';
 import CountryPage from "./pages/CountryPage";
 import AuthorPage from "./pages/AuthorPage";
-
-import UpdateAuthor from './components/Author/UpdateAuthor';
 import AchievementPage from "./pages/AchievementPage";
 import ActorPlayingRolePage from "./pages/ActorPlayingRolePage";
 import ActorPage from "./pages/ActorPage";
@@ -26,11 +24,12 @@ import ProducerPage from  "./pages/ProducerPage"
 import RolePage from "./pages/RolePage";
 import TicketsPage from "./pages/TicketsPage";
 import TicketNumberPage from "./pages/TicketNumberPage";
-import UpdateAchievement from "./components/Achievement/UpdateAchievement";
-import HeaderRequest from "./components/HeaderRequest";
 
-import Request1Page from "./pages/Requests/Request1Page"
+import HeaderRequest from "./components/HeaderRequest";
+import Request1Page from "./pages/Requests/Request1Page";
+
 import AddAchievement from "./components/Achievement/AddAchievement";
+import UpdateAchievement from "./components/Achievement/UpdateAchievement";
 
 import UpdateActor from "./components/Actor/UpdateActor";
 import AddActor from "./components/Actor/AddActor"
@@ -49,7 +48,21 @@ import UpdateActorPlayingRole from "./components/ActorPlayingRole/UpdateActorPla
 
 import UpdateActorTour from "./components/ActorTour/UpdateActorTour";
 import AddActorTour from "./components/ActorTour/AddActorTour";
+
 import AddAuthor from "./components/Author/AddAuthor";
+import UpdateAuthor from './components/Author/UpdateAuthor';
+
+import AddDateOfPlaying from "./components/DateOfPlaying/AddDateOfPlaying";
+import UpdateDateOfPlaying from "./components/DateOfPlaying/UpdateDateOfPlaying";
+
+import AddDateOfTour from "./components/DateOfTour/AddDateOfTour";
+import UpdateDateOfTour from "./components/DateOfTour/UpdateDateOfTour";
+
+import AddDateOfPerformance from "./components/DateOfPerformance/AddDateOfPerformance";
+import UpdateDateOfPerformance from "./components/DateOfPerformance/UpdateDateOfPerformance";
+
+import AddDirector from "./components/Director/AddDirector";
+import UpdateDirector from "./components/Director/UpdateDirector";
 
 function App() {
     return (
@@ -99,18 +112,27 @@ function App() {
                     <Route path={"/date_of_playing"} exact>
                         <DateOfPlayingPage/>
                     </Route>
+                    <Route path="/date_of_playing/add" component={AddDateOfPlaying} />
+                    <Route path={"/date_of_playing/edit/:id"} component={UpdateDateOfPlaying} />
 
                     <Route path={"/date_of_tour"} exact>
                         <DateOfTourPage/>
                     </Route>
+                    <Route path="/date_of_tour/add" component={AddDateOfTour} />
+                    <Route path="/date_of_tour/edit/:id" component={UpdateDateOfTour} />
 
                     <Route path={"/date_of_performance"} exact>
                         <DateOfPerformancePage/>
                     </Route>
+                    <Route path="/date_of_performance/add" component={AddDateOfPerformance} />
+                    <Route path="/date_of_performance/edit/:id" component={UpdateDateOfPerformance} />
+
 
                     <Route path={"/directors"} exact>
                         <DirectorPage/>
                     </Route>
+                    <Route path="/directors/add" component={AddDirector} />
+                    <Route path="/directors/edit/:id" component={UpdateDirector} />
 
                     <Route path={"/employees"} exact>
                         <EmployeePage/>

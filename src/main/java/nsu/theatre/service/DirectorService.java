@@ -1,16 +1,14 @@
 package nsu.theatre.service;
 
-import nsu.theatre.dto.ActorDTO;
 import nsu.theatre.dto.DirectorDTO;
-import nsu.theatre.entity.Actor;
 import nsu.theatre.entity.Director;
 import nsu.theatre.entity.Employee;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.DirectorMapper;
+import nsu.theatre.mapper.EmployeeMapper;
 import nsu.theatre.repository.DirectorRepository;
 import nsu.theatre.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +22,14 @@ public class DirectorService {
     private final DirectorRepository directorRepository;
     private final EmployeeRepository employeeRepository;
     private final DirectorMapper directorMapper;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public DirectorService(DirectorRepository directorRepository, EmployeeRepository employeeRepository, DirectorMapper directorMapper) {
+    public DirectorService(DirectorRepository directorRepository, EmployeeRepository employeeRepository, DirectorMapper directorMapper, EmployeeMapper employeeMapper) {
         this.directorRepository = directorRepository;
         this.employeeRepository = employeeRepository;
         this.directorMapper = directorMapper;
+        this.employeeMapper = employeeMapper;
     }
 
     public Page<DirectorDTO> getAllDirectors(Integer pageNo, Integer pageSize) {
@@ -54,7 +54,8 @@ public class DirectorService {
     public DirectorDTO createDirector(DirectorDTO directorDTO) {
         Employee employee = employeeRepository.findById(directorDTO.getEmployee().getId()).
                 orElseThrow(() -> new RuntimeException("Employee not found"));
-        System.out.println(employee);
+
+        directorDTO.setEmployee(employeeMapper.toDTO(employee));
         Director director = directorMapper.toEntity(directorDTO);
         Director savedDirector = directorRepository.save(director);
         return directorMapper.toDTO(savedDirector);

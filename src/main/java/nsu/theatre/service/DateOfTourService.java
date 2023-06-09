@@ -4,9 +4,13 @@ import nsu.theatre.dto.DateOfTourDTO;
 import nsu.theatre.dto.filter.EmployeeDateOfTourFilterDTO;
 import nsu.theatre.dto.response.ResponseEmployeeDateOfTourDTO;
 import nsu.theatre.entity.DateOfTour;
+import nsu.theatre.entity.Performance;
 import nsu.theatre.exception.NotFoundException;
+import nsu.theatre.mapper.AuthorMapper;
 import nsu.theatre.mapper.DateOfTourMapper;
+import nsu.theatre.mapper.PerformanceMapper;
 import nsu.theatre.repository.DateOfTourRepository;
+import nsu.theatre.repository.PerformanceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +26,17 @@ import java.util.stream.Collectors;
 public class DateOfTourService {
     private final DateOfTourRepository dateOfTourRepository;
     private final DateOfTourMapper dateOfTourMapper;
+    private final AuthorMapper authorMapper;
+    private final PerformanceRepository performanceRepository;
+    private final PerformanceMapper performanceMapper;
 
     @Autowired
-    public DateOfTourService(DateOfTourRepository dateOfTourRepository, DateOfTourMapper dateOfTourMapper) {
+    public DateOfTourService(DateOfTourRepository dateOfTourRepository, DateOfTourMapper dateOfTourMapper, AuthorMapper authorMapper, PerformanceRepository performanceRepository, PerformanceMapper performanceMapper) {
         this.dateOfTourRepository = dateOfTourRepository;
         this.dateOfTourMapper = dateOfTourMapper;
+        this.authorMapper = authorMapper;
+        this.performanceRepository = performanceRepository;
+        this.performanceMapper = performanceMapper;
     }
 
     public Page<DateOfTourDTO> getAllDateOfTours(Integer pageNo, Integer pageSize) {
@@ -49,19 +59,27 @@ public class DateOfTourService {
     }
 
     public DateOfTourDTO createDateOfTour(DateOfTourDTO dateOfTourDTO) {
+        Performance performance = performanceRepository.findById(dateOfTourDTO.getPerformance().getId())
+                .orElseThrow(() -> new NotFoundException("Performance not found with id: " + dateOfTourDTO.getPerformance().getId()));
+
+        dateOfTourDTO.setPerformance(performanceMapper.toDTO(performance));
         DateOfTour dateOfTour = dateOfTourMapper.toEntity(dateOfTourDTO);
-        DateOfTour savedDateOfTour = dateOfTourRepository.save(dateOfTour);
-        return dateOfTourMapper.toDTO(savedDateOfTour);
+        dateOfTour.setPerformance(performance);
+        DateOfTour createdDateOfTour = dateOfTourRepository.save(dateOfTour);
+        return dateOfTourMapper.toDTO(createdDateOfTour);
     }
 
     public DateOfTourDTO updateDateOfTour(Long id, DateOfTourDTO dateOfTourDTO) {
         DateOfTour existingDateOfTour = dateOfTourRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("DateOfTour not found with id: " + id));
+        Performance performance = performanceRepository.findById(dateOfTourDTO.getPerformance().getId())
+                .orElseThrow(() -> new NotFoundException("Performance not found with id: " + dateOfTourDTO.getPerformance().getId()));
 
-        DateOfTour updatedDateOfTour = dateOfTourMapper.toEntity(dateOfTourDTO);
-        updatedDateOfTour.setId(existingDateOfTour.getId());
+        existingDateOfTour.setPerformance(performance);
+        existingDateOfTour.setDate_start(dateOfTourDTO.getDateStart());
+        existingDateOfTour.setDate_end(dateOfTourDTO.getDateEnd());
 
-        DateOfTour savedDateOfTour = dateOfTourRepository.save(updatedDateOfTour);
+        DateOfTour savedDateOfTour = dateOfTourRepository.save(existingDateOfTour);
         return dateOfTourMapper.toDTO(savedDateOfTour);
     }
 
