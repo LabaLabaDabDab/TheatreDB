@@ -164,7 +164,8 @@ const AddActorPlayingRole = () => {
                 <div className="form-group">
                     {(dateError && dateDirty) && <div style={{ color: "#D10000", marginLeft: 2, marginBottom: 5 }}>{dateError}</div>}
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда актёр играет свою роль:</label>
-                    <input onChange={e => DateHandler(e)} onBlur={e => blurHandler(e)} name='Date' style={{ marginBottom: 10, width: 600 }}
+                    <input style={{ marginBottom: 10, width: 600 }}
+                           onChange={e => DateHandler(e)} onBlur={e => blurHandler(e)} name='Date' style={{ marginBottom: 10, width: 600 }}
                            type="date"
                            className="form-control col-4"
                            id="date"

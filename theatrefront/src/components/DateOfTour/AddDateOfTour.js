@@ -93,7 +93,9 @@ const AddDateOfTour = () => {
                 <div className="form-group">
                     {(dateStartError) && <div style={{ color: "red", marginBottom: 5 }}>{dateStartError}</div>}
                     <label style={{ marginBottom: 10 }}>Дата начала тура:</label>
-                    <input onChange={e => DateStartHandler(e)} style={{ marginBottom: 10 }} type="date"
+                    <input onChange={e => DateStartHandler(e)}
+                           type="date"
+                           style={{ marginBottom: 10, width: 600 }}
                            className="form-control"
                            id="dateStart"
                            value={dateStart}
@@ -102,7 +104,9 @@ const AddDateOfTour = () => {
                 <div className="form-group">
                     {(dateEndError) && <div style={{ color: "red", marginBottom: 5 }}>{dateEndError}</div>}
                     <label style={{ marginBottom: 10 }}>Дата конца тура:</label>
-                    <input onChange={e => DateEndHandler(e)} style={{ marginBottom: 10 }} type="date"
+                    <input onChange={e => DateEndHandler(e)}
+                           type="date"
+                           style={{ marginBottom: 10, width: 600 }}
                            className="form-control"
                            id="dateEnd"
                            value={dateEnd}
@@ -113,6 +117,7 @@ const AddDateOfTour = () => {
                     <select
                         onChange={e => PerformanceHandler(Number(e.target.value))}
                         className='form-select'
+                        style={{ marginBottom: 10, width: 600 }}
                         id="performance">
                         <option>Выберите представление</option>
                         {

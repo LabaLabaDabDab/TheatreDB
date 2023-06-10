@@ -20,7 +20,7 @@ public class Musician {
     @GenericGenerator(name = "pet_seq", strategy = "increment")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 

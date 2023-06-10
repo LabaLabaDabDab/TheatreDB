@@ -3,6 +3,7 @@ package nsu.theatre.service;
 import nsu.theatre.dto.DirectorDTO;
 import nsu.theatre.entity.Director;
 import nsu.theatre.entity.Employee;
+import nsu.theatre.entity.Musician;
 import nsu.theatre.exception.NotFoundException;
 import nsu.theatre.mapper.DirectorMapper;
 import nsu.theatre.mapper.EmployeeMapper;
@@ -62,7 +63,9 @@ public class DirectorService {
     }
 
     public void deleteDirector(Long id) {
-        directorRepository.deleteById(id);
+        Director director = directorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Director not found with id: " + id));
+        directorRepository.delete(director);
     }
 
     public DirectorDTO updateDirector(Long id, DirectorDTO directorDTO) {

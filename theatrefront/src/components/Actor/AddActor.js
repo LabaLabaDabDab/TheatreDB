@@ -161,7 +161,6 @@ const AddActor = () => {
                     </select>
                 </div>
 
-
                 <div>
                     <button disabled={!formValid} style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
                             onClick={(e) => saveActor(e)}>

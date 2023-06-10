@@ -64,6 +64,15 @@ import UpdateDateOfPerformance from "./components/DateOfPerformance/UpdateDateOf
 import AddDirector from "./components/Director/AddDirector";
 import UpdateDirector from "./components/Director/UpdateDirector";
 
+import AddEmployeeType from "./components/EmployeeType/AddEmployeeType";
+import UpdateEmployeeType from "./components/EmployeeType/UpdateEmployeeType";
+
+import AddEmployee from "./components/Employee/AddEmployee";
+import UpdateEmployee from "./components/Employee/UpdateEmployee";
+
+import AddMusician from "./components/Musician/AddMusician";
+import UpdateMusician from "./components/Musician/UpdateMusician";
+
 function App() {
     return (
         <div className="App">
@@ -127,7 +136,6 @@ function App() {
                     <Route path="/date_of_performance/add" component={AddDateOfPerformance} />
                     <Route path="/date_of_performance/edit/:id" component={UpdateDateOfPerformance} />
 
-
                     <Route path={"/directors"} exact>
                         <DirectorPage/>
                     </Route>
@@ -137,10 +145,14 @@ function App() {
                     <Route path={"/employees"} exact>
                         <EmployeePage/>
                     </Route>
+                    <Route path="/employees/add" component={AddEmployee} />
+                    <Route path="/employees/edit/:id" component={UpdateEmployee} />
 
                     <Route path={"/employees_type"} exact>
                         <EmployeeTypePage/>
                     </Route>
+                    <Route path="/employees_type/add" component={AddEmployeeType} />
+                    <Route path="/employees_type/edit/:id" component={UpdateEmployeeType} />
 
                     <Route path={"/genders"} exact>
                         <GenderPage/>
@@ -157,6 +169,8 @@ function App() {
                     <Route path={"/musicians"} exact>
                         <MusicianPage/>
                     </Route>
+                    <Route path="/musicians/edit/:id" component={UpdateMusician} />
+                    <Route path="/musicians/add" component={AddMusician} />
 
                     <Route path={"/performances"} exact>
                         <PerformancePage/>

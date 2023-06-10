@@ -1,28 +1,28 @@
 import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import directorService from "../../service/DirectorService";
+import musicianService from "../../service/MusicianService";
 import employeeService from "../../service/EmployeeService";
 
-const UpdateDirector = () => {
+const UpdateMusician = () => {
 
     const [employee, setEmployee] = useState("");
-    const [existingDirectors, setExistingDirectors] = useState([]);
+    const [existingMusicians, setExistingMusicians] = useState([]);
     const [employees, setEmployees] = useState([]);
 
     const history = useHistory();
 
     let { id } = useParams();
 
-    const saveDirector = (e) => {
+    const saveMusician = (e) => {
         e.preventDefault();
 
-        const director = { employee: { id: Number(employee) } };
+        const musician = { employee: { id: Number(employee) } };
 
-        directorService.update(id, director)
+        musicianService.update(id, musician)
             .then(response => {
-                console.log('Director updated', response.data);
-                history.push('/directors');
+                console.log('Musician updated', response.data);
+                history.push('/musicians');
             })
             .catch(error => {
                 console.log('Something went wrong', error);
@@ -30,20 +30,20 @@ const UpdateDirector = () => {
     };
 
     useEffect(() => {
-        directorService.getAllList()
-            .then(directorResponse => {
-                const existingDirectors = directorResponse.data;
+        musicianService.getAllList()
+            .then(musicianResponse => {
+                const existingMusicians = musicianResponse.data;
 
-                directorService.get(id)
-                    .then(director => {
-                        const tempEmployee = director.data.employee.id;
+                musicianService.get(id)
+                    .then(musician => {
+                        const tempEmployee = musician.data.employee.id;
 
                         employeeService.getAllList()
                             .then(response => {
                                 console.log(response.data);
                                 let filteredEmployees = response.data.filter(employee =>
-                                    employee.type.type === "Директор" &&
-                                    (!existingDirectors.find(director => director.employee.id === employee.id) || employee.id === tempEmployee)
+                                    employee.type.type === "Музыкант" &&
+                                    (!existingMusicians.find(musician => musician.employee.id === employee.id) || employee.id === tempEmployee)
                                 );
                                 setEmployees(filteredEmployees);
                                 setEmployee(tempEmployee);
@@ -63,15 +63,15 @@ const UpdateDirector = () => {
 
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить директора</h3>
+            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить музыканта</h3>
             <form>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите директора:</label>
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите музыканта:</label>
                     <select style={{ marginBottom: 10, width: 600 }}
-                        className="form-control col-4"
-                        id="employee"
-                        value={employee}
-                        onChange={(e) => setEmployee(Number(e.target.value))}
+                            className="form-control col-4"
+                            id="employee"
+                            value={employee}
+                            onChange={(e) => setEmployee(Number(e.target.value))}
                     >
                         {employees && employees.map((employee) => (
                             <option key={employee.id} value={employee.id.toString()}>
@@ -82,14 +82,14 @@ const UpdateDirector = () => {
                 </div>
                 <div>
                     <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
-                            onClick={(e) => saveDirector(e)}>
+                            onClick={(e) => saveMusician(e)}>
                         Сохранить
                     </button>
-                    <Link to="/directors" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
+                    <Link to="/musicians" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
         </div>
     );
 };
 
-export default UpdateDirector;
+export default UpdateMusician;

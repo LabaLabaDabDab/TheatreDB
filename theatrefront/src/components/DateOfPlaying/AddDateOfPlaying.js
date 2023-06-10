@@ -107,6 +107,7 @@ const AddDateOfPlaying = () => {
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите дату проведения:</label>
                     <input onChange={e => DateOfPerformanceHandler(e)} onBlur={e => blurHandler(e)} name='dateOfPerformance' style={{ marginBottom: 10, width: 600 }}
                            type="date"
+                           style={{ marginBottom: 10, width: 600 }}
                            className="form-control col-4"
                            id="dateOfPerformance"
                            value={dateOfPerformance}

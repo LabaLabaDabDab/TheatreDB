@@ -63,6 +63,7 @@ const UpdateDateOfPlaying = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10 }}>Выберите дату игры:</label>
                     <input onChange={e => setDateOfPerformance(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="date"
                            className="form-control"
                            id="dateOfPerformance"
@@ -72,6 +73,7 @@ const UpdateDateOfPlaying = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10 }}>Выберите количество билетов:</label>
                     <input onChange={e => setTicketsCount(Number(e.target.value))}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="number"
                            className="form-control"
                            id="ticketsCount"
@@ -81,6 +83,7 @@ const UpdateDateOfPlaying = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10 }}>Это тур?</label>
                     <select onChange={e => setIsTour(e.target.value)}
+                            style={{ marginBottom: 10, width: 600 }}
                             className="form-control"
                             id="isTour"
                             value={isTour}>

@@ -136,6 +136,7 @@ const UpdateActorPlayingRole = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда актёр играет свою роль:</label>
                     <input onChange={e => setDate(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="date"
                            className="form-control col-4"
                            id="date"
@@ -146,6 +147,7 @@ const UpdateActorPlayingRole = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите является ли роль главной:</label>
                     <select onChange={e => setMainRole(e)}
+                            style={{ marginBottom: 10, width: 600 }}
                             className="form-control col-4"
                             id="mainRole"
                             value={mainRole}>

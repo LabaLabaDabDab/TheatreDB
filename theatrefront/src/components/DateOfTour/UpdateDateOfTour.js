@@ -87,8 +87,9 @@ const UpdateDateOfTour = () => {
             <h3 style={{ marginTop: 20, marginBottom: 20 }}>Обновить дату тура</h3>
             <form>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10 }}>Дата начала:</label>
-                    <input onChange={e => setDateStart(e.target.value)} style={{ marginBottom: 10 }}
+                    <label>Дата начала:</label>
+                    <input onChange={e => setDateStart(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="date"
                            className="form-control"
                            id="dateStart"
@@ -96,19 +97,22 @@ const UpdateDateOfTour = () => {
                     />
                 </div>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10 }}>Дата конца:</label>
-                    <input onChange={handleDateEndChange} style={{ marginBottom: 10 }} type="date"
+                    <label>Дата конца:</label>
+                    <input onChange={handleDateEndChange} style={{ marginBottom: 10 }}
+                           style={{ marginBottom: 10, width: 600 }}
+                           type="date"
                            className="form-control"
                            id="dateEnd"
                            value={dateEnd}
                     />
                 </div>
                 <div>
-                    <label style={{ marginBottom: 10 }}>Выберите представление:</label>
+                    <label>Выберите представление:</label>
                     <select
                         className='form-select'
                         id="performance"
                         value={performance}
+                        style={{ marginBottom: 10, width: 600 }}
                         onChange={e => setPerformance(Number(e.target.value))}>
                         {
                             performances && performances.map((performance) => (

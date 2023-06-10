@@ -92,6 +92,7 @@ const UpdateActor = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Введите рост актёра:</label>
                     <input onChange={e => setHeight(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="number"
                            className="form-control col-4"
                            id="height"

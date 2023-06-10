@@ -5,6 +5,7 @@ import nsu.theatre.dto.MusicianDTO;
 import nsu.theatre.entity.Employee;
 import nsu.theatre.entity.Musician;
 import nsu.theatre.exception.NotFoundException;
+import nsu.theatre.mapper.EmployeeMapper;
 import nsu.theatre.mapper.MusicianMapper;
 import nsu.theatre.repository.EmployeeRepository;
 import nsu.theatre.repository.MusicianRepository;
@@ -22,12 +23,14 @@ public class MusicianService {
     private final MusicianRepository musicianRepository;
     private final EmployeeRepository employeeRepository;
     private final MusicianMapper musicianMapper;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public MusicianService(MusicianRepository musicianRepository, EmployeeRepository employeeRepository, MusicianMapper musicianMapper) {
+    public MusicianService(MusicianRepository musicianRepository, EmployeeRepository employeeRepository, MusicianMapper musicianMapper, EmployeeMapper employeeMapper) {
         this.musicianRepository = musicianRepository;
         this.employeeRepository = employeeRepository;
         this.musicianMapper = musicianMapper;
+        this.employeeMapper = employeeMapper;
     }
 
     public Page<MusicianDTO> getAllMusicians(Integer pageNo, Integer pageSize) {
@@ -53,7 +56,8 @@ public class MusicianService {
     public MusicianDTO createMusician(MusicianDTO musicianDTO) {
         Employee employee = employeeRepository.findById(musicianDTO.getEmployee().getId()).
                 orElseThrow(() -> new RuntimeException("Employee not found"));
-        System.out.println(employee);
+
+        musicianDTO.setEmployee(employeeMapper.toDTO(employee));
         Musician musician = musicianMapper.toEntity(musicianDTO);
         Musician savedMusician = musicianRepository.save(musician);
         return musicianMapper.toDTO(savedMusician);
@@ -66,8 +70,10 @@ public class MusicianService {
     }
 
     public MusicianDTO updateMusician(Long id, MusicianDTO musicianDTO) {
-        Musician musician = musicianRepository.findById(id).orElseThrow(() -> new NotFoundException("Musician not found with id: " + id));
-        Employee employee = employeeRepository.findById(musicianDTO.getEmployee().getId()).orElseThrow(() -> new RuntimeException("Employee not found"));
+        Musician musician = musicianRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Musician not found with id: " + id));
+        Employee employee = employeeRepository.findById(musicianDTO.getEmployee().getId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
         musician.setEmployee(employee);
 
         Musician updatedMusician = musicianRepository.save(musician);

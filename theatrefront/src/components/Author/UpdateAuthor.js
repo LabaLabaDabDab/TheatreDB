@@ -119,6 +119,7 @@ const UpdateAuthor = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Введите имя автора:</label>
                     <input onChange={e => setName(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="text"
                            className="form-control col-4"
                            id="name"
@@ -163,6 +164,7 @@ const UpdateAuthor = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда родился автор:</label>
                     <input onChange={e => setBirthDate(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="date"
                            className="form-control col-4"
                            id="birthDate"
@@ -173,6 +175,7 @@ const UpdateAuthor = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Выберите дату, когда умер автор:</label>
                     <input onChange={handleDeathDateChange}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="date"
                            className="form-control col-4"
                            id="deathDate"
@@ -183,6 +186,7 @@ const UpdateAuthor = () => {
                 <div className="form-group">
                     <label style={{ marginBottom: 10, width: 600 }}>Введите название произведения:</label>
                     <input onChange={e => setTitle(e.target.value)}
+                           style={{ marginBottom: 10, width: 600 }}
                            type="text"
                            className="form-control col-4"
                            id="title"

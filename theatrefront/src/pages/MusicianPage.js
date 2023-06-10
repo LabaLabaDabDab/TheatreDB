@@ -29,7 +29,7 @@ export default function MusicianPage({
     const init = (currentPage)  => {
         musicianService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
-                console.log('Director data', response.data);
+                console.log('Musician data', response.data);
                 setMusician(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setTotalElements(response.data.totalElements);
@@ -44,7 +44,7 @@ export default function MusicianPage({
     const handleDelete = id => {
         musicianService.remove(id)
             .then(response => {
-                console.log('Actor deleted', response.data);
+                console.log('Musician deleted', response.data);
                 init(currentPage);
             })
             .catch(error => {
@@ -85,7 +85,7 @@ export default function MusicianPage({
         <div>
             <h2>Музыканты</h2>
             <div className={"table-container"}>
-                <Link to="/achievement/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/musicians/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
