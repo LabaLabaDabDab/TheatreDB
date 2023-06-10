@@ -73,6 +73,12 @@ import UpdateEmployee from "./components/Employee/UpdateEmployee";
 import AddMusician from "./components/Musician/AddMusician";
 import UpdateMusician from "./components/Musician/UpdateMusician";
 
+import AddRole from "./components/Role/AddRole";
+import UpdateRole from "./components/Role/UpdateRole";
+
+import AddTickets from "./components/Tickets/AddTickets";
+import UpdateTickets from "./components/Tickets/UpdateTickets";
+
 function App() {
     return (
         <div className="App">
@@ -183,10 +189,15 @@ function App() {
                     <Route path={"/roles"} exact>
                         <RolePage/>
                     </Route>
+                    <Route path="/roles/add" component={AddRole} />
+                    <Route path="/roles/edit/:id" component={UpdateRole} />
 
                     <Route path={"/tickets"} exact>
                         <TicketsPage/>
                     </Route>
+                    <Route path="/tickets/add" component={AddTickets} />
+                    <Route path="/tickets/edit/:id" component={UpdateTickets} />
+
 
                     <Route path={"/ticket_number"} exact>
                         <TicketNumberPage/>

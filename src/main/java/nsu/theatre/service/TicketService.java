@@ -5,9 +5,15 @@ import nsu.theatre.dto.filter.FreeSeatsFilterDTO;
 import nsu.theatre.dto.filter.SoldTicketsCountFilterDTO;
 import nsu.theatre.dto.filter.TotalRevenueFilterDTO;
 import nsu.theatre.dto.response.*;
+import nsu.theatre.entity.DateOfPlaying;
+import nsu.theatre.entity.Performance;
 import nsu.theatre.entity.Ticket;
 import nsu.theatre.exception.NotFoundException;
+import nsu.theatre.mapper.DateOfPlayingMapper;
+import nsu.theatre.mapper.PerformanceMapper;
 import nsu.theatre.mapper.TicketMapper;
+import nsu.theatre.repository.DateOfPlayingRepository;
+import nsu.theatre.repository.PerformanceRepository;
 import nsu.theatre.repository.TicketRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +29,18 @@ import java.util.stream.Collectors;
 public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
+    private final PerformanceMapper performanceMapper;
+    private final PerformanceRepository performanceRepository;
+    private final DateOfPlayingMapper dateOfPlayingMapper;
+    private final DateOfPlayingRepository dateOfPlayingRepository;
 
-    public TicketService(TicketRepository ticketRepository, TicketMapper ticketMapper) {
+    public TicketService(TicketRepository ticketRepository, TicketMapper ticketMapper, PerformanceMapper performanceMapper, PerformanceRepository performanceRepository, DateOfPlayingMapper dateOfPlayingMapper, DateOfPlayingRepository dateOfPlayingRepository) {
         this.ticketRepository = ticketRepository;
         this.ticketMapper = ticketMapper;
+        this.performanceMapper = performanceMapper;
+        this.performanceRepository = performanceRepository;
+        this.dateOfPlayingMapper = dateOfPlayingMapper;
+        this.dateOfPlayingRepository = dateOfPlayingRepository;
     }
 
     public Page<TicketDTO> getAllTickets(Integer pageNo, Integer pageSize) {
@@ -49,17 +63,33 @@ public class TicketService {
     }
 
     public TicketDTO createTicket(TicketDTO ticketDTO) {
+        Performance performance = performanceRepository.findById(ticketDTO.getPerformance().getId())
+                .orElseThrow(() -> new NotFoundException("performance not found with id: " + ticketDTO.getPerformance().getId()));
+        DateOfPlaying dateOfPlaying = dateOfPlayingRepository.findById(ticketDTO.getDate().getId())
+                .orElseThrow(() -> new NotFoundException("dateOfPlaying not found with id: " + ticketDTO.getDate().getId()));
+
+        ticketDTO.setPerformance(performanceMapper.toDTO(performance));
+        ticketDTO.setDate(dateOfPlayingMapper.toDTO(dateOfPlaying));
+
         Ticket ticket = ticketMapper.toEntity(ticketDTO);
         Ticket createdTicket = ticketRepository.save(ticket);
         return ticketMapper.toDTO(createdTicket);
     }
 
     public TicketDTO updateTicket(Long id, TicketDTO ticketDTO) {
+        Performance performance = performanceRepository.findById(ticketDTO.getPerformance().getId())
+                .orElseThrow(() -> new NotFoundException("performance not found with id: " + ticketDTO.getPerformance().getId()));
+        DateOfPlaying dateOfPlaying = dateOfPlayingRepository.findById(ticketDTO.getDate().getId())
+                .orElseThrow(() -> new NotFoundException("dateOfPlaying not found with id: " + ticketDTO.getDate().getId()));
+
         Ticket existingTicket = ticketRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Ticket not found with id: " + id));
-        Ticket updateTicket = ticketMapper.toEntity(ticketDTO);
-        updateTicket.setId(existingTicket.getId());
-        Ticket savedTicket = ticketRepository.save(updateTicket);
+
+        existingTicket.setPrice(ticketDTO.getPrice());
+        existingTicket.setPerformance(performance);
+        existingTicket.setDate(dateOfPlaying);
+
+        Ticket savedTicket = ticketRepository.save(existingTicket);
         return ticketMapper.toDTO(savedTicket);
     }
 
