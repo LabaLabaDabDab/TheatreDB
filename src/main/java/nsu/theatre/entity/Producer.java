@@ -23,7 +23,4 @@ public class Producer {
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
-
-    @OneToMany
-    List<Performance> performances;
 }

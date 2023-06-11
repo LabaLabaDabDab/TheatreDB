@@ -79,6 +79,12 @@ import UpdateRole from "./components/Role/UpdateRole";
 import AddTickets from "./components/Tickets/AddTickets";
 import UpdateTickets from "./components/Tickets/UpdateTickets";
 
+import AddTicketNumber from "./components/TicketNumber/AddTicketNumber";
+import AddProducer from "./components/Producer/AddProducer";
+import UpdateProducer from "./components/Producer/UpdateProducer";
+import AddPerformance from "./components/Performance/AddPerformance";
+import UpdatePerformance from "./components/Performance/UpdatePerformance";
+
 function App() {
     return (
         <div className="App">
@@ -181,10 +187,14 @@ function App() {
                     <Route path={"/performances"} exact>
                         <PerformancePage/>
                     </Route>
+                    <Route path="/performances/add" component={AddPerformance} />
+                    <Route path="/performances/edit/:id" component={UpdatePerformance} />
 
                     <Route path={"/producers"} exact>
                         <ProducerPage/>
                     </Route>
+                    <Route path="/producers/add" component={AddProducer} />
+                    <Route path="/producers/edit/:id" component={UpdateProducer} />
 
                     <Route path={"/roles"} exact>
                         <RolePage/>
@@ -202,6 +212,7 @@ function App() {
                     <Route path={"/ticket_number"} exact>
                         <TicketNumberPage/>
                     </Route>
+                    <Route path="/ticket_number/add" component={AddTicketNumber} />
 
                     <Route path="/request" exact>
                         <HeaderRequest />

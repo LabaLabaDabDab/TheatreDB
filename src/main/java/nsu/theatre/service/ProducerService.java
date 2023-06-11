@@ -4,6 +4,7 @@ import nsu.theatre.dto.ProducerDTO;
 import nsu.theatre.entity.Employee;
 import nsu.theatre.entity.Producer;
 import nsu.theatre.exception.NotFoundException;
+import nsu.theatre.mapper.EmployeeMapper;
 import nsu.theatre.mapper.ProducerMapper;
 import nsu.theatre.repository.EmployeeRepository;
 import nsu.theatre.repository.ProducerRepository;
@@ -21,12 +22,14 @@ public class ProducerService {
     private final ProducerRepository producerRepository;
     private final EmployeeRepository employeeRepository;
     private final ProducerMapper producerMapper;
+    private final EmployeeMapper employeeMapper;
 
     @Autowired
-    public ProducerService(ProducerRepository producerRepository, EmployeeRepository employeeRepository, ProducerMapper producerMapper) {
+    public ProducerService(ProducerRepository producerRepository, EmployeeRepository employeeRepository, ProducerMapper producerMapper, EmployeeMapper employeeMapper) {
         this.producerRepository = producerRepository;
         this.employeeRepository = employeeRepository;
         this.producerMapper = producerMapper;
+        this.employeeMapper = employeeMapper;
     }
 
     public Page<ProducerDTO> getAllProducers(Integer pageNo, Integer pageSize) {
@@ -51,7 +54,8 @@ public class ProducerService {
     public ProducerDTO createProducer(ProducerDTO producerDTO) {
         Employee employee = employeeRepository.findById(producerDTO.getEmployee().getId()).
                 orElseThrow(() -> new RuntimeException("Employee not found"));
-        System.out.println(employee);
+
+        producerDTO.setEmployee(employeeMapper.toDTO(employee));
         Producer producer = producerMapper.toEntity(producerDTO);
         Producer savedProducer = producerRepository.save(producer);
         return producerMapper.toDTO(savedProducer);
@@ -65,7 +69,8 @@ public class ProducerService {
 
     public ProducerDTO updateProducer(Long id, ProducerDTO producerDTO) {
         Producer producer = producerRepository.findById(id).orElseThrow(() -> new NotFoundException("Producer not found with id: " + id));
-        Employee employee = employeeRepository.findById(producerDTO.getEmployee().getId()).orElseThrow(() -> new RuntimeException("Employee not found"));
+        Employee employee = employeeRepository.findById(producerDTO.getEmployee().getId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
         producer.setEmployee(employee);
 
         Producer updatedProducer = producerRepository.save(producer);

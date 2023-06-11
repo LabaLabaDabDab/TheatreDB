@@ -9,6 +9,5 @@ import nsu.theatre.entity.Performance;
 public class TicketDTO {
     private Long id;
     private Short price;
-    private PerformanceDTO performance;
-    private DateOfPlayingDTO date;
+    private DatePerformanceDTO datePerformance;
 }

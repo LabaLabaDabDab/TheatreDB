@@ -3,12 +3,20 @@ package nsu.theatre.service;
 import nsu.theatre.dto.PerformanceDTO;
 import nsu.theatre.dto.filter.PerformanceByAuthorFilterDTO;
 import nsu.theatre.dto.filter.PerformanceDetailsDTO;
-import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
 import nsu.theatre.dto.response.ResponsePerformanceByAuthorDTO;
 import nsu.theatre.dto.response.ResponsePerformanceDetailsDTO;
+import nsu.theatre.entity.Author;
+import nsu.theatre.entity.Director;
+import nsu.theatre.entity.Musician;
 import nsu.theatre.entity.Performance;
 import nsu.theatre.exception.NotFoundException;
+import nsu.theatre.mapper.AuthorMapper;
+import nsu.theatre.mapper.DirectorMapper;
+import nsu.theatre.mapper.MusicianMapper;
 import nsu.theatre.mapper.PerformanceMapper;
+import nsu.theatre.repository.AuthorRepository;
+import nsu.theatre.repository.DirectorRepository;
+import nsu.theatre.repository.MusicianRepository;
 import nsu.theatre.repository.PerformanceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,10 +32,22 @@ import java.util.stream.Collectors;
 public class PerformanceService {
     private final PerformanceRepository performanceRepository;
     private final PerformanceMapper performanceMapper;
+    private final AuthorMapper authorMapper;
+    private final AuthorRepository authorRepository;
+    private final DirectorMapper directorMapper;
+    private final DirectorRepository directorRepository;
+    private final MusicianMapper musicianMapper;
+    private final MusicianRepository musicianRepository;
 
-    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper) {
+    public PerformanceService(PerformanceRepository performanceRepository, PerformanceMapper performanceMapper, AuthorMapper authorMapper, AuthorRepository authorRepository, DirectorMapper directorMapper, DirectorRepository directorRepository, MusicianMapper musicianMapper, MusicianRepository musicianRepository) {
         this.performanceRepository = performanceRepository;
         this.performanceMapper = performanceMapper;
+        this.authorMapper = authorMapper;
+        this.authorRepository = authorRepository;
+        this.directorMapper = directorMapper;
+        this.directorRepository = directorRepository;
+        this.musicianMapper = musicianMapper;
+        this.musicianRepository = musicianRepository;
     }
 
     public Page<PerformanceDTO> getAllPerformances(Integer pageNo, Integer pageSize) {
@@ -50,17 +70,43 @@ public class PerformanceService {
     }
 
     public PerformanceDTO createPerformance(PerformanceDTO performanceDTO) {
+        Author author = authorRepository.findById(performanceDTO.getAuthor().getId())
+                .orElseThrow(() -> new NotFoundException("Author not found with id: " + performanceDTO.getAuthor().getId()));
+        Musician musician = musicianRepository.findById(performanceDTO.getMusician().getId())
+                .orElseThrow(() -> new NotFoundException("Musician not found with id: " + performanceDTO.getMusician().getId()));
+        Director director = directorRepository.findById(performanceDTO.getDirector().getId())
+                .orElseThrow(() -> new NotFoundException("Director not found with id: " + performanceDTO.getDirector().getId()));
+
+        performanceDTO.setAuthor(authorMapper.toDTO(author));
+        performanceDTO.setDirector(directorMapper.toDTO(director));
+        performanceDTO.setMusician(musicianMapper.toDTO(musician));
+
         Performance performance = performanceMapper.toEntity(performanceDTO);
+        performance.setAuthor(author);
+        performance.setMusician(musician);
+        performance.setDirector(director);
         Performance savedPerformance = performanceRepository.save(performance);
         return performanceMapper.toDTO(savedPerformance);
     }
 
     public PerformanceDTO updatePerformance(Long id, PerformanceDTO performanceDTO) {
+        Author author = authorRepository.findById(performanceDTO.getAuthor().getId())
+                .orElseThrow(() -> new NotFoundException("Author not found with id: " + performanceDTO.getAuthor().getId()));
+        Musician musician = musicianRepository.findById(performanceDTO.getMusician().getId())
+                .orElseThrow(() -> new NotFoundException("Musician not found with id: " + performanceDTO.getMusician().getId()));
+        Director director = directorRepository.findById(performanceDTO.getDirector().getId())
+                .orElseThrow(() -> new NotFoundException("Director not found with id: " + performanceDTO.getDirector().getId()));
         Performance existingPerformance = performanceRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Performance not found with id: " + id));
-        Performance updatedPerformance = performanceMapper.toEntity(performanceDTO);
-        updatedPerformance.setId(existingPerformance.getId());
-        Performance savedPerformance = performanceRepository.save(updatedPerformance);
+
+        existingPerformance.setAuthor(author);
+        existingPerformance.setDirector(director);
+        existingPerformance.setMusician(musician);
+        existingPerformance.setLimit(performanceDTO.getAgeLimit());
+        existingPerformance.setTime(performanceDTO.getTimeDuration());
+        existingPerformance.setPremiere(performanceDTO.getPremiereDate());
+
+        Performance savedPerformance = performanceRepository.save(existingPerformance);
         return performanceMapper.toDTO(savedPerformance);
     }
 

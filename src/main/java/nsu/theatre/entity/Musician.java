@@ -24,6 +24,4 @@ public class Musician {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
-    @OneToMany
-    List<Performance> performances;
 }

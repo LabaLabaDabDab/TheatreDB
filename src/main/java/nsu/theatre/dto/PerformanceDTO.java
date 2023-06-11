@@ -13,5 +13,4 @@ public class PerformanceDTO {
     private Long timeDuration;
     private DirectorDTO director;
     private MusicianDTO musician;
-    private ProducerDTO producer;
 }

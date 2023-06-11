@@ -1,13 +1,7 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
 import ticketNumberService from "../service/TicketNumberService";
@@ -29,7 +23,7 @@ export default function TicketNumberPage({
     const init = (currentPage)  => {
         ticketNumberService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
-                console.log('Role data', response.data);
+                console.log('ticket_number data', response.data);
                 setTicketNumber(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setTotalElements(response.data.totalElements);
@@ -44,7 +38,7 @@ export default function TicketNumberPage({
     const handleDelete = id => {
         ticketNumberService.remove(id)
             .then(response => {
-                console.log('Role deleted', response.data);
+                console.log('ticket_number deleted', response.data);
                 init(currentPage);
             })
             .catch(error => {
@@ -89,7 +83,8 @@ export default function TicketNumberPage({
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
-                        <th>ID билетов</th>
+                        <th>Дата</th>
+                        <th>Представление</th>
                         <th>Номер билета</th>
                         <th>Продан</th>
                         <th>Действия</th>
@@ -99,11 +94,12 @@ export default function TicketNumberPage({
                     {
                         ticketNumber.map(obj => (
                             <tr key={`${obj.id?.ticketId}.${obj.id?.number_ticketId}`}>
-                                <td style={{ fontSize: "14px" }}>{obj.id?.ticketId}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.ticket?.datePerformance?.date?.dateOfPerformance}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.ticket?.datePerformance?.performance?.author?.title}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.id?.number_ticketId}</td>
                                 <td style={{ fontSize: "14px" }}>{String(obj.isSold)}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/ticket_number/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/ticket_number/edit/${obj.id?.ticketId}.${obj.id?.number_ticketId}`} className='btn btn-danger'>Изменить</Link>
                                     <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>

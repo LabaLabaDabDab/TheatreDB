@@ -10,14 +10,12 @@ public class PerformanceMapper {
     private final AuthorMapper authorMapper;
     private final DirectorMapper directorMapper;
     private final MusicianMapper musicianMapper;
-    private final ProducerMapper producerMapper;
 
     @Autowired
-    public PerformanceMapper(AuthorMapper authorMapper, DirectorMapper directorMapper, MusicianMapper musicianMapper, ProducerMapper producerMapper) {
+    public PerformanceMapper(AuthorMapper authorMapper, DirectorMapper directorMapper, MusicianMapper musicianMapper) {
         this.authorMapper = authorMapper;
         this.directorMapper = directorMapper;
         this.musicianMapper = musicianMapper;
-        this.producerMapper = producerMapper;
     }
 
     public PerformanceDTO toDTO(Performance performance) {
@@ -29,7 +27,6 @@ public class PerformanceMapper {
         performanceDTO.setTimeDuration(performance.getTime());
         performanceDTO.setDirector(directorMapper.toDTO(performance.getDirector()));
         performanceDTO.setMusician(musicianMapper.toDTO(performance.getMusician()));
-        performanceDTO.setProducer(producerMapper.toDTO(performance.getProducer()));
 
         return performanceDTO;
     }
@@ -43,7 +40,6 @@ public class PerformanceMapper {
         performance.setTime(performanceDTO.getTimeDuration());
         performance.setDirector(directorMapper.toEntity(performanceDTO.getDirector()));
         performance.setMusician(musicianMapper.toEntity(performanceDTO.getMusician()));
-        performance.setProducer(producerMapper.toEntity(performanceDTO.getProducer()));
 
         return performance;
     }

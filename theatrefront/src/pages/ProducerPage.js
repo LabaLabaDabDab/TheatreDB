@@ -85,7 +85,7 @@ export default function MusicianPage({
         <div>
             <h2>Продюсеры</h2>
             <div className={"table-container"}>
-                <Link to="/producer/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/producers/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
@@ -101,7 +101,7 @@ export default function MusicianPage({
                                 <td style={{ fontSize: "14px" }}>{obj.id}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.employee.fio}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/producer/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/producers/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>

@@ -1,105 +1,58 @@
 import {Link, useHistory} from "react-router-dom";
 import { useState, useEffect } from "react";
-import performanceService from "../../service/PerformanceService";
-import dateOfPlayingService from "../../service/DateOfPlayingService";
 import ticketsService from "../../service/TicketsService";
+import dateOfPerformanceService from "../../service/DateOfPerformanceService";
 
-const AddTickets = () => {
-    const [price, setPrice] = useState(Number);
-    const [performance, setPerformance] = useState("");
-    const [date, setDate] = useState("");
-
-    const [performances, setPerformances] = useState([]);
-    const [dates, setDates] = useState([]);
-
-    const [priceDirty, setPriceDirty] = useState(false);
-    const [performanceDirty, setPerformanceDirty] = useState(false);
-    const [dateDirty, setDateDirty] = useState(false);
-
-    const [priceError, setPriceError] = useState('Поле не может быть пустым');
-    const [performanceError, setPerformanceError] = useState('Поле не может быть пустым');
-    const [dateError, setDateError] = useState('Поле не может быть пустым');
-
+const AddTicket = () => {
+    const [price, setPrice] = useState("");
+    const [datePerformance, setDatePerformance] = useState("");
+    const [datePerformances, setDatePerformances] = useState([]);
     const [formValid, setFormValid] = useState(false);
 
     const history = useHistory();
 
     useEffect(() => {
-        init();
+        ticketsService.getAllList()
+            .then(ticketResponse => {
+                const existingTickets = ticketResponse.data;
+
+                dateOfPerformanceService.getAllList()
+                    .then(response => {
+                        console.log(response.data);
+                        let filteredDatePerformances = response.data.filter(date =>
+                            !existingTickets.find(ticket =>
+                                ticket.datePerformance.id.dateId === date.date.id &&
+                                ticket.datePerformance.id.performanceId === date.performance.id
+                            )
+                        );
+                        setDatePerformances(filteredDatePerformances);
+                    })
+                    .catch(error => {
+                        console.log('Something went wrong', error);
+                    })
+            })
+            .catch(error => {
+                console.log('Something went wrong', error);
+            })
     }, []);
 
-    const init = () => {
-        performanceService.getAllList()
-            .then(response => {
-                console.log(response.data);
-                setPerformances(response.data);
-            })
-            .catch(error => {
-                console.log('Something went wrong', error);
-            });
-        dateOfPlayingService.getAllList()
-            .then(response => {
-                console.log(response.data);
-                setDates(response.data);
-            })
-            .catch(error => {
-                console.log('Something went wrong', error);
-            });
-    }
 
     useEffect(() => {
-        if (priceError || performanceError || dateError) {
-            setFormValid(false);
+        if (!price || !datePerformance) {
+            setFormValid(false)
         } else {
-            setFormValid(true);
+            setFormValid(true)
         }
-    }, [priceError, performanceError, dateError])
+    }, [price, datePerformance])
 
-    const blurHandler = (e) => {
-        switch (e.target.name) {
-            case 'price':
-                setPriceDirty(true)
-                break
-            case 'performance':
-                setPerformanceDirty(true)
-                break
-            case 'date':
-                setDateDirty(true)
-                break
-        }
-    }
-
-    const PriceHandler = (e) => {
-        let value = e.target.value;
-        setPrice(value);
-        if (!value || value === '')
-            setPriceError('Поле не может быть пустым');
-        else if (value <= 0)
-            setPriceError('Цена должна быть больше 0');
-        else
-            setPriceError('');
-    }
-
-    const PerformanceHandler = (value) => {
-        setPerformance(value);
-        if (!value)
-            setPerformanceError('Поле не может быть пустым');
-        else setPerformanceError('');
-    }
-
-    const DateHandler = (value) => {
-        setDate(value);
-        if (!value)
-            setDateError('Поле не может быть пустым');
-        else setDateError('');
-    }
 
     const saveTicket = (e) => {
         e.preventDefault();
-        const ticket = {
-            price,
-            performance: {id: Number(performance)},
-            date: {id: Number(date)}
+        const ticket  = {
+            price: Number(price),
+            datePerformance: {
+                id: datePerformance
+            }
         };
 
         console.log(ticket);
@@ -113,56 +66,38 @@ const AddTickets = () => {
             });
     };
 
+
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Добавить группу билетов</h3>
+            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Добавить Билет</h3>
             <form>
-                <div className="form-group">
-                    {(priceError && priceDirty) && <div style={{ color: "#D10000", marginLeft: 2, marginBottom: 5 }}>{priceError}</div>}
-                    <label style={{ marginBottom: 10, width: 600 }}>Введите цену:</label>
-                    <input onChange={e => PriceHandler(e)} onBlur={e => blurHandler(e)} name='price' style={{ marginBottom: 10, width: 600 }}
-                           type="number"
-                           className="form-control col-4"
-                           id="price"
-                           value={price}
-                           placeholder="Введите цену"
-                    />
+                <div className="mb-3">
+                    <label htmlFor="price" className="form-label">Цена</label>
+                    <input type="number" className="form-control" id="price" onChange={e => setPrice(e.target.value)} />
                 </div>
-                <div>
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите произведение:</label>
+                <div className="mb-3">
+                    <label htmlFor="datePerformance" className="form-label">Представление</label>
                     <select
-                        onChange={e => PerformanceHandler(Number(e.target.value))}
-                        style={{ marginBottom: 10, width:600 }}
+                        onChange={e => {
+                            const [dateId, performanceId] = e.target.value.split("_");
+                            setDatePerformance({ dateId: Number(dateId), performanceId: Number(performanceId) });
+                        }}
                         className='form-select'
-                        id="performance">
-                        <option>Выберите произведение:</option>
+                        id="datePerformance">
+                        <option>Выберите представление:</option>
                         {
-                            performances && performances.map((performance) => (
-                                <option key={performance.id} value={performance.id.toString()}>
-                                    {performance.author.title}
+                            datePerformances && datePerformances.map((datePerformance) => (
+                                <option
+                                    key={`${datePerformance.date.id}_${datePerformance.performance.id}`}
+                                    value={`${datePerformance.date.id}_${datePerformance.performance.id}`}>
+                                    {datePerformance.date.dateOfPerformance}
+                                    {" "}
+                                    {datePerformance.performance.author.title}
                                 </option>
                             ))
                         }
                     </select>
                 </div>
-                <div>
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите дату:</label>
-                    <select
-                        onChange={e => DateHandler(Number(e.target.value))}
-                        style={{ marginBottom: 10, width:600 }}
-                        className='form-select'
-                        id="date">
-                        <option>Выберите дату:</option>
-                        {
-                            dates && dates.map((date) => (
-                                <option key={date.id} value={date.id.toString()}>
-                                    {date.dateOfPerformance}
-                                </option>
-                            ))
-                        }
-                    </select>
-                </div>
-
                 <div>
                     <button disabled={!formValid} style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
                             onClick={(e) => saveTicket(e)}>
@@ -175,4 +110,4 @@ const AddTickets = () => {
     );
 }
 
-export default AddTickets;
+export default AddTicket;

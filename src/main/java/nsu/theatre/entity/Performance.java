@@ -36,17 +36,11 @@ public class Performance {
     private Long time;
 
     @ManyToOne
-    @JoinColumn(name = "director_performance_id", referencedColumnName = "id", nullable = false,
-            foreignKey = @ForeignKey(name = "director_performance___fk"), insertable = false, updatable = false)
+    @JoinColumn(name = "director_performance_id")
     private Director director;
 
     @ManyToOne
-    @JoinColumn(name = "musician_id", referencedColumnName = "id", nullable = false,
-            foreignKey = @ForeignKey(name = "musician_perf___fk"), insertable = false, updatable = false)
+    @JoinColumn(name = "musician_id")
     private Musician musician;
 
-    @ManyToOne
-    @JoinColumn(name = "producer_id", referencedColumnName = "id", nullable = false,
-            foreignKey = @ForeignKey(name = "producer_perf___fk"), insertable = false, updatable = false)
-    private Producer producer;
 }

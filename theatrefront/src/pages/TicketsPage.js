@@ -1,13 +1,7 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
 import ticketsService from "../service/TicketsService";
@@ -45,7 +39,7 @@ export default function TicketsPage({
     const handleDelete = id => {
         ticketsService.remove(id)
             .then(response => {
-                console.log('Role deleted', response.data);
+                console.log('Tickets deleted', response.data);
                 init(currentPage);
             })
             .catch(error => {
@@ -103,8 +97,8 @@ export default function TicketsPage({
                             <tr key={obj.id}>
                                 <td style={{ fontSize: "14px" }}>{obj.id}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.price}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.performance.author.title}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.date.dateOfPerformance}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.datePerformance.performance.author.title}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.datePerformance.date.dateOfPerformance}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/tickets/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>

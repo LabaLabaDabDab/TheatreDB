@@ -1,13 +1,7 @@
 import React from "react";
 
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
-import Col from 'react-bootstrap/Col';
-import FormControl from 'react-bootstrap/FormControl';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Spinner from 'react-bootstrap/Spinner';
 
 import { Link } from 'react-router-dom';
 import performanceService from "../service/PerformanceService";
@@ -29,7 +23,7 @@ export default function MusicianPage({
     const init = (currentPage)  => {
         performanceService.getAll(currentPage - 1, recordPerPage)
             .then(response => {
-                console.log('Director data', response.data);
+                console.log('performances data', response.data);
                 setPerformance(response.data.content);
                 setTotalPages(response.data.totalPages);
                 setTotalElements(response.data.totalElements);
@@ -44,7 +38,7 @@ export default function MusicianPage({
     const handleDelete = id => {
         performanceService.remove(id)
             .then(response => {
-                console.log('Actor deleted', response.data);
+                console.log('performances deleted', response.data);
                 init(currentPage);
             })
             .catch(error => {
@@ -85,7 +79,7 @@ export default function MusicianPage({
         <div>
             <h2>Представления</h2>
             <div className={"table-container"}>
-                <Link to="/performance/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
+                <Link to="/performances/add" style={{ marginLeft: 10, marginTop: 10, color: 'white' }} className="btn btn-dark mb-2">Добавить</Link>
                 <Table style={{ width: '100%', marginTop: 20, marginRight: 40, marginLeft: 0 }} striped bordered hover variant="dark">
                     <thead >
                     <tr>
@@ -93,10 +87,10 @@ export default function MusicianPage({
                         <th>Возрастной рейтинг</th>
                         <th>Дата премьеры</th>
                         <th>Автор</th>
+                        <th>Произведение</th>
                         <th>Продолжительность</th>
                         <th>Директор</th>
                         <th>Музыкант</th>
-                        <th>Продюсер</th>
                         <th>Действия</th>
                     </tr>
                     </thead>
@@ -108,12 +102,12 @@ export default function MusicianPage({
                                 <td style={{ fontSize: "14px" }}>{obj.ageLimit}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.premiereDate}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.author.name}</td>
+                                <td style={{ fontSize: "14px" }}>{obj.author.title}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.timeDuration}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.director.employee.fio}</td>
                                 <td style={{ fontSize: "14px" }}>{obj.musician.employee.fio}</td>
-                                <td style={{ fontSize: "14px" }}>{obj.producer.employee.fio}</td>
                                 <td>
-                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/performance/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
+                                    <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/performances/edit/${obj.id}`} className='btn btn-danger'>Изменить</Link>
                                     <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>

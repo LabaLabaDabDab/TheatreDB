@@ -1,61 +1,52 @@
 import { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import performanceService from "../../service/PerformanceService";
-import dateOfPlayingService from "../../service/DateOfPlayingService";
+import { useHistory, useParams, Link } from "react-router-dom";
 import ticketsService from "../../service/TicketsService";
+import dateOfPerformanceService from "../../service/DateOfPerformanceService";
 
 const UpdateTickets = () => {
-    const [price, setPrice] = useState(Number);
-    const [performance, setPerformance] = useState("");
-    const [date, setDate] = useState("");
+    const [price, setPrice] = useState("");
+    const [datePerformance, setDatePerformance] = useState("");
+    const [datePerformances, setDatePerformances] = useState([]);
 
-    const [performances, setPerformances] = useState([]);
-    const [dates, setDates] = useState([]);
-
-    let { id } = useParams();
-
+    const { id } = useParams();
     const history = useHistory();
 
     useEffect(() => {
         ticketsService.get(id)
-            .then(response => {
-                const ticket = response.data;
+            .then(ticketResponse => {
+                const ticket = ticketResponse.data;
                 setPrice(ticket.price);
-                setPerformance(ticket.performance.id);
-                setDate(ticket.date.id);
 
-                performanceService.getAllList()
+                dateOfPerformanceService.getAllList()
                     .then(response => {
                         console.log(response.data);
-                        setPerformances(response.data);
+                        let filteredDatePerformances = response.data.filter(date =>
+                            !ticket.find(ticket =>
+                                ticket.datePerformance.id.dateId === date.date.id &&
+                                ticket.datePerformance.id.performanceId === date.performance.id
+                            )
+                        );
+                        setDatePerformances(filteredDatePerformances);
                     })
                     .catch(error => {
                         console.log('Something went wrong', error);
-                    });
-
-                dateOfPlayingService.getAllList()
-                    .then(response => {
-                        console.log(response.data);
-                        setDates(response.data);
                     })
-                    .catch(error => {
-                        console.log('Something went wrong', error);
-                    });
             })
             .catch(error => {
                 console.log('Something went wrong', error);
             });
-    }, [id])
+    }, [id]);
 
     const saveTicket = (e) => {
         e.preventDefault();
         const ticket = {
-            price,
-            performance: {id: Number(performance)},
-            date: {id: Number(date)}
+            price: Number(price),
+            datePerformance: {
+                id: datePerformance
+            }
         };
 
+        console.log(ticket);
         ticketsService.update(id, ticket)
             .then(response => {
                 console.log('Ticket updated', response.data);
@@ -70,56 +61,39 @@ const UpdateTickets = () => {
         <div className="container">
             <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить билет</h3>
             <form>
-                <div className="form-group">
-                    <label style={{ marginBottom: 10 }}>Цена:</label>
-                    <input onChange={e => setPrice(Number(e.target.value))}
-                           style={{ marginBottom: 10, width: 600 }}
-                           type="number"
-                           className="form-control"
-                           id="price"
-                           value={price}
-                    />
+                <div className="mb-3">
+                    <label htmlFor="price" className="form-label">Цена</label>
+                    <input type="number" className="form-control" id="price" value={price} onChange={e => setPrice(e.target.value)} />
                 </div>
-                <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Произведение:</label>
+                <div className="mb-3">
+                    <label htmlFor="datePerformance" className="form-label">Представление</label>
                     <select
-                        style={{ marginBottom: 10, width: 600 }}
-                        className="form-control col-4"
-                        id="performance"
-                        value={performance}
-                        onChange={(e) => setPerformance(Number(e.target.value))}>
+                        onChange={e => {
+                            const [dateId, performanceId] = e.target.value.split("_");
+                            setDatePerformance({ dateId: Number(dateId), performanceId: Number(performanceId) });
+                        }}
+                        className='form-select'
+                        id="datePerformance">
+                        value={datePerformance}
+                        <option>Выберите представление:</option>
                         {
-                            performances && performances.map((performance) => (
-                                <option key={performance.id} value={performance.id.toString()}>
-                                    {performance.author.title}
-                                </option>
-                            ))
-                        }
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Дата:</label>
-                    <select
-                        style={{ marginBottom: 10, width: 600 }}
-                        className="form-control col-4"
-                        id="date"
-                        value={date}
-                        onChange={(e) => setDate(Number(e.target.value))}>
-                        {
-                            dates && dates.map((date) => (
-                                <option key={date.id} value={date.id.toString()}>
-                                    {date.dateOfPerformance}
+                            datePerformances && datePerformances.map((datePerformance) => (
+                                <option
+                                    key={`${datePerformance.date.id}_${datePerformance.performance.id}`}
+                                    value={`${datePerformance.date.id}_${datePerformance.performance.id}`}>
+                                    {datePerformance.date.dateOfPerformance}
+                                    {" "}
+                                    {datePerformance.performance.author.title}
                                 </option>
                             ))
                         }
                     </select>
                 </div>
                 <div>
-                    <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
-                            onClick={(e) => saveTicket(e)}>
+                    <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2" onClick={(e) => saveTicket(e)}>
                         Сохранить
                     </button>
-                    <Link to="/tickets" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2">Назад</Link>
+                    <Link to="/tickets" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
         </div>
