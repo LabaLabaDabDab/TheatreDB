@@ -28,6 +28,13 @@ import ProducerPerformancePage from "./pages/ProducerPerformancePage";
 
 import HeaderRequest from "./components/HeaderRequest";
 import Request1Page from "./pages/Requests/Request1Page";
+import Request23Page from "./pages/Requests/RequestPag23Page";
+import Request4Page from "./pages/Requests/Request4Page";
+import Request5Page from "./pages/Requests/Request5Page";
+import Request6Page from "./pages/Requests/Request6Page";
+import Request7Page from "./pages/Requests/Request7Page";
+import Request8Page from "./pages/Requests/Request8Page";
+
 
 import AddAchievement from "./components/Achievement/AddAchievement";
 import UpdateAchievement from "./components/Achievement/UpdateAchievement";
@@ -89,11 +96,6 @@ import AddPerformance from "./components/Performance/AddPerformance";
 import UpdatePerformance from "./components/Performance/UpdatePerformance";
 import AddProducerPerformance from "./components/ProducerPerformance/AddProducerPerformance";
 import UpdateProducerPerformance from "./components/ProducerPerformance/UpdateProducerPerformance";
-import Request23Page from "./pages/Requests/RequestPag23Page";
-import Request4Page from "./pages/Requests/Request4Page";
-import Request5Page from "./pages/Requests/Request5Page";
-import Request6Page from "./pages/Requests/Request6Page";
-import Request7Page from "./pages/Requests/Request7Page";
 
 
 function App() {
@@ -257,6 +259,10 @@ function App() {
 
                     <Route path="/request7" exact>
                         <Request7Page />
+                    </Route>
+
+                    <Route path="/request8" exact>
+                        <Request8Page />
                     </Route>
 
                 </Switch>

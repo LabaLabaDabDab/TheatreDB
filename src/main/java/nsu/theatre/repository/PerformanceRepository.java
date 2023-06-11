@@ -77,11 +77,11 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
     JOIN (
         SELECT
             employees.fio,
-            performances.id
+            producer_performances.performances_id
         FROM producer
         JOIN employees ON producer.employee_id = employees.id
-        JOIN performances ON performances.producer_id = producer.id
-    ) producer_data ON performances.id = producer_data.id
+        JOIN producer_performances ON producer_performances.producer_id = producer.id
+    ) producer_data ON performances.id = producer_data.performances_id
     JOIN (
         SELECT
             employees.fio,
@@ -99,7 +99,7 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
         JOIN performances ON performances.director_performance_id = director.id
     ) director_data ON performances.id = director_data.id
     JOIN authors ON performances.author_id = authors.id
-    WHERE performances.id IN :performanceIds
+    WHERE performances.id IN :performanceIds;
 """)
     List<Object[]> findPerformanceDetails(
             @Param("performanceIds") List<Long> performance
