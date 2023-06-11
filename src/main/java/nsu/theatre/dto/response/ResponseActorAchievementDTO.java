@@ -12,5 +12,4 @@ public class ResponseActorAchievementDTO {
     private Date dateCompetition;
     private String rank;
     private Date birthDate;
-    private Long totalCount;
 }

@@ -84,4 +84,12 @@ public class AchievementService {
                 .orElseThrow(() -> new NotFoundException("Achievement not found with id: " + id));
         achievementRepository.deleteById(id);
     }
+
+    public List<String> getUniqueCompetitions() {
+        return achievementRepository.findDistinctCompetition();
+    }
+
+    public List<String> getUniqueRanks() {
+        return achievementRepository.findDistinctRank();
+    }
 }

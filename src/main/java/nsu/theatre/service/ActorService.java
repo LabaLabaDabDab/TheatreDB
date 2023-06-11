@@ -123,12 +123,23 @@ public class ActorService {
             dto.setDateCompetition((Date) result[3]);
             dto.setRank((String) result[4]);
             dto.setBirthDate((Date) result[5]);
-            dto.setTotalCount((Long) result[6]);
             response.add(dto);
         }
-
         return response;
     }
+
+    public Long getCount(ActorAchievementFilterDTO filterDTO) {
+        return actorRepository.countFindByFilter(
+                filterDTO.getDateCompetition().get(0),
+                filterDTO.getDateCompetition().get(1),
+                filterDTO.getCompetition(),
+                filterDTO.getRank(),
+                filterDTO.getGender(),
+                filterDTO.getBirthDate().get(0),
+                filterDTO.getBirthDate().get(1)
+        );
+    }
+
 
     public List<ResponseActorPlayedRoleDTO> getActorPlayedRoles(ActorPlayedRoleFilterDTO filterDTO) {
         List<Object[]> results = actorRepository.findActorPlayedRoleFilter(

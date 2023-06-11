@@ -1,6 +1,7 @@
 package nsu.theatre.controller;
 
 import nsu.theatre.dto.AchievementDTO;
+import nsu.theatre.dto.AchievementUniqueDTO;
 import nsu.theatre.entity.Achievement;
 import nsu.theatre.service.AchievementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,5 +66,17 @@ public class AchievementController {
     public ResponseEntity<Void> deleteAchievement(@PathVariable("id") Long id) {
         achievementService.deleteAchievement(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/unique")
+    public ResponseEntity<AchievementUniqueDTO> getUniqueAchievements() {
+        List<String> competitions = achievementService.getUniqueCompetitions();
+        List<String> ranks = achievementService.getUniqueRanks();
+
+        AchievementUniqueDTO uniqueAchievements = new AchievementUniqueDTO();
+        uniqueAchievements.setCompetitions(competitions);
+        uniqueAchievements.setRanks(ranks);
+
+        return new ResponseEntity<>(uniqueAchievements, HttpStatus.OK);
     }
 }

@@ -93,6 +93,7 @@ import Request23Page from "./pages/Requests/RequestPag23Page";
 import Request4Page from "./pages/Requests/Request4Page";
 import Request5Page from "./pages/Requests/Request5Page";
 import Request6Page from "./pages/Requests/Request6Page";
+import Request7Page from "./pages/Requests/Request7Page";
 
 
 function App() {
@@ -252,6 +253,10 @@ function App() {
 
                     <Route path="/request6" exact>
                         <Request6Page />
+                    </Route>
+
+                    <Route path="/request7" exact>
+                        <Request7Page />
                     </Route>
 
                 </Switch>

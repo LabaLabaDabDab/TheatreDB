@@ -82,6 +82,12 @@ public class ActorController {
         return actorService.getFilteredActors(filterDTO);
     }
 
+    @PostMapping("/filteredByAchievement/count")
+    public ResponseEntity<Long> getCountilteredActors(@RequestBody ActorAchievementFilterDTO filterDTO) {
+        Long count = actorService.getCount(filterDTO);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
     @PostMapping("/search-roles")
     public ResponseEntity<List<ResponseActorPlayedRoleDTO>> searchActorPlayedRoles(@RequestBody ActorPlayedRoleFilterDTO filterDTO) {
         List<ResponseActorPlayedRoleDTO> roles = actorService.getActorPlayedRoles(filterDTO);

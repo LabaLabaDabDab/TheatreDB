@@ -8,6 +8,10 @@ const getAllList = () => {
     return httpClient.get(`/achievements/list`);
 };
 
+const getAllRankAndCompetition = () => {
+    return httpClient.get(`/achievements/unique`);
+};
+
 const create = (data) => {
     return httpClient.post("/achievements", data);
 }
@@ -24,4 +28,4 @@ const remove = (id) => {
     return httpClient.delete(`/achievements/${id}`);
 }
 
-export default {getAll, getAllList, create, get, update, remove};
+export default {getAll, getAllList, create, get, update, remove, getAllRankAndCompetition};

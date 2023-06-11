@@ -34,8 +34,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         achievement.competition AS competition,
         achievement.date_of_competition AS date_of_competition,
         achievement.rank AS rank,
-        employees.birth_date AS birth_date,
-        COUNT(*) OVER() AS total_count
+        employees.birth_date AS birth_date
     FROM actors
         JOIN employees ON actors.employee_id = employees.id
         JOIN achievement ON actors.id = achievement.actor_id
@@ -48,6 +47,30 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         AND employees.birth_date BETWEEN :birthDateStart AND :birthDateEnd
     """)
     List<Object[]> findByFilter(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate,
+            @Param("competitionList") List<String> competitionList,
+            @Param("rankList") List<String> rankList,
+            @Param("genderList") List<Long> genderList,
+            @Param("birthDateStart") Date birthDateStart,
+            @Param("birthDateEnd") Date birthDateEnd
+    );
+
+    @Query(nativeQuery = true, value = """
+    SELECT
+        COUNT(*) OVER() AS total_count
+    FROM actors
+        JOIN employees ON actors.employee_id = employees.id
+        JOIN achievement ON actors.id = achievement.actor_id
+        JOIN gender ON employees.gender_id = gender.id
+    WHERE
+        achievement.date_of_competition BETWEEN :startDate AND :endDate
+        AND achievement.competition IN :competitionList
+        AND achievement.rank IN :rankList
+        AND gender.id IN :genderList
+        AND employees.birth_date BETWEEN :birthDateStart AND :birthDateEnd
+    """)
+    Long countFindByFilter(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
             @Param("competitionList") List<String> competitionList,
