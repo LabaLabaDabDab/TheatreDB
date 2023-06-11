@@ -10,10 +10,9 @@ import Select from 'react-select';
 import employeeService from "../../service/EmployeeService";
 import genderService from "../../service/GenderService";
 import employeeTypeService from "../../service/EmployeeTypeService";
+import {withRouter} from "react-router-dom";
 
-export default function Request1Page({
-
-}) {
+function Request1Page({ history }) {
     const [employees, setEmployee] = React.useState([]);
     const [count, setCount] = React.useState(0);
 
@@ -104,9 +103,14 @@ export default function Request1Page({
         setYearsFilter(event.target.value.split(',').map(v => v.trim()));
     };
 
+    const goBack = () => history.push("/request");
+
     return (
         <div>
             <h2>Фильтрация</h2>
+            <Button  style={{ margin: 10 }} variant="secondary" onClick={goBack}>
+                Назад
+            </Button>
             <Form onSubmit={applyFilters}>
                 <Row className="mb-3">
                     <Col>
@@ -160,7 +164,7 @@ export default function Request1Page({
                 </Row>
                 <Row>
                     <Col>
-                        <Button variant="primary" type="submit">
+                        <Button  style={{ margin: 10 }}variant="primary" type="submit">
                             Применить фильтры
                         </Button>
                     </Col>
@@ -203,3 +207,5 @@ export default function Request1Page({
         </div>
     )
 }
+
+export default withRouter(Request1Page);

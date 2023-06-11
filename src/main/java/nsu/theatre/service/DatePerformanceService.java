@@ -2,6 +2,7 @@ package nsu.theatre.service;
 
 import nsu.theatre.dto.DatePerformanceDTO;
 import nsu.theatre.dto.filter.PerformanceFilterBySeasonDTO;
+import nsu.theatre.dto.response.ResponseAuthorPerformanceDTO;
 import nsu.theatre.dto.response.ResponseDatePerformanceDTO;
 import nsu.theatre.entity.DateOfPlaying;
 import nsu.theatre.entity.DatePerformance;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,22 +110,30 @@ public class DatePerformanceService {
     }
 
     public List<ResponseDatePerformanceDTO> getFilterPerformances(PerformanceFilterBySeasonDTO performanceFilterBySeasonDTO) {
-        List<DatePerformance> filteredPerformances = datePerformanceRepository.findBySeasonFilter(
+        List<Object[]> results = datePerformanceRepository.findBySeasonFilter(
                 performanceFilterBySeasonDTO.getSeasons(),
-                performanceFilterBySeasonDTO.getDate_performance_start(),
-                performanceFilterBySeasonDTO.getDate_performance_end(),
+                performanceFilterBySeasonDTO.getDate_performance().get(0),
+                performanceFilterBySeasonDTO.getDate_performance().get(1),
                 performanceFilterBySeasonDTO.getGenres()
         );
-        return filteredPerformances.stream()
-                .map(datePerformanceMapper::toDTOResponse)
-                .collect(Collectors.toList());
+        List<ResponseDatePerformanceDTO> response = new ArrayList<>();
+        for (Object[] result : results) {
+            ResponseDatePerformanceDTO dto = new ResponseDatePerformanceDTO();
+            dto.setSeason((Long) result[0]);
+            dto.setDate_perf((Date) result[1]);
+            dto.setName((String) result[2]);
+            dto.setTitle((String) result[3]);
+            dto.setGenre((String) result[4]);
+            response.add(dto);
+        }
+        return response;
     }
 
     public Long getCount(PerformanceFilterBySeasonDTO performanceFilterBySeasonDTO){
         return datePerformanceRepository.countBySeasonFilter(
                 performanceFilterBySeasonDTO.getSeasons(),
-                performanceFilterBySeasonDTO.getDate_performance_start(),
-                performanceFilterBySeasonDTO.getDate_performance_end(),
+                performanceFilterBySeasonDTO.getDate_performance().get(0),
+                performanceFilterBySeasonDTO.getDate_performance().get(1),
                 performanceFilterBySeasonDTO.getGenres()
         );
     }

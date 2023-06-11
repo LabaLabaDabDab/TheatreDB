@@ -135,8 +135,8 @@ public class ActorService {
                 filterDTO.getActor(),
                 filterDTO.getDateOfPlaying().get(0),
                 filterDTO.getDateOfPlaying().get(1),
-                filterDTO.getGenre(),
-                filterDTO.getProducer()
+                filterDTO.getGenre()
+                //filterDTO.getProducer()
         );
 
         List<ResponseActorPlayedRoleDTO> response = new ArrayList<>();
@@ -155,8 +155,8 @@ public class ActorService {
                 filterDTO.getActor(),
                 filterDTO.getDateOfPlaying().get(0),
                 filterDTO.getDateOfPlaying().get(1),
-                filterDTO.getGenre(),
-                filterDTO.getProducer()
+                filterDTO.getGenre()
+                //filterDTO.getProducer()
         );
 
         return results;

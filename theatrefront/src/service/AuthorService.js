@@ -24,4 +24,8 @@ const remove = (id) => {
     return httpClient.delete(`/authors/${id}`);
 }
 
-export default {getAll, getAllList, create, get, update, remove};
+const filter = (data) =>{
+    return httpClient.post('/authors/filtered', data);
+}
+
+export default {getAll, getAllList, create, get, update, remove, filter};

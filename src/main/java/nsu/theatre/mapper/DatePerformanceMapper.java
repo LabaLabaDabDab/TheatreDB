@@ -40,7 +40,6 @@ public class DatePerformanceMapper {
 
     public ResponseDatePerformanceDTO toDTOResponse(DatePerformance datePerformance) {
         ResponseDatePerformanceDTO ResponseDatePerformanceDTO = new ResponseDatePerformanceDTO();
-        ResponseDatePerformanceDTO.setId(datePerformance.getPerformance().getId());
         ResponseDatePerformanceDTO.setDate_perf(dateOfPlayingMapper.toDTO(datePerformance.getDate()).getDateOfPerformance());
         ResponseDatePerformanceDTO.setSeason(dateOfPlayingMapper.toDTO(datePerformance.getDate()).getSeason());
         ResponseDatePerformanceDTO.setName(performanceMapper.toDTO(datePerformance.getPerformance()).getAuthor().getName());

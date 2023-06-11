@@ -17,6 +17,8 @@ import java.util.List;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
+    //4Получить список автоpов поставленных спектаклей, автоpов, живших в указанном веке, автоpов указанной стpаны,
+    //автоpов спектаклей указанного жанpа когда-либо поставленных в этом театpе, поставленных за указанный пеpиод вpемени.
     @Query(nativeQuery = true, value = """
     SELECT
         a.name,

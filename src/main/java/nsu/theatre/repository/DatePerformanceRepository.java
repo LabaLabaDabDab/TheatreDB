@@ -18,36 +18,49 @@ public interface DatePerformanceRepository extends JpaRepository<DatePerformance
 
     //3.Получить перечень и общее число всех поставленных спектаклей, спектаклей указанного жанpа, когда-либо поставленных в этом театpе,
     //поставленных за указанный пеpиод
-    @Query("""
-       SELECT 
-            dp
-       FROM DatePerformance dp
-       WHERE
-            (cast(:datePerformancesStart as date) is null or dp.date.date_of_performance >= (cast(:datePerformancesStart as date)))
-            AND (cast(:datePerformancesEnd as date) is null or dp.date.date_of_performance <= (cast(:datePerformancesEnd as date)))
-            AND (:seasons IS NULL OR dp.date.season IN :seasons) 
-            AND (:genres IS NULL OR dp.performance.author.genre.id IN :genres)
-       """)
-    List<DatePerformance> findBySeasonFilter(
-            @Param("seasons") Long seasons,
-            @Param("datePerformancesStart") Date datePerformancesStart,
-            @Param("datePerformancesEnd") Date datePerformancesEnd,
-            @Param("genres") Long genres
-    );
-    @Query("""
-    SELECT 
-         count(dp)
-    FROM DatePerformance dp
+    @Query(nativeQuery = true, value = """
+    SELECT
+        dop.season,
+        dop.date_of_performance,
+        a.name,
+        a.title,
+        g.name
+    FROM
+        date_performance dp
+        JOIN date_of_playing dop ON dp.date_id = dop.id
+        JOIN performances p ON dp.performance_id = p.id
+        JOIN authors a ON p.author_id = a.id
+        JOIN genres g on g.id = a.genre_id
     WHERE
-         (cast(:datePerformancesStart as date) is null or dp.date.date_of_performance >= (cast(:datePerformancesStart as date)))
-         AND (cast(:datePerformancesEnd as date) is null or dp.date.date_of_performance <= (cast(:datePerformancesEnd as date)))
-         AND (:seasons IS NULL OR dp.date.season IN :seasons) 
-         AND (:genres IS NULL OR dp.performance.author.genre.id IN :genres)
-    """)
-    Long countBySeasonFilter(
-            @Param("seasons") Long seasons,
+        dop.date_of_performance BETWEEN :datePerformancesStart AND :datePerformancesEnd
+        AND dop.season IN (:seasons)
+        AND a.genre_id IN (:genres)
+""")
+    List<Object[]> findBySeasonFilter(
+            @Param("seasons") List<Long> seasons,
             @Param("datePerformancesStart") Date datePerformancesStart,
             @Param("datePerformancesEnd") Date datePerformancesEnd,
-            @Param("genres") Long genres
+            @Param("genres") List<Long> genres
     );
+
+    @Query(nativeQuery = true, value = """
+    SELECT COUNT(*)
+    FROM
+        date_performance dp
+        JOIN date_of_playing dop ON dp.date_id = dop.id
+        JOIN performances p ON dp.performance_id = p.id
+        JOIN authors a ON p.author_id = a.id
+        JOIN genres g on g.id = a.genre_id
+    WHERE
+        dop.date_of_performance BETWEEN :datePerformancesStart AND :datePerformancesEnd
+        AND dop.season IN (:seasons)
+        AND a.genre_id IN (:genres)
+""")
+    Long countBySeasonFilter(
+            @Param("seasons") List<Long> seasons,
+            @Param("datePerformancesStart") Date datePerformancesStart,
+            @Param("datePerformancesEnd") Date datePerformancesEnd,
+            @Param("genres") List<Long> genres
+    );
+
 }

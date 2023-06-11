@@ -24,4 +24,8 @@ const remove = (id) => {
     return httpClient.delete(`/actors/${id}`);
 }
 
-export default {getAll, getAllList, create, get, update, remove};
+const getAllActorRoles = () => {
+    return httpClient.get(`/actors/matching-roles`);
+};
+
+export default {getAll, getAllList, create, get, update, remove, getAllActorRoles};

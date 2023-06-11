@@ -89,6 +89,10 @@ import AddPerformance from "./components/Performance/AddPerformance";
 import UpdatePerformance from "./components/Performance/UpdatePerformance";
 import AddProducerPerformance from "./components/ProducerPerformance/AddProducerPerformance";
 import UpdateProducerPerformance from "./components/ProducerPerformance/UpdateProducerPerformance";
+import Request23Page from "./pages/Requests/RequestPag23Page";
+import Request4Page from "./pages/Requests/Request4Page";
+import Request5Page from "./pages/Requests/Request5Page";
+import Request6Page from "./pages/Requests/Request6Page";
 
 
 function App() {
@@ -232,6 +236,22 @@ function App() {
 
                     <Route path="/request1" exact>
                         <Request1Page />
+                    </Route>
+
+                    <Route path="/request23" exact>
+                        <Request23Page />
+                    </Route>
+
+                    <Route path="/request4" exact>
+                        <Request4Page />
+                    </Route>
+
+                    <Route path="/request5" exact>
+                        <Request5Page />
+                    </Route>
+
+                    <Route path="/request6" exact>
+                        <Request6Page />
                     </Route>
 
                 </Switch>

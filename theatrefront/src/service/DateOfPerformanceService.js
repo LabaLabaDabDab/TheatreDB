@@ -24,4 +24,12 @@ const remove = (dateId, performanceId) => {
     return httpClient.delete(`/date-performances/${dateId}/${performanceId}`);
 }
 
-export default {getAll, getAllList, create, get, update, remove};
+const filter = (data) =>{
+    return httpClient.post('/date-performances/filter/perf', data);
+}
+
+const filterCount = (data) =>{
+    return httpClient.post('/date-performances/filter/count', data);
+}
+
+export default {getAll, getAllList, create, get, update, remove, filter, filterCount};

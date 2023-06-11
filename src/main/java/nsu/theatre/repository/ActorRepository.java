@@ -96,14 +96,13 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         performances ON actor_roles.performance_id = performances.id
     JOIN
         authors ON performances.author_id = authors.id
-    JOIN
-        producer ON performances.producer_id = producer.id
+    
     JOIN
         genres ON authors.genre_id = genres.id
     WHERE
         actor_roles.date_of_playing BETWEEN :startDate AND :endDate AND
         genres.id IN :genreIds AND
-        producer.id IN :producerIds AND
+        
         performances.age_limit < 18
     ORDER BY
         actor_roles.actor_name
@@ -112,8 +111,8 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
             @Param("actorIds") List<Long> actor,
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
-            @Param("genreIds") List<Long> genre,
-            @Param("producerIds") List<Long> producer
+            @Param("genreIds") List<Long> genre
+            //@Param("producerIds") List<Long> producer
     );
     /*
     {
@@ -149,14 +148,13 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         performances ON actor_roles.performance_id = performances.id
     JOIN
         authors ON performances.author_id = authors.id
-    JOIN
-        producer ON performances.producer_id = producer.id
+
     JOIN
         genres ON authors.genre_id = genres.id
     WHERE
         actor_roles.date_of_playing BETWEEN :startDate AND :endDate AND
         genres.id IN :genre AND
-        producer.id IN :producer AND
+        
         performances.age_limit < 18
     GROUP BY
         actor_roles.actor_name
@@ -165,8 +163,8 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
             @Param("actor") List<Long> actor,
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
-            @Param("genre") List<Long> genre,
-            @Param("producer") List<Long> producer
+            @Param("genre") List<Long> genre
+            //@Param("producer") List<Long> producer
     );
     /*
     {
