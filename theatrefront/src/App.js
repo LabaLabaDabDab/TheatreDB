@@ -24,6 +24,7 @@ import ProducerPage from  "./pages/ProducerPage"
 import RolePage from "./pages/RolePage";
 import TicketsPage from "./pages/TicketsPage";
 import TicketNumberPage from "./pages/TicketNumberPage";
+import ProducerPerformancePage from "./pages/ProducerPerformancePage";
 
 import HeaderRequest from "./components/HeaderRequest";
 import Request1Page from "./pages/Requests/Request1Page";
@@ -80,10 +81,15 @@ import AddTickets from "./components/Tickets/AddTickets";
 import UpdateTickets from "./components/Tickets/UpdateTickets";
 
 import AddTicketNumber from "./components/TicketNumber/AddTicketNumber";
+
 import AddProducer from "./components/Producer/AddProducer";
 import UpdateProducer from "./components/Producer/UpdateProducer";
+
 import AddPerformance from "./components/Performance/AddPerformance";
 import UpdatePerformance from "./components/Performance/UpdatePerformance";
+import AddProducerPerformance from "./components/ProducerPerformance/AddProducerPerformance";
+import UpdateProducerPerformance from "./components/ProducerPerformance/UpdateProducerPerformance";
+
 
 function App() {
     return (
@@ -195,6 +201,12 @@ function App() {
                     </Route>
                     <Route path="/producers/add" component={AddProducer} />
                     <Route path="/producers/edit/:id" component={UpdateProducer} />
+
+                    <Route path={"/producers-performances"} exact>
+                        <ProducerPerformancePage/>
+                    </Route>
+                    <Route path="/producers-performances/add" component={AddProducerPerformance} />
+                    <Route path="/producers-performances/edit/:id" component={UpdateProducerPerformance}/>
 
                     <Route path={"/roles"} exact>
                         <RolePage/>

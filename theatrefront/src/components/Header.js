@@ -34,6 +34,7 @@ function Header() {
                         <Nav.Link style={{ marginBottom: 0 }} href="/musicians">Музыканты</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/performances">Представления</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/producers">Продюсеры</Nav.Link>
+                        <Nav.Link style={{ marginBottom: 0 }} href="/producers-performances">Продюсеры и представления</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/roles">Роли</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/tickets">Билеты</Nav.Link>
                         <Nav.Link style={{ marginBottom: 0 }} href="/ticket_number">Номера билетов</Nav.Link>
