@@ -92,12 +92,14 @@ const AddRole = () => {
     }
 
     const NameHandler = (e) => {
-        setName(e.target.value)
-        if (e.target.value.length < 2 || e.target.value.length > 50)
+        const value = e.target.value;
+        if (value.length < 2 || value.length > 50)
             setNameError('Некорректная длина')
-        else if (!e.target.value)
+        else if (!value)
             setNameError('Поле не может быть пустым')
         else setNameError('')
+
+        setName(value);
     }
 
     const MainHandler = (e) => {
