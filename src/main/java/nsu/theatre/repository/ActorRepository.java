@@ -91,11 +91,15 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
 
     //10. Получить перечень и общее число pолей, сыгpанных указанным актеpом всего, за некоторый пеpиод вpемени,
     //в спектаклях определенного жанpа, в спектаклях указанного pежисеpа-постановщика, в детских спектаклях.
-
     @Query(nativeQuery = true, value = """
     SELECT
         actor_roles.actor_name,
-        actor_roles.role_name
+        actor_roles.role_name,
+        authors.title,
+        genres.name as genre,
+        performances.age_limit,
+        date_of_playing.date_of_performance,
+        employees_producer.fio AS producer_name
     FROM
         (
             SELECT
@@ -119,14 +123,23 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
         performances ON actor_roles.performance_id = performances.id
     JOIN
         authors ON performances.author_id = authors.id
-    
     JOIN
         genres ON authors.genre_id = genres.id
+    JOIN
+        producer_performances ON performances.id = producer_performances.performances_id
+    JOIN
+        producer ON producer_performances.producer_id = producer.id
+    JOIN
+        employees AS employees_producer ON producer.employee_id = employees_producer.id
+    JOIN
+        date_performance ON performances.id = date_performance.performance_id
+    JOIN
+        date_of_playing ON date_performance.date_id = date_of_playing.id
     WHERE
-        actor_roles.date_of_playing BETWEEN :startDate AND :endDate AND
+        date_of_playing.date_of_performance BETWEEN :startDate AND :endDate AND
         genres.id IN :genreIds AND
-        
-        performances.age_limit < 18
+        producer.id IN :producerIds AND
+        performances.age_limit <= :ageLimit
     ORDER BY
         actor_roles.actor_name
     """)
@@ -134,17 +147,10 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
             @Param("actorIds") List<Long> actor,
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
-            @Param("genreIds") List<Long> genre
-            //@Param("producerIds") List<Long> producer
+            @Param("genreIds") List<Long> genre,
+            @Param("producerIds") List<Long> producer,
+            @Param("ageLimit") Integer ageLimit
     );
-    /*
-    {
-        "actor": [1, 2, 3, 4, 5, 6 ,7 ,8 ,9, 10, 11],
-        "dateOfPlaying": ["2000-01-01", "2023-12-31"],
-        "genre": [1, 2, 3, 4],
-        "producer": [1, 2, 3, 4]
-    }
-     */
 
     @Query(nativeQuery = true, value = """
     SELECT
@@ -154,6 +160,7 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
             SELECT
                 employees.fio AS actor_name,
                 roles.id AS role_id,
+                roles.name AS role_name,
                 roles.performance_id AS performance_id,
                 actor_playing_role.date_of_playing AS date_of_playing
             FROM
@@ -165,29 +172,39 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
             JOIN
                 employees ON actors.employee_id = employees.id
             WHERE
-                actors.id IN :actor
+                actors.id IN :actorIds
         ) actor_roles
     JOIN
         performances ON actor_roles.performance_id = performances.id
     JOIN
         authors ON performances.author_id = authors.id
-
     JOIN
         genres ON authors.genre_id = genres.id
+    JOIN
+        producer_performances ON performances.id = producer_performances.performances_id
+    JOIN
+        producer ON producer_performances.producer_id = producer.id
+    JOIN
+        date_performance ON performances.id = date_performance.performance_id
+    JOIN
+        date_of_playing ON date_performance.date_id = date_of_playing.id
     WHERE
-        actor_roles.date_of_playing BETWEEN :startDate AND :endDate AND
-        genres.id IN :genre AND
-        
-        performances.age_limit < 18
+        date_of_playing.date_of_performance BETWEEN :startDate AND :endDate AND
+        genres.id IN :genreIds AND
+        producer.id IN :producerIds AND
+        performances.age_limit <= :ageLimit
     GROUP BY
+        actor_roles.actor_name
+    ORDER BY
         actor_roles.actor_name
     """)
     Long getActorPlayedRoleCount(
-            @Param("actor") List<Long> actor,
+            @Param("actorIds") List<Long> actor,
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate,
-            @Param("genre") List<Long> genre
-            //@Param("producer") List<Long> producer
+            @Param("genreIds") List<Long> genre,
+            @Param("producerIds") List<Long> producer,
+            @Param("ageLimit") Integer ageLimit
     );
     /*
     {

@@ -29,5 +29,9 @@ const filter = (data) =>{
     return httpClient.post('/performances/filter', data);
 }
 
+const getPerformanceDetails = (data) => {
+    return httpClient.post('/performances/details', data);
+}
 
-export default {getAll, getAllList, create, get, update, remove, filter};
+
+export default {getAll, getAllList, create, get, update, remove, filter, getPerformanceDetails};

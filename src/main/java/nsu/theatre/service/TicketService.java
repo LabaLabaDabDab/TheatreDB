@@ -96,7 +96,8 @@ public class TicketService {
         List<Object[]> results = ticketRepository.getSoldTicketsCountByPerformanceTitleAndDate(
                 soldTicketsCountFilterDTO.getPerformance(),
                 soldTicketsCountFilterDTO.getDate_performance().get(0),
-                soldTicketsCountFilterDTO.getDate_performance().get(1)
+                soldTicketsCountFilterDTO.getDate_performance().get(1),
+                soldTicketsCountFilterDTO.getPremiere()
         );
         List<ResponseSoldTicketsCountDTO> response = new ArrayList<>();
 
@@ -107,21 +108,6 @@ public class TicketService {
             dto.setSoldTicketsCount((Long) result[2]);
             response.add(dto);
         }
-        return response;
-    }
-
-    public List<ResponseSoldTicketsOnPremiereCountDTO> getSoldTicketsCountByPremiere() {
-        List<Object[]> results = ticketRepository.getSoldTicketsCountByPremiere();
-        List<ResponseSoldTicketsOnPremiereCountDTO> response = new ArrayList<>();
-
-        for (Object[] result : results) {
-            ResponseSoldTicketsOnPremiereCountDTO dto = new ResponseSoldTicketsOnPremiereCountDTO();
-            dto.setPerformanceTitle((String) result[0]);
-            dto.setPremiereDate((Date) result[1]);
-            dto.setCount((Long) result[2]);
-            response.add(dto);
-        }
-
         return response;
     }
 
@@ -146,7 +132,8 @@ public class TicketService {
 
     public List<ResponseFreeSeatsDTO> getFreeSeatsByPerformance(FreeSeatsFilterDTO filterDTO) {
         List<Object[]> results = ticketRepository.getFreeSeatsByPerformance(
-                filterDTO.getPerformance()
+                filterDTO.getPerformance(),
+                filterDTO.getPremiere()
         );
         List<ResponseFreeSeatsDTO> response = new ArrayList<>();
 
@@ -161,44 +148,10 @@ public class TicketService {
         return response;
     }
 
-    public List<ResponseTotalFreeSeatsDTO> getTotalFreeSeatsByPerformance(FreeSeatsFilterDTO filterDTO) {
-        List<Object[]> results = ticketRepository.getTotalFreeSeatsByPerformance(filterDTO.getPerformance());
-        List<ResponseTotalFreeSeatsDTO> response = new ArrayList<>();
-
-        for (Object[] result : results) {
-            ResponseTotalFreeSeatsDTO dto = new ResponseTotalFreeSeatsDTO();
-            dto.setPerformanceTitle((String) result[0]);
-            dto.setDateOfPerformance((Date) result[1]);
-            dto.setTotalFreeSeats((Long) result[2]);
-            response.add(dto);
-        }
-
-        return response;
-    }
-    public List<ResponseFreeSeatsOnPremiereDTO> getFreeSeatsOnPremiere() {
-        List<Object[]> results = ticketRepository.getFreeSeatsOnPremiere();
-        List<ResponseFreeSeatsOnPremiereDTO> response = new ArrayList<>();
-
-        for (Object[] result : results) {
-            ResponseFreeSeatsOnPremiereDTO dto = new ResponseFreeSeatsOnPremiereDTO();
-            dto.setPerformanceTitle((String) result[0]);
-            dto.setTicketNumberId((Long) result[1]);
-            response.add(dto);
-        }
-
-        return response;
-    }
-    public List<ResponseTotalFreeSeatsOnPremiereDTO> getTotalFreeSeatsOnPremiere() {
-        List<Object[]> results = ticketRepository.getTotalFreeSeatsOnPremiere();
-        List<ResponseTotalFreeSeatsOnPremiereDTO> response = new ArrayList<>();
-
-        for (Object[] result : results) {
-            ResponseTotalFreeSeatsOnPremiereDTO dto = new ResponseTotalFreeSeatsOnPremiereDTO();
-            dto.setPerformanceTitle((String) result[0]);
-            dto.setTotalFreeSeats((Long) result[1]);
-            response.add(dto);
-        }
-
-        return response;
+    public Long getTotalFreeSeatsByPerformance(FreeSeatsFilterDTO filterDTO) {
+        return ticketRepository.getTotalFreeSeatsByPerformance(
+                filterDTO.getPerformance(),
+                filterDTO.getPremiere()
+        );
     }
 }

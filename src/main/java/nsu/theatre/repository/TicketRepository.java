@@ -14,38 +14,27 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     //11. Получить сведения о числе пpоданных билетов на все спектакли, на конкpетный спектакль, на пpемьеpы,
     //за указанный пеpиод, в том числе пpоданных пpедваpительно.
     @Query(nativeQuery = true, value = """
-    SELECT a.title, p.premiere_date, COUNT(tn.ticket_id) AS sold_tickets_count
-    FROM performances p
-        JOIN date_performance dp ON p.id = dp.performance_id
-        JOIN date_of_playing d ON dp.date_id = d.id
-        JOIN authors a on a.id = p.author_id
-        LEFT JOIN tickets t ON t.performance_id = p.id AND t.date_id = d.id
-        LEFT JOIN ticket_number tn ON t.id = tn.ticket_id
-    WHERE d.date_of_performance = p.premiere_date
-        AND tn.is_sold = true
-    GROUP BY a.title, p.premiere_date;
-                    
-""")
-    List<Object[]> getSoldTicketsCountByPremiere();
-
-    @Query(nativeQuery = true, value = """
-    SELECT a.title, d.date_of_performance, COUNT(*) AS sold_tickets_count
+    SELECT a.title, dop.date_of_performance, COUNT(*) AS sold_tickets_count
     FROM tickets t
-        JOIN ticket_number tn ON t.id = tn.ticket_id
-        JOIN performances p ON p.id = t.performance_id
+        JOIN date_performance dp ON t.date_id = dp.date_id AND t.performance_id = dp.performance_id
+        JOIN performances p ON dp.performance_id = p.id
         JOIN authors a ON a.id = p.author_id
-        JOIN date_of_playing d ON t.date_id = d.id
+        JOIN date_of_playing dop ON dp.date_id = dop.id
+        JOIN ticket_number tn ON t.id = tn.ticket_id
     WHERE
-        t.performance_id IN :performance
-        AND (d.date_of_performance BETWEEN :startDate AND :endDate)
+        dp.performance_id IN :performance
+        AND (dop.date_of_performance BETWEEN :startDate AND :endDate)
         AND tn.is_sold = true
-    GROUP BY a.title, d.date_of_performance
-""")
+        AND (:premiere IS FALSE OR p.premiere_date = dop.date_of_performance)
+    GROUP BY a.title, dop.date_of_performance
+    """)
     List<Object[]> getSoldTicketsCountByPerformanceTitleAndDate(
             @Param("performance") List<Long> performance,
             @Param("startDate") Date startDate,
-            @Param("endDate") Date endDate
+            @Param("endDate") Date endDate,
+            @Param("premiere") Boolean premiere
     );
+
     /*
     {
         "performance": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -53,24 +42,27 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     }
      */
 
-
     //12. Получить общую сумму выpученных денег за указанный спектакль, за некоторый пеpиод вpемени.
+
+
     @Query(nativeQuery = true, value = """
-    SELECT a.title, d.date_of_performance, SUM(CAST(tn.is_sold AS INT) * t.price) AS total_revenue
+    SELECT a.title, dop.date_of_performance, SUM(CAST(tn.is_sold AS INT) * t.price) AS total_revenue
     FROM tickets t
-        JOIN performances p ON p.id = t.performance_id
-        JOIN date_of_playing d ON d.id = t.date_id
-        JOIN authors a on a.id = p.author_id
         JOIN ticket_number tn ON tn.ticket_id = t.id
+        JOIN date_performance dp ON t.date_id = dp.date_id AND t.performance_id = dp.performance_id
+        JOIN date_of_playing dop ON dp.date_id = dop.id
+        JOIN performances p ON dp.performance_id = p.id
+        JOIN authors a on p.author_id = a.id
     WHERE p.id IN :performance
-        AND d.date_of_performance BETWEEN :startDate AND :endDate
-    GROUP BY a.title, d.date_of_performance;
-    """)
+        AND dop.date_of_performance BETWEEN :startDate AND :endDate
+    GROUP BY a.title, dop.date_of_performance;
+""")
     List<Object[]> getTotalRevenueByPerformanceAndDate(
             @Param("performance") List<Long> performance,
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate
     );
+
     /*
     {
         "performance": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -79,32 +71,40 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
      */
 
     //13. Получить перечень и общее число свободных мест на все спектакли, на конкpетный спектакль, на пpемьеpы.
-
-    //Запрос для получения списка свободных мест для каждого спектакля:
     @Query(nativeQuery = true, value = """
     SELECT a.title, dop.date_of_performance, tn.number_ticket_id
-    FROM performances p
-    JOIN tickets t ON p.id = t.performance_id
-    JOIN ticket_number tn ON t.id = tn.ticket_id
-    JOIN authors a on a.id = p.author_id
-    JOIN date_of_playing dop on dop.id = t.date_id
-    WHERE tn.is_sold = false AND p.id IN :performance
-    GROUP BY a.title, dop.date_of_performance, tn.number_ticket_id
+      FROM tickets t
+          JOIN ticket_number tn ON tn.ticket_id = t.id
+          JOIN date_performance dp ON t.date_id = dp.date_id AND t.performance_id = dp.performance_id
+          JOIN date_of_playing dop ON dp.date_id = dop.id
+          JOIN performances p ON dp.performance_id = p.id
+          JOIN authors a ON a.id = p.author_id
+    WHERE tn.is_sold = false
+          AND (:premiere IS FALSE OR dop.date_of_performance = p.premiere_date)
+          AND p.id IN :performance
+      GROUP BY a.title, dop.date_of_performance, tn.number_ticket_id
     """)
-    List<Object[]> getFreeSeatsByPerformance(@Param("performance") List<Long> performance);
+    List<Object[]> getFreeSeatsByPerformance(
+            @Param("performance") List<Long> performance,
+            @Param("premiere") Boolean premiere
+    );
 
-    //Запрос для получения общего количества свободных мест для каждого спектакля:
     @Query(nativeQuery = true, value = """
-    SELECT a.title, dop.date_of_performance, COUNT(tn.number_ticket_id) AS total_free_seats
-    FROM performances p
-    JOIN tickets t ON p.id = t.performance_id
-    JOIN ticket_number tn ON t.id = tn.ticket_id
-    JOIN authors a on a.id = p.author_id
-    JOIN date_of_playing dop on dop.id = t.date_id
-    WHERE tn.is_sold = false AND p.id IN :performance
-    GROUP BY a.title, dop.date_of_performance
+    SELECT COUNT(tn.number_ticket_id) AS total_free_seats
+        FROM tickets t
+        JOIN ticket_number tn ON tn.ticket_id = t.id
+        JOIN date_performance dp ON t.date_id = dp.date_id AND t.performance_id = dp.performance_id
+        JOIN date_of_playing dop ON dp.date_id = dop.id
+        JOIN performances p ON dp.performance_id = p.id
+        JOIN authors a ON a.id = p.author_id
+    WHERE tn.is_sold = false
+        AND (:premiere IS FALSE OR dop.date_of_performance = p.premiere_date)
+        AND p.id IN :performance
     """)
-    List<Object[]> getTotalFreeSeatsByPerformance(@Param("performance") List<Long> performance);
+    public Long getTotalFreeSeatsByPerformance(
+            @Param("performance") List<Long> performance,
+            @Param("premiere") Boolean premiere
+    );
 
     /*
     {
@@ -112,30 +112,4 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     }
      */
 
-    //Запрос для получения списка свободных мест на премьеру каждого спектакля:
-    @Query(nativeQuery = true, value = """
-    SELECT a.title, tn.number_ticket_id
-    FROM performances p
-    JOIN tickets t ON p.id = t.performance_id
-    JOIN date_of_playing d ON d.id = t.date_id
-    JOIN ticket_number tn ON t.id = tn.ticket_id
-    JOIN authors a on a.id = p.author_id
-    WHERE tn.is_sold = false AND d.date_of_performance = p.premiere_date
-    GROUP BY a.title, tn.number_ticket_id
-    """)
-    List<Object[]> getFreeSeatsOnPremiere();
-
-
-    //Запрос для получения общего количества свободных мест на премьеру каждого спектакля:
-    @Query(nativeQuery = true, value = """
-    SELECT a.title, COUNT(tn.number_ticket_id) AS total_free_seats
-    FROM performances p
-    JOIN tickets t ON p.id = t.performance_id
-    JOIN date_of_playing d ON d.id = t.date_id
-    JOIN ticket_number tn ON t.id = tn.ticket_id
-    JOIN authors a on a.id = p.author_id
-    WHERE tn.is_sold = false AND d.date_of_performance = p.premiere_date
-    GROUP BY a.title
-    """)
-    List<Object[]> getTotalFreeSeatsOnPremiere();
 }

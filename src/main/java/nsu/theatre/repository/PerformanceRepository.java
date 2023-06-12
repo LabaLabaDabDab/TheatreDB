@@ -99,7 +99,7 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
         JOIN performances ON performances.director_performance_id = director.id
     ) director_data ON performances.id = director_data.id
     JOIN authors ON performances.author_id = authors.id
-    WHERE performances.id IN :performanceIds;
+    WHERE performances.id IN :performanceIds
 """)
     List<Object[]> findPerformanceDetails(
             @Param("performanceIds") List<Long> performance

@@ -36,4 +36,12 @@ const filterCount = (data) =>{
     return httpClient.post('/actors/filteredByAchievement/count', data);
 }
 
-export default {getAll, getAllList, create, get, update, remove, getAllActorRoles, filter, filterCount};
+const filterRoles = (data) =>{
+    return httpClient.post('/actors/search-roles', data);
+}
+
+const filterRolesCount = (data) =>{
+    return httpClient.post('/actors/search-roles/count', data);
+}
+
+export default {getAll, getAllList, create, get, update, remove, getAllActorRoles, filter, filterCount, filterRoles, filterRolesCount};

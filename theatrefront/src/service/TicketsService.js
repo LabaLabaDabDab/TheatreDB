@@ -25,4 +25,21 @@ const remove = (id) => {
     return httpClient.delete(`/tickets/${id}`);
 }
 
-export default {getAll, getAllList, create, get, update, remove};
+const getTicketsDetails = (data) => {
+    return httpClient.post("/tickets/sold-tickets-count", data);
+}
+
+const getTotalRevenueByPerformanceAndDate = (data) => {
+    return httpClient.post("/tickets/total-revenue", data);
+}
+
+const getFreeSeatsDetails = (data) => {
+    return httpClient.post("/tickets/free-seats", data);
+}
+
+const getFreeSeatsDetailsCount = (data) => {
+    return httpClient.post("/tickets/total-free-seats", data);
+}
+
+export default {getAll, getAllList, create, get, update, remove,
+    getTicketsDetails, getTotalRevenueByPerformanceAndDate, getFreeSeatsDetails, getFreeSeatsDetailsCount};

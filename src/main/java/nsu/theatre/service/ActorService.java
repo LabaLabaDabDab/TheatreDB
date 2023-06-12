@@ -146,15 +146,21 @@ public class ActorService {
                 filterDTO.getActor(),
                 filterDTO.getDateOfPlaying().get(0),
                 filterDTO.getDateOfPlaying().get(1),
-                filterDTO.getGenre()
-                //filterDTO.getProducer()
+                filterDTO.getGenre(),
+                filterDTO.getProducer(),
+                filterDTO.getAgeLimit()
         );
 
         List<ResponseActorPlayedRoleDTO> response = new ArrayList<>();
         for (Object[] result : results) {
             ResponseActorPlayedRoleDTO dto = new ResponseActorPlayedRoleDTO();
             dto.setActorName((String) result[0]);
-            dto.setPlayedRole((String) result[1]);
+            dto.setRoleName((String) result[1]);
+            dto.setPerformanceTitle((String) result[2]);
+            dto.setGenre((String) result[3]);
+            dto.setAgeLimit((Integer) result[4]);
+            dto.setDateOfPerformance((Date) result[5]);
+            dto.setProducerName((String) result[6]);
             response.add(dto);
         }
 
@@ -162,14 +168,13 @@ public class ActorService {
     }
 
     public Long getActorPlayedRoleCount(ActorPlayedRoleFilterDTO filterDTO) {
-        Long results = actorRepository.getActorPlayedRoleCount(
+        return actorRepository.getActorPlayedRoleCount(
                 filterDTO.getActor(),
                 filterDTO.getDateOfPlaying().get(0),
                 filterDTO.getDateOfPlaying().get(1),
-                filterDTO.getGenre()
-                //filterDTO.getProducer()
+                filterDTO.getGenre(),
+                filterDTO.getProducer(),
+                filterDTO.getAgeLimit()
         );
-
-        return results;
     }
 }

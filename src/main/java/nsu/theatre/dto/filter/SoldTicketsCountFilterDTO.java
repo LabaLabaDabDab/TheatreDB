@@ -9,4 +9,5 @@ import java.util.List;
 public class SoldTicketsCountFilterDTO {
     private List<Long> performance;
     private List<Date> date_performance;
+    private Boolean premiere;
 }

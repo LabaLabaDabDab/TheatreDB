@@ -7,7 +7,7 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
-function EmployeeTourDatesPage({ history }) {
+function Request8Page({ history }) {
     const [employeeTours, setEmployeeTours] = useState([]);
 
     const [startDate, setStartDate] = React.useState("");
@@ -87,4 +87,4 @@ function EmployeeTourDatesPage({ history }) {
     );
 }
 
-export default withRouter(EmployeeTourDatesPage);
+export default withRouter(Request8Page);

@@ -6,13 +6,12 @@ import actorService from '../../service/ActorService';
 import achievementService from "../../service/AchievementService";
 import genderService from "../../service/GenderService";
 
-// Assuming you're using react-select for select inputs
 import Select from 'react-select';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 
-function ActorAchievementPage({ history }) {
+function Request7Page({ history }) {
     const [actorAchievements, setActorAchievements] = useState([]);
     const [count, setCount] = React.useState(0);
 
@@ -201,4 +200,4 @@ function ActorAchievementPage({ history }) {
     );
 }
 
-export default withRouter(ActorAchievementPage);
+export default withRouter(Request7Page);

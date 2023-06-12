@@ -4,7 +4,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import actorService from '../../service/ActorService';
 
-function ActorRolePage({ history }) {
+function Request6Page({ history }) {
     const [actorRoles, setActorRoles] = useState([]);
 
     useEffect(() => {
@@ -47,4 +47,4 @@ function ActorRolePage({ history }) {
     );
 }
 
-export default withRouter(ActorRolePage);
+export default withRouter(Request6Page);
