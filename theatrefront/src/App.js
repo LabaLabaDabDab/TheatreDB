@@ -101,6 +101,7 @@ import UpdatePerformance from "./components/Performance/UpdatePerformance";
 
 import AddProducerPerformance from "./components/ProducerPerformance/AddProducerPerformance";
 import UpdateProducerPerformance from "./components/ProducerPerformance/UpdateProducerPerformance";
+import UpdateTicketNumber from "./components/TicketNumber/UpdateTicketNumber";
 
 
 
@@ -238,6 +239,7 @@ function App() {
                         <TicketNumberPage/>
                     </Route>
                     <Route path="/ticket_number/add" component={AddTicketNumber} />
+                    <Route path="/ticket_number/edit/:id" component={UpdateTicketNumber} />
 
                     <Route path="/request" exact>
                         <HeaderRequest />

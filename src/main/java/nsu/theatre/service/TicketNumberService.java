@@ -2,6 +2,7 @@ package nsu.theatre.service;
 
 import nsu.theatre.dto.TicketNumberDTO;
 
+import nsu.theatre.entity.Ticket;
 import nsu.theatre.entity.TicketNumber;
 import nsu.theatre.entity.TicketNumberId;
 import nsu.theatre.exception.NotFoundException;
@@ -9,6 +10,7 @@ import nsu.theatre.mapper.TicketMapper;
 import nsu.theatre.mapper.TicketNumberMapper;
 
 import nsu.theatre.repository.TicketNumberRepository;
+import nsu.theatre.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +26,14 @@ public class TicketNumberService {
     private final TicketNumberRepository ticketNumberRepository;
     private final TicketNumberMapper ticketNumberMapper;
     private final TicketMapper ticketMapper;
+    private final TicketRepository ticketRepository;
 
     @Autowired
-    public TicketNumberService(TicketNumberRepository ticketNumberRepository, TicketNumberMapper ticketNumberMapper, TicketMapper ticketMapper) {
+    public TicketNumberService(TicketNumberRepository ticketNumberRepository, TicketNumberMapper ticketNumberMapper, TicketMapper ticketMapper, TicketRepository ticketRepository) {
         this.ticketNumberRepository = ticketNumberRepository;
         this.ticketNumberMapper = ticketNumberMapper;
         this.ticketMapper = ticketMapper;
+        this.ticketRepository = ticketRepository;
     }
 
     public Page<TicketNumberDTO> getAllTicketNumbers(Integer pageNo, Integer pageSize) {
@@ -53,19 +57,31 @@ public class TicketNumberService {
     }
 
     public TicketNumberDTO createTicketNumber(TicketNumberDTO ticketNumberDTO) {
+        Ticket tickets = ticketRepository.findById(ticketNumberDTO.getTicket().getId())
+                .orElseThrow(() -> new NotFoundException("ticket not found with id: " + ticketNumberDTO.getTicket().getId()));
+        ticketNumberDTO.setTicket(ticketMapper.toDTO(tickets));
+
         TicketNumber ticketNumber = ticketNumberMapper.toEntity(ticketNumberDTO);
         TicketNumber createdTicketNumber = ticketNumberRepository.save(ticketNumber);
         return ticketNumberMapper.toDTO(createdTicketNumber);
     }
 
     public TicketNumberDTO updateTicketNumber(Long ticketId, Long number_ticketId, TicketNumberDTO ticketNumberDTO) {
+        TicketNumberId newId = new TicketNumberId(ticketNumberDTO.getTicket().getId(), ticketNumberDTO.getId().getTicketId());
         TicketNumberId id = new TicketNumberId(ticketId, number_ticketId);
         TicketNumber existingTicketNumber = ticketNumberRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("TicketNumber not found with id: " + id));
 
-        existingTicketNumber.setTicket(ticketMapper.toEntity(ticketNumberDTO.getTicket()));
+        ticketNumberRepository.deleteById(id);
+        Ticket ticket = ticketRepository.findById(ticketNumberDTO.getTicket().getId())
+                .orElseThrow(() -> new NotFoundException("ticket not found with id: " + ticketNumberDTO.getTicket().getId()));
 
-        TicketNumber updatedTicketNumber = ticketNumberRepository.save(existingTicketNumber);
+        TicketNumber newTicketNumber = new TicketNumber();
+        newTicketNumber.setId(newId);
+        newTicketNumber.setTicket(ticket);
+        newTicketNumber.setIsSold(ticketNumberDTO.getIsSold());
+
+        TicketNumber updatedTicketNumber = ticketNumberRepository.save(newTicketNumber);
         return ticketNumberMapper.toDTO(updatedTicketNumber);
     }
 

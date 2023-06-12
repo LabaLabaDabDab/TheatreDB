@@ -1,35 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import actorService from "../../service/ActorService";
-import dateOfTourService from "../../service/DateOfTourService";
-import actorTourService from "../../service/ActorTourService";
+import ticketsService from "../../service/TicketsService";
+import ticketNumberService from "../../service/TicketNumberService";
 
-const UpdateActorTour = () => {
-    const [date, setDate] = useState("");
-    const [actor, setActor] = useState("");
+const UpdateTicketNumber = () => {
+    const [ticket, setTicket] = useState("");
+    const [isSold, setIsSold] = useState(false);
+    const [number_ticketId, setNumber_ticketId] = useState("");
 
-    const [dates, setDates] = useState([]);
-    const [actors, setActors] = useState([]);
+    const [tickets, setTickets] = useState([]);
 
     let { id } = useParams();
-    const [dateID, actorID] = id.split('.');
+    const [ticketId, numberId] = id.split('.');
 
     const history = useHistory();
 
-    const saveActorTour = (e) => {
+    const saveTicketNumber = (e) => {
         e.preventDefault();
 
-        const ActorTour  = {
-            date: {id: Number(date)},
-            actor: {id: Number(actor)}
+        const ticketNumber  = {
+            ticket: {id: Number(ticket)},
+            isSold,
+            id: {
+                ticketId: Number(ticket),
+                number_ticketId: Number(number_ticketId)
+            }
         };
 
-        actorTourService.update(dateID, actorID, ActorTour)
+        ticketNumberService.update(ticketId, numberId, ticketNumber)
             .then(response => {
-                console.log('ActorTour updated', response.data);
-                history.push('/actor_tour');
+                console.log('TicketNumber updated', response.data);
+                history.push('/ticket_number');
             })
             .catch(error => {
                 console.log('Something went wrong', error);
@@ -38,28 +40,21 @@ const UpdateActorTour = () => {
 
     useEffect(() => {
         if (id) {
-            const [dateID, actorID] = id.split('.');
-            actorTourService.get(dateID, actorID)
+            const [ticketId, numberId] = id.split('.');
+            ticketNumberService.get(ticketId, numberId)
                 .then(response => {
-                    const actorTour = response.data;
-                    const tempDate = actorTour.date.id;
-                    const tempActor = actorTour.actor.id;
+                    const ticketNumber = response.data;
+                    const tempTicket = ticketNumber.ticket.id;
+                    const tempIsSold = ticketNumber.isSold;
+                    const tempNumber_ticketId = ticketNumber.id.number_ticketId;
 
-                    dateOfTourService.getAllList()
+                    ticketsService.getAllList()
                         .then(response => {
                             console.log(response.data);
-                            setDates(response.data);
-                            setDate(tempDate);
-                        })
-                        .catch(error => {
-                            console.log('Something went wrong', error);
-                        });
-
-                    actorService.getAllList()
-                        .then(response => {
-                            console.log(response.data);
-                            setActors(response.data);
-                            setActor(tempActor);
+                            setTickets(response.data);
+                            setTicket(tempTicket);
+                            setIsSold(tempIsSold);
+                            setNumber_ticketId(tempNumber_ticketId);
                         })
                         .catch(error => {
                             console.log('Something went wrong', error);
@@ -69,18 +64,10 @@ const UpdateActorTour = () => {
                     console.log('Something went wrong', error);
                 });
         } else {
-            dateOfTourService.getAllList()
+            ticketsService.getAllList()
                 .then(response => {
                     console.log(response.data);
-                    setDates(response.data);
-                })
-                .catch(error => {
-                    console.log('Something went wrong', error);
-                });
-            actorService.getAllList()
-                .then(response => {
-                    console.log(response.data);
-                    setActors(response.data);
+                    setTickets(response.data);
                 })
                 .catch(error => {
                     console.log('Something went wrong', error);
@@ -88,51 +75,47 @@ const UpdateActorTour = () => {
         }
     }, []);
 
-
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить тур актёра</h3>
+            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Обновить номер билета</h3>
             <form>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите актёра:</label>
+                    <label style={{ marginBottom: 10, width: 600 }}>Выберите билет:</label>
                     <select
                         style={{ marginBottom: 10, width: 600 }}
                         className="form-control col-4"
-                        id="actor"
-                        value={actor}
-                        onChange={(e) => setActor(Number(e.target.value))}>
+                        id="ticket"
+                        value={ticket}
+                        onChange={(e) => setTicket(Number(e.target.value))}>
                         {
-                            actors && actors.map((actor) => (
-                                <option key={actor.id} value={actor.id.toString()}>
-                                    {actor.employee.fio}
+                            tickets && tickets.map((ticket) => (
+                                <option key={ticket.id} value={ticket.id.toString()}>
+                                    {ticket.datePerformance?.date?.dateOfPerformance}
+                                    {" "}
+                                    {ticket.datePerformance?.performance?.author?.title}
                                 </option>
                             ))
                         }
                     </select>
                 </div>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите тур:</label>
+                    <label style={{ marginBottom: 10, width: 600 }}>Продан ли билет:</label>
                     <select
                         style={{ marginBottom: 10, width: 600 }}
                         className="form-control col-4"
-                        id="date"
-                        value={date}
-                        onChange={(e) => setDate(Number(e.target.value))}>
-                        {
-                            dates && dates.map((dateOfTour) => (
-                                <option key={dateOfTour.id.toString()} value={dateOfTour.id.toString()}>
-                                    {`${dateOfTour.dateStart} - ${dateOfTour.dateEnd}`}
-                                </option>
-                            ))
-                        }
+                        id="isSold"
+                        value={isSold}
+                        onChange={(e) => setIsSold(e.target.value === "true")}>
+                        <option value="false">Нет</option>
+                        <option value="true">Да</option>
                     </select>
                 </div>
                 <div>
                     <button style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
-                            onClick={(e) => saveActorTour(e)}>
+                            onClick={(e) => saveTicketNumber(e)}>
                         Сохранить
                     </button>
-                    <Link to="/actor_tour" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
+                    <Link to="/ticket_number" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
 
@@ -140,4 +123,4 @@ const UpdateActorTour = () => {
     );
 }
 
-export default UpdateActorTour;
+export default UpdateTicketNumber;

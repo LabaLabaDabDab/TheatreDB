@@ -9,6 +9,10 @@ const AddTicketNumber = () => {
 
     const [tickets, setTickets] = useState([]);
 
+    const [number_ticketId, setNumber_ticketId] = useState("");
+    const [number_ticketIdDirty, setNumber_ticketIdDirty] = useState(false);
+    const [number_ticketIdError, setNumber_ticketIdError] = useState('Поле не может быть пустым');
+
     const [ticketDirty, setTicketDirty] = useState(false);
     const [isSoldDirty, setIsSoldDirty] = useState(false);
 
@@ -35,12 +39,12 @@ const AddTicketNumber = () => {
     }
 
     useEffect(() => {
-        if (ticketError || isSoldError) {
+        if (ticketError || isSoldError || number_ticketIdError) {
             setFormValid(false)
         } else {
             setFormValid(true)
         }
-    }, [ticketError, isSoldError])
+    }, [ticketError, isSoldError, number_ticketIdError])
 
     const blurHandler = (e) => {
         switch (e.target.name) {
@@ -51,6 +55,13 @@ const AddTicketNumber = () => {
                 setIsSoldDirty(true)
                 break
         }
+    }
+
+    const number_ticketIdHandler = (value) => {
+        setNumber_ticketId(value)
+        if (!value)
+            setNumber_ticketIdError('Поле не может быть пустым')
+        else setNumber_ticketIdError('')
     }
 
     const ticketHandler = (value) => {
@@ -67,10 +78,13 @@ const AddTicketNumber = () => {
 
     const saveTicketNumber = (e) => {
         e.preventDefault();
-        const ticketNumber  = {
+        const ticketNumber = {
             ticket: {id: Number(ticket)},
             isSold,
-            id: { ticketId: Number(ticket) }
+            id: {
+                ticketId: Number(ticket),
+                number_ticketId: Number(number_ticketId)
+            }
         };
 
         console.log(ticketNumber);
@@ -86,12 +100,12 @@ const AddTicketNumber = () => {
 
     return (
         <div className="container">
-            <h3 style={{ marginTop: 20, marginBottom: 20, marginLeft: 2 }}>Добавить номер билета</h3>
+            <h3 style={{marginTop: 20, marginBottom: 20, marginLeft: 2}}>Добавить номер билета</h3>
             <form>
                 <div>
                     <select
                         onChange={e => ticketHandler(Number(e.target.value))}
-                        style={{ marginBottom: 10, width:600 }}
+                        style={{marginBottom: 10, width: 600}}
                         className='form-select'
                         id="ticket">
                         <option>Выберите билет:</option>
@@ -107,8 +121,9 @@ const AddTicketNumber = () => {
                     </select>
                 </div>
                 <div className="form-group">
-                    <label style={{ marginBottom: 10, width: 600 }}>Выберите, продан ли билет:</label>
-                    <select onChange={e => isSoldHandler(e)} onBlur={e => blurHandler(e)} style={{ marginBottom: 10, width: 600 }}
+                    <label style={{marginBottom: 10, width: 600}}>Выберите, продан ли билет:</label>
+                    <select onChange={e => isSoldHandler(e)} onBlur={e => blurHandler(e)}
+                            style={{marginBottom: 10, width: 600}}
                             className="form-control col-4"
                             id="isSold"
                             value={isSold}>
@@ -116,12 +131,24 @@ const AddTicketNumber = () => {
                         <option value={false}>False</option>
                     </select>
                 </div>
+                <div className="form-group">
+                    <label style={{ marginBottom: 10, width: 600 }}>Введите номер билета:</label>
+                    <input type="text"
+                           onBlur={e => setNumber_ticketIdDirty(true)}
+                           onChange={e => number_ticketIdHandler(e.target.value)}
+                           value={number_ticketId}
+                           id="number_ticketId"
+                           className="form-control"
+                           style={{ marginBottom: 10, width: 600 }}/>
+                </div>
                 <div>
-                    <button disabled={!formValid} style={{ marginTop: 20, color: 'white' }} className="btn btn-dark mb-2"
+                    <button disabled={!formValid} style={{marginTop: 20, color: 'white'}}
+                            className="btn btn-dark mb-2"
                             onClick={(e) => saveTicketNumber(e)}>
                         Сохранить
                     </button>
-                    <Link to="/ticket_number" style={{ marginLeft: 40, marginTop: 20, color: 'white' }} className="btn btn-dark mb-2 ">Назад</Link>
+                    <Link to="/ticket_number" style={{marginLeft: 40, marginTop: 20, color: 'white'}}
+                          className="btn btn-dark mb-2 ">Назад</Link>
                 </div>
             </form>
         </div>

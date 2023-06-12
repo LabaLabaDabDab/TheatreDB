@@ -35,8 +35,8 @@ export default function TicketNumberPage({
             });
     }
 
-    const handleDelete = id => {
-        ticketNumberService.remove(id)
+    const handleDelete = (ticketId, number_ticketId) => {
+        ticketNumberService.remove(ticketId, number_ticketId)
             .then(response => {
                 console.log('ticket_number deleted', response.data);
                 init(currentPage);
@@ -100,7 +100,7 @@ export default function TicketNumberPage({
                                 <td style={{ fontSize: "14px" }}>{String(obj.isSold)}</td>
                                 <td>
                                     <Link style={{ backgroundColor: "#D10000", borderColor: "#D10000" }} to={`/ticket_number/edit/${obj.id?.ticketId}.${obj.id?.number_ticketId}`} className='btn btn-danger'>Изменить</Link>
-                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id) }} className='btn btn-danger'>Удалить</Button>
+                                    <Button style={{ backgroundColor: "#D10000", borderColor: "#D10000", marginLeft: 10 }} onClick={(e) => { handleDelete(obj.id?.ticketId, obj.id?.number_ticketId) }} className='btn btn-danger'>Удалить</Button>
                                 </td>
                             </tr>
                         ))
